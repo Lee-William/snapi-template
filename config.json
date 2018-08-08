@@ -2,6 +2,7 @@
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "MyInfo",
   "defaultPath": "item1",
+  "logo": "logo-generic.png"
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
