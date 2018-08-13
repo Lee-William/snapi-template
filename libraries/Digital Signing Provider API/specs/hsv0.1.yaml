@@ -1,0 +1,122 @@
+#Default Parameters needed for a YAML file
+openapi: 3.0.0
+servers:
+  - url: 'https://ndi.sg.io:3035/api/v1' #Real API link
+    description: NDI API
+    variables: {}
+  - url: 'https://sandbox.ndi.io:3031/api/v1' #sandbox API link
+    description: NDI API Sandbox
+info:
+  description: >-
+    This is the API store where you can discover everything about integrating
+    with the National Digital Identity (NDI) platform.  You can find out more
+    about NDI at [http://ndi.sg.io/home](http://ndi.sg.io/home).  To try out the
+    API, first go to the Authorization section to learn how to obtain an access
+    token to access the API.
+  version: 1.0.0
+  title: National Digital Identity (NDI) - Hash Signing
+  termsOfService: 
+  contact:
+    email: support@ndi.gov.sg
+
+externalDocs:
+  description: Access technical reference for Hash Signing Service. (WIP)
+  url: 'https://isomerpages.github.io/isomerpages-ndi/files/techref/hsproviders/hsprov'
+
+#These are the tags for the side bar (the one on the left)
+tags:
+  - name: Hash Signing Service
+    description: Hash Signing Service
+
+
+paths:
+  '/sign/request':
+    get:
+      tags: 
+       - Hash Signing Service
+      summary: Callback endpoint to get hash as part of the signing request.
+      description: >-
+        Callback endpoint called by the form factor (or form factor signing service) to get the hash as part of the signing request. This is can be called by the form factor, when it received a push notification or when the user access the mobile application directly
+      operationId: signRequest
+      parameters:
+      - name: client_id
+        in: query
+        required: true
+        schema:
+          type: string
+      
+      - name: nonce
+        in: query
+        required: true
+        schema:
+          type: string
+      
+      - name: scope
+        in: query
+        required: false
+        schema:
+          type: string 
+      
+      - name: response_type
+        in: query
+        required: false
+        schema:
+          type: string
+
+      - name: redirect_uri
+        in: query
+        required: false
+        schema:
+          type: string
+
+      - name: state
+        in: query
+        required: false
+        schema:
+          type: string
+          
+      - name: login_hint
+        in: query
+        required: false
+        schema:
+            type: string
+
+      - name: acr_values
+        in: query
+        required: false
+        schema:
+            type: string
+      
+      responses: 
+        '200':
+          description: "Success"
+
+        '400':
+          description: "Error"
+        
+  '/sign/responses':
+    post:
+      tags:
+          - Hash Signing Service
+      summary: Callback endpoint to be called to return the signed hash
+      description: Callback endpoint called by the form factor (or form factor signing service) to return the signed hash to the originating HSS of the signing request.
+      operationId: signedData
+      requestBody:
+        content:
+            application/json:
+                schema:
+                    type: object
+                    properties: 
+                      ff_auth_ref:
+                          description: The form factor authentication reference
+                          type: string
+                      usr_action:
+                          description: This may be accept, consent or reject
+                          type: string
+                      
+      responses:
+        '200':
+          description: Success,The signed response, this is not present if usr_action is reject.
+        '400':
+          description: "Error"
+
