@@ -1,6 +1,6 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
-  "libname": "Authentication Service Provider API",
+  "libname": "Digital Signing Provider API",
   "defaultPath": "0.introduction",
   "logo": "logo_ndi.png",
   "items": [{
@@ -28,24 +28,6 @@
           "path": "1.implementation-0.components",
           "text": "Components",
           "mdContent": "1.implementation-0.components.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "1.implementation-1.deployment",
-          "text": "Deployment",
-          "mdContent": "1.implementation-1.deployment.md"
-        },
-		{
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "2.implementation-2.failover",
-          "text": "Failover Arrangements",
-          "mdContent": "1.implementation-2.failover.md"
         }
       ]
     },
