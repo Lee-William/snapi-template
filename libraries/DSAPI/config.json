@@ -1,33 +1,33 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "Digital Signing Provider API",
-  "defaultPath": "0.introduction",
+  "defaultPath": "0_introduction",
   "logo": "logo_ndi.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "0.introduction",
+      "path": "0_introduction",
       "text": "Introduction",
-      "mdContent": "0.introduction.md"
+      "mdContent": "0_introduction.md"
     },
     {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "1.implementation",
+      "path": "1_implementation",
       "text": "Implementation",
-      "mdContent": "1.implementation.md",
+      "mdContent": "1_implementation.md",
       "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "1.implementation-0.components",
+          "path": "1_implementation-0_components",
           "text": "Components",
-          "mdContent": "1.implementation-0.components.md"
+          "mdContent": "1_implementation-0_components.md"
         }
       ]
     },
@@ -36,27 +36,27 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "2.tutorial",
+      "path": "2_tutorial",
       "text": "Tutorials",
-      "mdContent": "2.tutorial.md"
+      "mdContent": "2_tutorial.md"
     },
 	{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "3.resources",
+      "path": "3_resources",
       "text": "Resources",
-      "mdContent": "3.resources.md"
+      "mdContent": "3_resources.md"
     },
 	{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "4.faq",
+      "path": "4_faq",
       "text": "FAQ",
-      "mdContent": "4.faq.md"
+      "mdContent": "4_faq.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],
@@ -74,7 +74,7 @@
         "Specs will be rendered into HTML view.",
         "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
       ],
-      "path": "hsv0.1",
+      "path": "hsv0_1",
       "text": "Digital Signing Service v0.1",
       "apiSpecs": "hsv0.1.yaml"
     }
