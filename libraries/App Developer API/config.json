@@ -1,6 +1,6 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
-  "libname": "Authentication Service Provider API",
+  "libname": "App Developer API",
   "defaultPath": "0.introduction",
   "logo": "logo_ndi.png",
   "items": [{
@@ -96,16 +96,6 @@
       "text": "Authentication Service v0.1",
       "apiSpecs": "aspv0.1.yaml"
     },
-	    {
-      "//": ["This is a menu item that links to your swagger API specs",
-        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
-        "Specs will be rendered into HTML view.",
-        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
-      ],
-      "path": "dsv0.1",
-      "text": "Directory Service v0.1",
-      "apiSpecs": "dsv0.1.yaml"
-    },
     {
       "//": ["This is a menu item that links to your swagger API specs",
         "Provide your spec files in `specs` folder. YAML or JSON are accepted",
@@ -114,16 +104,6 @@
       ],
       "path": "rav0.1",
       "text": "Registration Authority v0.1",
-      "apiSpecs": "rav0.1.yaml"
-    },
-    {
-      "//": ["This is a menu item that links to your swagger API specs",
-        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
-        "Specs will be rendered into HTML view.",
-        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
-      ],
-      "path": "authzv0.1",
-      "text": "Domain Authorization Service v0.1",
       "apiSpecs": "authz0.1.yaml"
     }
   ]
