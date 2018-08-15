@@ -1,8 +1,10 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
-  "libname": "Identity Assurance Provider API",
+  "libname": "IAProvAPI",
+  "liblabel": "Identity Assurance Provider API",
+  "libdesc": "Identity Assurance Provider API",
   "defaultPath": "0_introduction",
-  "logo": "logo_ndi.png"
+  "logo": "logo_ndi.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -17,9 +19,9 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "1_implementation",
+      "path": "implementation",
       "text": "Implementation",
-      "mdContent": "1_implementation.md",
+      "mdContent": "implementation.md",
       "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -45,27 +47,27 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "2_tutorial",
+      "path": "tutorial",
       "text": "Tutorial",
-      "mdContent": "2_tutorial.md"
+      "mdContent": "tutorial.md"
     },
 	{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "3_resources",
+      "path": "resources",
       "text": "Resources",
-      "mdContent": "3_resources.md"
+      "mdContent": "resources.md"
     },
 	{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "4_faq",
+      "path": "faq",
       "text": "FAQ",
-      "mdContent": "4_faq.md"
+      "mdContent": "faq.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],

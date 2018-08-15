@@ -1,25 +1,27 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
-  "libname": "Form Factor Provider API",
-  "defaultPath": "0_introduction",
-  "logo": "logo_ndi.png"
+  "libname": "FFProvAPI",
+  "liblabel": "Form Factor Provider API",
+  "libdesc": "Form Factor Provider API",
+  "defaultPath": "introduction",
+  "logo": "logo_ndi.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "0_introduction",
+      "path": "introduction",
       "text": "Introduction",
-      "mdContent": "0_introduction.md"
+      "mdContent": "introduction.md"
     },
     {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "2_tutorial",
+      "path": "tutorial",
       "text": "Tutorial",
-      "mdContent": "2_tutorial.md",
+      "mdContent": "tutorial.md",
       "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -45,13 +47,13 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "3_resources",
+      "path": "resources",
       "text": "Resources",
-      "mdContent": "3_resources.md"
+      "mdContent": "resources.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],
-      "path": "4_faq",
+      "path": "faq",
       "text": "FAQ",
       "redirectURL": "http://www.google.com"
     },
@@ -65,7 +67,7 @@
         "Specs will be rendered into HTML view.",
         "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
       ],
-      "path": "ffv0_1",
+      "path": "ffv1",
       "text": "Form Factor Provider v0.1",
       "apiSpecs": "ffv0.1.yaml"
     }

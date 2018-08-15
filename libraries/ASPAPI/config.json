@@ -1,51 +1,53 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
-  "libname": "Authentication Service Provider API",
-  "defaultPath": "0_introduction",
+  "libname": "ASPAPI",
+  "liblabel": "Authentication Service Provider API",
+  "libdesc": "Authentication Service Provider API",
+  "defaultPath": "introduction",
   "logo": "logo_ndi.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "0_introduction",
+      "path": "introduction",
       "text": "Introduction",
-      "mdContent": "0_introduction.md"
+      "mdContent": "introduction.md"
     },
     {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "1_implementation",
+      "path": "implementation",
       "text": "Implementation",
-      "mdContent": "1_implementation.md",
+      "mdContent": "implementation.md",
       "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "1_implementation-0_components",
+          "path": "implementation-components",
           "text": "Components",
-          "mdContent": "1_implementation-0_components.md"
+          "mdContent": "implementation-components.md"
         },
         {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "1_implementation-1_deployment",
+          "path": "implementation-deployment",
           "text": "Deployment",
-          "mdContent": "1_implementation-1_deployment.md"
+          "mdContent": "implementation-deployment.md"
         },
 		{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "2_implementation-2_failover",
+          "path": "implementation-failover",
           "text": "Failover Arrangements",
-          "mdContent": "1_implementation-2_failover.md"
+          "mdContent": "implementation-failover.md"
         }
       ]
     },
@@ -54,27 +56,27 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "2_tutorial",
+      "path": "tutorial",
       "text": "Tutorials",
-      "mdContent": "2_tutorial.md"
+      "mdContent": "tutorial.md"
     },
 	{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "3_resources",
+      "path": "resources",
       "text": "Resources",
-      "mdContent": "3_resources.md"
+      "mdContent": "resources.md"
     },
 	{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "4_faq",
+      "path": "faq",
       "text": "FAQ",
-      "mdContent": "4_faq.md"
+      "mdContent": "faq.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],
@@ -92,7 +94,7 @@
         "Specs will be rendered into HTML view.",
         "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
       ],
-      "path": "aspv0_1",
+      "path": "aspv1",
       "text": "Authentication Service v0.1",
       "apiSpecs": "aspv0.1.yaml"
     },
@@ -102,7 +104,7 @@
         "Specs will be rendered into HTML view.",
         "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
       ],
-      "path": "dsv0_1",
+      "path": "dsv1",
       "text": "Directory Service v0.1",
       "apiSpecs": "dsv0.1.yaml"
     },
@@ -112,7 +114,7 @@
         "Specs will be rendered into HTML view.",
         "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
       ],
-      "path": "rav0_1",
+      "path": "rav1",
       "text": "Registration Authority v0.1",
       "apiSpecs": "rav0.1.yaml"
     },
@@ -122,7 +124,7 @@
         "Specs will be rendered into HTML view.",
         "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
       ],
-      "path": "authzv0_1",
+      "path": "authzv1",
       "text": "Domain Authorization Service v0.1",
       "apiSpecs": "authz0.1.yaml"
     }
