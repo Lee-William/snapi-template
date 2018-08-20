@@ -2,7 +2,7 @@
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "AppDevAPI",
   "liblabel": "App Developer API",
-  "libdesc": "App Developer API",
+  "libdesc": "Developers who are developing mobile or web app(also known as Relying Parties) will find this set of APIs useful",
   "defaultPath": "introduction",
   "logo": "logo_ndi.png",
   "items": [{
@@ -27,9 +27,9 @@
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-0_integration",
+          "path": "implementation-integration",
           "text": "Integration",
-          "mdContent": "implementation-0_integration.md"
+          "mdContent": "implementation-integration.md"
         },
         {
           "//": ["This is a submenu item in your library",
@@ -40,7 +40,7 @@
           "text": "Discovery Document",
           "mdContent": "implementation-discoverydoc.md"
         },
-		{
+		    {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -48,6 +48,15 @@
           "path": "implementation-security",
           "text": "Security",
           "mdContent": "implementation-security.md"
+        },
+		    {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-errorhandling",
+          "text": "Error Handling",
+          "mdContent": "implementation-errorhandling.md"
         }
       ]
     },
@@ -58,7 +67,24 @@
       ],
       "path": "tutorial",
       "text": "Tutorials",
-      "mdContent": "tutorial.md"
+      "mdContent": "tutorial-gettingstarted.md",
+			"children": [
+				{
+					"path": "tutorial-gettingstarted",
+					"text": "Getting Started",
+					"mdContent": "tutorial-gettingstarted.md"
+				},
+				{
+					"path": "tutorial-integration",
+					"text": "Integration",
+					"mdContent": "tutorial-integration.md"
+				},
+				{
+					"path": "tutorial-tryoutndilogin",
+					"text": "Try out NDI Login",
+					"mdContent": "tutorial-tryoutndilogin.md"
+				}
+			]
     },
 	{
       "//": ["This is a menu item in your library",

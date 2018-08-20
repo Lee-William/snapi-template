@@ -1,8 +1,8 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "ASPAPI",
-  "liblabel": "Authentication Service Provider API",
-  "libdesc": "Authentication Service Provider API",
+  "liblabel": "Resource Owners API",
+  "libdesc": "APIs for protected domain owners that are using or offering NDI authentication service",
   "defaultPath": "introduction",
   "logo": "logo_ndi.png",
   "items": [{
@@ -21,7 +21,7 @@
       ],
       "path": "implementation",
       "text": "Implementation",
-      "mdContent": "implementation.md",
+      "mdContent": "implementation-components.md",
       "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -40,7 +40,7 @@
           "text": "Deployment",
           "mdContent": "implementation-deployment.md"
         },
-		{
+		    {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -51,7 +51,7 @@
         }
       ]
     },
-	{
+	  {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -60,7 +60,7 @@
       "text": "Tutorials",
       "mdContent": "tutorial.md"
     },
-	{
+	  {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -69,7 +69,7 @@
       "text": "Resources",
       "mdContent": "resources.md"
     },
-	{
+	  {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -89,44 +89,45 @@
       "hr": "--"
     },
     {
-      "//": ["This is a menu item that links to your swagger API specs",
-        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
-        "Specs will be rendered into HTML view.",
-        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
-      ],
-      "path": "aspv1",
-      "text": "Authentication Service v0.1",
-      "apiSpecs": "aspv0.1.yaml"
-    },
-	    {
-      "//": ["This is a menu item that links to your swagger API specs",
-        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
-        "Specs will be rendered into HTML view.",
-        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
-      ],
-      "path": "dsv1",
-      "text": "Directory Service v0.1",
-      "apiSpecs": "dsv0.1.yaml"
-    },
-    {
-      "//": ["This is a menu item that links to your swagger API specs",
-        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
-        "Specs will be rendered into HTML view.",
-        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
-      ],
-      "path": "rav1",
-      "text": "Registration Authority v0.1",
-      "apiSpecs": "rav0.1.yaml"
-    },
-    {
-      "//": ["This is a menu item that links to your swagger API specs",
-        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
-        "Specs will be rendered into HTML view.",
-        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
-      ],
-      "path": "authzv1",
-      "text": "Domain Authorization Service v0.1",
-      "apiSpecs": "authz0.1.yaml"
+      "path": "apispecs",
+      "text": "API Specifications",
+      "mdContent": "apispecs.md",
+      "children": [{
+        "//": ["This is a submenu item in your library",
+          "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+          "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+        ],
+        "path": "apispecs-aspv001",
+        "text": "Authentication Service Provider v0.0.1",
+        "apiSpecs": "aspv0.0.1.yaml"
+      },
+      {
+        "//": ["This is a submenu item in your library",
+          "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+          "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+        ],
+        "path": "apispecs-dsv001",
+        "text": "Directory Service v0.0.1",
+        "apiSpecs": "dsv0.0.1.yaml"
+      },
+      {
+        "//": ["This is a submenu item in your library",
+          "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+          "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+        ],
+        "path": "apispecs-rav001",
+        "text": "Registration Authority v0.0.1",
+        "apiSpecs": "rav0.0.1.yaml"
+      },
+      {
+        "//": ["This is a submenu item in your library",
+          "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+          "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+        ],
+        "path": "apispecs-authzv001",
+        "text": "Domain Authorization Service v0.0.1",
+        "apiSpecs": "authzv0.0.1.yaml"
+      }]
     }
   ]
 }
