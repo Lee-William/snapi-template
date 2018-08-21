@@ -1,0 +1,73 @@
+{
+  "//": "This is the config file for your API library. Please follow the examples below.",
+  "libname": "ffprov",
+  "liblabel": "Form Factor Provider",
+  "libdesc": "Eligible and interested form factor providers looking to provide alternative form factors for authentication",
+  "defaultPath": "introduction",
+  "logo": "logo_ndi.png",
+  "items": [{
+      "//": ["This is a menu item in your library",
+        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+      ],
+      "path": "introduction",
+      "text": "Introduction",
+      "mdContent": "introduction.md"
+    },
+    {
+      "//": ["This is a menu item in your library",
+        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+      ],
+      "path": "tutorial",
+      "text": "Tutorial",
+      "mdContent": "tutorial.md",
+      "children": [{
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "item2-child1",
+          "text": "Child 1 of Item 2",
+          "mdContent": "item2-child1.md"
+        }]
+    },
+	  {
+      "//": ["This is a menu item in your library",
+        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+      ],
+      "path": "resources",
+      "text": "Resources",
+      "mdContent": "resources.md"
+    },
+    {
+      "//": ["This is a menu item that redirects to an external link"],
+      "path": "faq",
+      "text": "FAQ",
+      "redirectURL": "http://www.google.com"
+    },
+    {
+      "//": ["This is horizontal divider for your menu"],
+      "hr": "--"
+    },
+    {
+      "//": ["This is a menu item that links to your swagger API specs",
+        "Provide your spec files in `specs` folder. YAML or JSON are accepted",
+        "Specs will be rendered into HTML view.",
+        "Refer to https://github.com/OAI/OpenAPI-Specification for the OAS3 specification."
+      ],
+      "path": "apispecs",
+      "text": "API Specifications",
+      "children": [{
+        "//": ["This is a submenu item in your library",
+          "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+          "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+        ],
+        "path": "apispecs-ffv001",
+        "text": "Form Factor API v0.0.1",
+        "apiSpecs": "ffv0.0.1.yaml"
+      }]
+    }
+  ]
+}

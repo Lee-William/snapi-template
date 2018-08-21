@@ -1,6 +1,0 @@
-# Implementation
-## Key Principles
-## Requirements
-
-
-
