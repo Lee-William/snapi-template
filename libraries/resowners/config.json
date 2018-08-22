@@ -20,7 +20,7 @@
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
       "path": "implementation",
-      "text": "Implementation",
+      "text": "Technical Reference",
       "mdContent": "implementation-components.md",
       "children": [{
           "//": ["This is a submenu item in your library",

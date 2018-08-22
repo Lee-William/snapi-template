@@ -19,33 +19,6 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "tutorial",
-      "text": "Tutorial",
-      "mdContent": "tutorial.md",
-      "children": [{
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "item2-child1",
-          "text": "Child 1 of Item 2",
-          "mdContent": "item2-child1.md"
-        }]
-    },
-	  {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
-      "path": "resources",
-      "text": "Resources",
-      "mdContent": "resources.md"
-    },
-    {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
       "path": "support",
       "text": "Support",
       "mdContent": "support-contactus.md",
@@ -61,12 +34,6 @@
 					"mdContent": "support-faq.md"
 				}
 			]
-    },
-    {
-      "//": ["This is a menu item that redirects to an external link"],
-      "path": "ndisandbox",
-      "text": "NDI Sandbox",
-      "redirectURL": "https://sandbox.api.ndi.gov.sg"
     },
     {
       "//": ["This is horizontal divider for your menu"],
