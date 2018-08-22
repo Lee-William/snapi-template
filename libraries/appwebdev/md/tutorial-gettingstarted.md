@@ -1,4 +1,32 @@
-# Getting Started 
+# Getting Started
+
+# NDI Sandbox
+
+## What NDI sandbox is about
+
+The sandbox playground provides a safe environment to experiment NDI APIs and help on steps required to integrate with your application. The operations that you perform in the sandbox doesn't affect the live, public data on main NDI site. This guide directs you to create an application account, that you will use to register an application using NDI developer Portal Home Page following steps to call desired API’s.
+
+Specifically, it tells you HOW TO
+
+1. Register your Application
+2. Get client ID and client secret key for your Application
+3. Request Auth Code from API Gateway
+4. Request Access token from API Gateway
+5. Call the APIs
+
+## How to register your application
+
+
+## How to get the client ID and client secret key for your application
+
+
+## How to get AuthCode from NDI API gateway
+
+
+## How to request Access Token from NDI API gateway
+
+
+## How to call NDI APIs
 
 ## Create Client Credentials
 

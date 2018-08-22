@@ -42,10 +42,31 @@
       "mdContent": "resources.md"
     },
     {
+      "//": ["This is a menu item in your library",
+        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+      ],
+      "path": "support",
+      "text": "Support",
+      "mdContent": "support-contactus.md",
+			"children": [
+				{
+					"path": "support-contactus",
+					"text": "Contact Us",
+					"mdContent": "support-contactus.md"
+				},
+				{
+					"path": "support-faq",
+					"text": "FAQs",
+					"mdContent": "support-faq.md"
+				}
+			]
+    },
+    {
       "//": ["This is a menu item that redirects to an external link"],
-      "path": "faq",
-      "text": "FAQ",
-      "redirectURL": "http://www.google.com"
+      "path": "ndisandbox",
+      "text": "NDI Sandbox",
+      "redirectURL": "https://sandbox.api.ndi.gov.sg"
     },
     {
       "//": ["This is horizontal divider for your menu"],

@@ -1,7 +1,7 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "appwebdev",
-  "liblabel": "App/Web Developer",
+  "liblabel": "App & Web Developer",
   "libdesc": "Developers who are developing mobile or web app(also known as Relying Parties) will find this set of APIs useful",
   "defaultPath": "introduction",
   "logo": "logo_ndi.png",
@@ -21,8 +21,27 @@
       ],
       "path": "implementation",
       "text": "Implementation",
-      "mdContent": "implementation.md",
-      "children": [{
+      "mdContent": "implementation-appdev.md",
+      "children": [
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-integration",
+          "text": "Integration",
+          "mdContent": "implementation-appdev.md"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-integration",
+          "text": "Integration",
+          "mdContent": "implementation-webdev.md"
+        },
+        {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -95,14 +114,26 @@
       "text": "Resources",
       "mdContent": "resources.md"
     },
-	  {
+    {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "faq",
-      "text": "FAQ",
-      "mdContent": "faq.md"
+      "path": "support",
+      "text": "Support",
+      "mdContent": "support-contactus.md",
+			"children": [
+				{
+					"path": "support-contactus",
+					"text": "Contact Us",
+					"mdContent": "support-contactus.md"
+				},
+				{
+					"path": "support-faq",
+					"text": "FAQs",
+					"mdContent": "support-faq.md"
+				}
+			]
     },
     {
       "//": ["This is a menu item that redirects to an external link"],

@@ -21,28 +21,9 @@
       ],
       "path": "implementation",
       "text": "Implementation",
-      "mdContent": "implementation.md",
-      "children": [{
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "item2-child1",
-          "text": "Child 1 of Item 2",
-          "mdContent": "item2-child1.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "item2-child2",
-          "text": "Child 2 of Item 2",
-          "mdContent": "item2-child2.md"
-        }
-      ]
+      "mdContent": "implementation.md"
     },
-	{
+	  {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -51,7 +32,7 @@
       "text": "Tutorial",
       "mdContent": "tutorial.md"
     },
-	{
+	  {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
@@ -60,20 +41,32 @@
       "text": "Resources",
       "mdContent": "resources.md"
     },
-	{
+    {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "faq",
-      "text": "FAQ",
-      "mdContent": "faq.md"
+      "path": "support",
+      "text": "Support",
+      "mdContent": "support-contactus.md",
+			"children": [
+				{
+					"path": "support-contactus",
+					"text": "Contact Us",
+					"mdContent": "support-contactus.md"
+				},
+				{
+					"path": "support-faq",
+					"text": "FAQs",
+					"mdContent": "support-faq.md"
+				}
+			]
     },
-    {
+	  {
       "//": ["This is a menu item that redirects to an external link"],
-      "path": "item3",
-      "text": "Item 3",
-      "redirectURL": "http://www.google.com"
+      "path": "sandbox",
+      "text": "Sandbox",
+      "redirectURL": "https://sandbox.api.ndi.gov.sg"
     },
     {
       "//": ["This is horizontal divider for your menu"],
