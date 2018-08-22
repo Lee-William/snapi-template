@@ -20,7 +20,7 @@
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
       "path": "implementation",
-      "text": "Implementation",
+      "text": "Technical References",
       "mdContent": "implementation-appdev.md",
       "children": [
         {
@@ -29,7 +29,7 @@
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
           "path": "implementation-integration",
-          "text": "Integration",
+          "text": "Technical Reference for Mobile App Developers",
           "mdContent": "implementation-appdev.md"
         },
         {
@@ -38,7 +38,7 @@
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
           "path": "implementation-integration",
-          "text": "Integration",
+          "text": "Technical Reference for Web Developers",
           "mdContent": "implementation-webdev.md"
         },
         {

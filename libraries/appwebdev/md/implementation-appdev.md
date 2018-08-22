@@ -1,4 +1,4 @@
-# A New Way of Authentication for App Developers
+# A New Way of Authentication for Mobile App Developers
 
 ![appdev authentication](\assets\lib\appwebdev\img\appdevauthentication.png)
  

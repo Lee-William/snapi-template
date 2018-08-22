@@ -1,4 +1,4 @@
-# A New Way of Authentication
+# A New Way of Authentication for Web Developers
  
 The authentication mechanism used by ASP differs from the traditional approach where the client app captures the end-user’s user credentials/secrets through a login screen and forwards the credentials/secrets to a backend user management system which verifies against a centralized password database.  
 The ASP authentication mechanism utilizes a distributed approach as follows:
