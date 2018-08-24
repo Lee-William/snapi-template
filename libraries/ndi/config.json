@@ -1,0 +1,8 @@
+{
+  "//": "This is the config file for your API Package. Please follow the examples below.",
+  "name": "ndi",
+  "label": "NDI APIs",
+  "desc": "COMING SOON - APIs for National Digital Identity (NDI)",
+  "logo": "logo_ndi.png",
+  "libraries": ["appwebdev","aspop","ds","ffprov","resowners","secra"]
+}
