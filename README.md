@@ -37,6 +37,7 @@ The package `config.json` looks like this:
 * Make sure you name your package folder with the same name as the `name` in the `config.json`.
 * Do not use dot `'.'` or underscore `'_'` in your package name.
 * Make sure you list out the libraries in your package.
+* For referencing images, use the path `/assets/lib/<package>/img`
 
 
 ### API Library Config
@@ -219,5 +220,6 @@ The `config.json` file for each API library  looks like this:
 ```
 
 **NOTE:**
-*  Make sure you name your API library folders with the same name as the `libname` in the `config.json`.
+* Make sure you name your API library folders with the same name as the `libname` in the `config.json`.
 * Do not use dot `'.'` or underscore `'_'` in your API library `libname` and `path` attributes.
+* For referencing images, use the path `/assets/lib/<package>/<api_library>/img`
