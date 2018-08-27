@@ -1,8 +1,8 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "ds",
-  "liblabel": "Digital Signging",
-  "libdesc": "Digital signing providers looking to integrate with NDI will find this API useful",
+  "liblabel": "Digital Signing",
+  "libdesc": "Digital signing product or service providers looking to integrate with NDI will find this API useful",
   "defaultPath": "introduction",
   "logo": "logo_ndi.png",
   "items": [{
