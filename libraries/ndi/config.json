@@ -4,5 +4,13 @@
   "label": "NDI APIs",
   "desc": "COMING SOON - APIs for National Digital Identity (NDI)",
   "logo": "logo_ndi.png",
-  "libraries": ["appwebdev","aspop","ds","ffprov","resowners","secra"]
+  "libraries": ["appwebdev","aspop","ds","ffprov","resowners","secra"],
+  "splashPage": {
+      "introText": "Some intro text on your API splash page....",
+      "introImg" : "/assets/lib/NDI/img/logo_ndi.png",
+      "sectionMds" : [
+          "digital-vault.md",
+          "digital-vault.md"
+      ]
+  }
 }
