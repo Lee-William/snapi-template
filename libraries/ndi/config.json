@@ -7,7 +7,7 @@
   "libraries": ["appwebdev","aspop","ds","ffprov","resowners","secra"],
   "splashPage": {
       "introText": "Some intro text on your API splash page....",
-      "introImg" : "/assets/lib/NDI/img/logo_ndi.png",
+      "introImg" : "/assets/lib/ndi/img/logo_ndi.png",
       "sectionMds" : [
           "digital-vault.md",
           "digital-vault.md"
