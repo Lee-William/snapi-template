@@ -9,8 +9,8 @@
       "introText": "A step towards building Smart Nation, catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident",
       "introImg" : "",
       "sectionMds" : [
-          "digital-vault.md",
-          "digital-vault.md"
+          "digital-identity.md",
+          "digital-service.md"
       ]
   }
 }
