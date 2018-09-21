@@ -2,7 +2,7 @@
   "//": "This is the config file for your API Package. Please follow the examples below.",
   "name": "ndi",
   "label": "NDI APIs",
-  "desc": "A step towards building Smart Nation, catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident",
+  "desc": "Catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident",
   "logo": "logo_ndi.png",
   "libraries": ["appwebdev","aspop","ds","ffprov","resowners","secra"],
   "splashPage": {
