@@ -2,7 +2,7 @@
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "ffprov",
   "liblabel": "Form Factor Provider",
-  "libdesc": "Eligible and interested form factor providers looking to provide alternative form factors for authentication",
+  "libdesc": "Interested form factor providers looking to contribute to the NDI ecosystem to provide an alternative form factor for authentication and/or authorization",
   "defaultPath": "introduction",
   "logo": "logo_ndi.png",
   "items": [{
