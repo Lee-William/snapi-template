@@ -12,6 +12,8 @@ The diagram shows an example of what an alternative form factor solution provide
 -	Form Factor Authentication Extension – the adapter implementing the Extension Interface and the system consisting of the hardware/software modules and infrastructure required to perform the last mile authentication with the form factor
 -	Form Factor – the form factor solution consisting of the hardware/software modules that run on the host device and the trusted local agent which interacts with the Form Factor Authentication Service.
 
+<br>
+
 ![Form Factor Authentication Flow](/assets/lib/ndi/ffprov/img/ff_flow.png)
 
 <br>
