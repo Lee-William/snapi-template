@@ -361,22 +361,22 @@ paths:
                     format: html
 
 # POST /sign/request.
- * OAuth2.0 authorization endpoint. The client call this endpoint to start
- * the OAuth2.0 flow.  The client redirects the user agent to this endpoint,
- * which typically returns a login page for the user to enter his
- * credentials for authentication.  In the case of NDI ASP, the login page
- * consists only the user id input (i.e. no password input) where the user
- * enter his NDI id. The ASP then routes an authentication challenge to the 
- * user's form factor (e.g. the soft token on his mobile device) via the
- * appropriate form factor authentication servce. For mobile soft token, the
- * user is notified to enter his PIN to unlock the soft token to sign on the
- * authentication challenge.  The signed response is returned to the ASP
- * which verifies the signature on the signed response with the user's
- * certificate.  If all is well, the ASP generates an authorization code and
- * sends it to the client via the client's redirect uri.  The client may then
- * exchange for the security tokens (i.e. id token and access token) using the
- * authorization code in accordance to the authorization code grant flow.
- */
+OAuth2.0 authorization endpoint. The client call this endpoint to start
+the OAuth2.0 flow.  The client redirects the user agent to this endpoint,
+which typically returns a login page for the user to enter his
+credentials for authentication.  In the case of NDI ASP, the login page
+consists only the user id input (i.e. no password input) where the user
+enter his NDI id. The ASP then routes an authentication challenge to the 
+user's form factor (e.g. the soft token on his mobile device) via the
+appropriate form factor authentication servce. For mobile soft token, the
+user is notified to enter his PIN to unlock the soft token to sign on the
+authentication challenge.  The signed response is returned to the ASP
+which verifies the signature on the signed response with the user's
+certificate.  If all is well, the ASP generates an authorization code and
+sends it to the client via the client's redirect uri.  The client may then
+exchange for the security tokens (i.e. id token and access token) using the
+authorization code in accordance to the authorization code grant flow.
+
 
 # GET /sign/request.
 
@@ -393,23 +393,21 @@ usr_action is 'reject';
 
 
 # POST /auth/login
- * Verify identity and generate auth code.  This is called by the login page
- * when the user click Verify (submit) button, to pass over the user
- * credentials for identity verification.
- * This should be a POST rather than GET and all the params should be in
- * the body instead of exposed in the url. 
+Verify identity and generate auth code.  This is called by the login page
+when the user click Verify (submit) button, to pass over the user
+credentials for identity verification.
+This should be a POST rather than GET and all the params should be in
+the body instead of exposed in the url. 
 
 
 
  # POST /token
 
- /**
- * Token endpoint.
- * This is where the client app call to exchange for the access token with an
- * auth code. 
- */
+ 
+Token endpoint.
+This is where the client app call to exchange for the access token with an
+auth code. 
 
- # GEt /certs
 
 GET getJWKSet.
 Get the JSON Web Key (JWK) Set containing the signing keys of this ASP.
