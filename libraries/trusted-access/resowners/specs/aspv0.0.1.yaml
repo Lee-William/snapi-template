@@ -10,7 +10,7 @@ info:
   contact:
     email: apiteam@ndi.sg.io
   x-logo:
-    url: 'assets/ndi-logo.png'
+    url: '/assets/trusted-access/img/ndi-logo.png'
   license:
     name: Apache-2.0
     url: 'https://opensource.org/licenses/Apache-2.0'

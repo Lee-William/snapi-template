@@ -13,9 +13,78 @@ info:
     about NDI at [http://ndi.sg.io/home](http://ndi.sg.io/home).  To try out the
     API, first go to the Authorization section to learn how to obtain an access
     token to access the API.
+
+    # POST /sign/request.
+    OAuth2.0 authorization endpoint. The client call this endpoint to start
+    the OAuth2.0 flow.  The client redirects the user agent to this endpoint,
+    which typically returns a login page for the user to enter his
+    credentials for authentication.  In the case of NDI ASP, the login page
+    consists only the user id input (i.e. no password input) where the user
+    enter his NDI id. The ASP then routes an authentication challenge to the
+    user's form factor (e.g. the soft token on his mobile device) via the
+    appropriate form factor authentication servce. For mobile soft token, the
+    user is notified to enter his PIN to unlock the soft token to sign on the
+    authentication challenge.  The signed response is returned to the ASP
+    which verifies the signature on the signed response with the user's
+    certificate.  If all is well, the ASP generates an authorization code and
+    sends it to the client via the client's redirect uri.  The client may then
+    exchange for the security tokens (i.e. id token and access token) using the
+    authorization code in accordance to the authorization code grant flow.
+
+
+    # GET /sign/request.
+
+    # POST response
+    POST responses
+    This is the callback endpoint called by the form factor (or form factor
+    auth service) to return the signed response to the originating HSS of the
+    authentication challenge.
+    The request body: consists of the following fields:
+    ff_auth_ref - the form factor authentication reference;
+    usr_action - this may be 'accept', 'consent' or 'reject';
+    response - the signed response (an encoded JWS), this is not present if
+    usr_action is 'reject';
+
+
+    # POST /auth/login
+    Verify identity and generate auth code.  This is called by the login page
+    when the user click Verify (submit) button, to pass over the user
+    credentials for identity verification.
+    This should be a POST rather than GET and all the params should be in
+    the body instead of exposed in the url.
+
+
+
+     # POST /token
+
+
+    Token endpoint.
+    This is where the client app call to exchange for the access token with an
+    auth code.
+
+
+    GET getJWKSet.
+    Get the JSON Web Key (JWK) Set containing the signing keys of this ASP.
+    The signing keys (public keys) are used by the form factor local agent (or
+    the form factor authenticator) to verify the signed challenges sent by the
+    ASP. The signing key to use is indicated by the kid value in the header
+    of the signed challenge JWS. The JWK set should be downloaded periodically
+    as the ASP refreshes its signing keys regularly.
+    Response: the response body contains the JWK Set.
+
+    # /.well-known/openid-configuration
+    GET getOpenidConfig.
+    Get the OpenID Connect discovery document of this ASP. The discovery
+    document is downloaded by relying parties to find out the onfiguration of
+    and capabilities supported by the ASP e.g. authorization url, token url,
+    etc.  Relying parties should download the discovery document periodically
+    as ASP configuration may change from time to time.
+    Response: the response body contains the discovery document.
+
+
   version: 1.0.0
   title: National Digital Identity (NDI) - Hash Signing
-  termsOfService: 
+  termsOfService:
   contact:
     email: support@ndi.gov.sg
 
@@ -32,7 +101,7 @@ tags:
 paths:
   '/sign/request':
     get:
-      tags: 
+      tags:
        - Hash Signing Service
       summary: Callback endpoint to get hash as part of the signing request.
       description: >-
@@ -44,19 +113,19 @@ paths:
         required: true
         schema:
           type: string
-      
+
       - name: nonce
         in: query
         required: true
         schema:
           type: string
-      
+
       - name: scope
         in: query
         required: false
         schema:
-          type: string 
-      
+          type: string
+
       - name: response_type
         in: query
         required: false
@@ -74,7 +143,7 @@ paths:
         required: false
         schema:
           type: string
-          
+
       - name: login_hint
         in: query
         required: false
@@ -86,14 +155,14 @@ paths:
         required: false
         schema:
             type: string
-      
-      responses: 
+
+      responses:
         '200':
           description: "Success"
 
         '400':
           description: "Error"
-        
+
   '/sign/responses':
     post:
       tags:
@@ -106,14 +175,14 @@ paths:
             application/json:
                 schema:
                     type: object
-                    properties: 
+                    properties:
                       ff_auth_ref:
                           description: The form factor authentication reference
                           type: string
                       usr_action:
                           description: This may be accept, consent or reject
                           type: string
-                      
+
       responses:
         '200':
           description: Success,The signed response, this is not present if usr_action is reject.
@@ -132,12 +201,12 @@ paths:
         The client can obtain the security tokens from the ASP authorization endpoint, which
         supports a few ways to perform user authentication (See ASP authorization endpoint)
         e.g. ascertain user identity before displaying the yet-to-be-signed document.
-        On the other hand, the client can interact directly this endpoint directly to provide 
+        On the other hand, the client can interact directly this endpoint directly to provide
         the sign request:
         1. Use the standard NDI Login page for user identification.  The client
-        redirects the user agent to this endpoint including the sign request, which 
-        returns the NDI Login page for the user to enter his credentials for authentication. 
-        The login consists only the user id input (i.e. no password input) for the user enter 
+        redirects the user agent to this endpoint including the sign request, which
+        returns the NDI Login page for the user to enter his credentials for authentication.
+        The login consists only the user id input (i.e. no password input) for the user enter
         his NDI id. The HSS will use the NDI id initiate sign request to user's form factor.
         2. The client uses its own login page to capture the user NDI id, and calls
         this endpoint passing-on the NDI id.  For both 1. and 2. the HSS routes the specific
@@ -145,17 +214,17 @@ paths:
         his mobile device) via the appropriate form factor authentication servce.
         For mobile soft token, the user is notified to enter his PIN in the NDI mobile App
         to unlock the soft token to sign on the document hash.
-        3. Use QR code.  The client calls this endpoint to request for a QR code which encodes 
+        3. Use QR code.  The client calls this endpoint to request for a QR code which encodes
         the sign request, it then displays on its web app to let the user scan with his NDI App.
         4. If the client is a trusted mobile app, it may interact with the NDI mobile App
-        through the NDI mobile SDK, which calls this endpoint to provide the sign request. 
-        For both 3. and 4. the NDI mobile App let the user enter his PIN to unlock the soft 
+        through the NDI mobile SDK, which calls this endpoint to provide the sign request.
+        For both 3. and 4. the NDI mobile App let the user enter his PIN to unlock the soft
         token to sign on the document hash.
         The NDI mobile App returns the signed response generated by the mobile soft token
         to the HSS (through the HSS callback uri) which verifies the signature on
         the signed response with the user's certificate.  If all is well, the HSS
-        generates generic signed response including the user's certifcate and sends it to the 
-        client via the client's callback uri (async flow). The client may then optionally proceed 
+        generates generic signed response including the user's certifcate and sends it to the
+        client via the client's callback uri (async flow). The client may then optionally proceed
         with the creation of the signature structure, which includes OCSP responses and timestamp tokens.
       operationId: initiateAuth
       parameters:
@@ -359,70 +428,3 @@ paths:
                 schema:
                     type: string
                     format: html
-
-# POST /sign/request.
-OAuth2.0 authorization endpoint. The client call this endpoint to start
-the OAuth2.0 flow.  The client redirects the user agent to this endpoint,
-which typically returns a login page for the user to enter his
-credentials for authentication.  In the case of NDI ASP, the login page
-consists only the user id input (i.e. no password input) where the user
-enter his NDI id. The ASP then routes an authentication challenge to the 
-user's form factor (e.g. the soft token on his mobile device) via the
-appropriate form factor authentication servce. For mobile soft token, the
-user is notified to enter his PIN to unlock the soft token to sign on the
-authentication challenge.  The signed response is returned to the ASP
-which verifies the signature on the signed response with the user's
-certificate.  If all is well, the ASP generates an authorization code and
-sends it to the client via the client's redirect uri.  The client may then
-exchange for the security tokens (i.e. id token and access token) using the
-authorization code in accordance to the authorization code grant flow.
-
-
-# GET /sign/request.
-
-# POST response
-POST responses
-This is the callback endpoint called by the form factor (or form factor
-auth service) to return the signed response to the originating HSS of the
-authentication challenge.
-The request body: consists of the following fields:
-ff_auth_ref - the form factor authentication reference;
-usr_action - this may be 'accept', 'consent' or 'reject';
-response - the signed response (an encoded JWS), this is not present if
-usr_action is 'reject';
-
-
-# POST /auth/login
-Verify identity and generate auth code.  This is called by the login page
-when the user click Verify (submit) button, to pass over the user
-credentials for identity verification.
-This should be a POST rather than GET and all the params should be in
-the body instead of exposed in the url. 
-
-
-
- # POST /token
-
- 
-Token endpoint.
-This is where the client app call to exchange for the access token with an
-auth code. 
-
-
-GET getJWKSet.
-Get the JSON Web Key (JWK) Set containing the signing keys of this ASP.
-The signing keys (public keys) are used by the form factor local agent (or
-the form factor authenticator) to verify the signed challenges sent by the
-ASP. The signing key to use is indicated by the kid value in the header
-of the signed challenge JWS. The JWK set should be downloaded periodically
-as the ASP refreshes its signing keys regularly.
-Response: the response body contains the JWK Set.
-
-# /.well-known/openid-configuration
-GET getOpenidConfig.
-Get the OpenID Connect discovery document of this ASP. The discovery
-document is downloaded by relying parties to find out the onfiguration of
-and capabilities supported by the ASP e.g. authorization url, token url,
-etc.  Relying parties should download the discovery document periodically
-as ASP configuration may change from time to time.
-Response: the response body contains the discovery document.
