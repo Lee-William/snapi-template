@@ -2,7 +2,7 @@
 
 <div class="row view-gov-led-features">
   <div class="col-md-4 col-sm-12">
-    <img class="api-splash-info-icon icon-rect" src="/assets/lib/data/img/snapi-consent-based.svg" alt="Consent-Based Data Sharing Icon">
+    <img class="api-splash-info-icon icon-rect" src="/assets/lib/trusted-services/img/snapi-consent-based.svg" alt="Consent-Based Data Sharing Icon">
     <h5 class="gov-led-title">
       Secure Authentication  
     </h5>
@@ -11,7 +11,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12">
-    <img class="api-splash-info-icon" src="/assets/lib/data/img/snapi-paperless.svg" alt="Paperless Icon">
+    <img class="api-splash-info-icon" src="/assets/lib/trusted-services/img/snapi-paperless.svg" alt="Paperless Icon">
     <h5 class="gov-led-title">
       Verified User Information
     </h5>
@@ -20,7 +20,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12">
-    <img class="api-splash-info-icon" src="/assets/lib/data/img/snapi-digital-enabler.svg" alt="Digital Enabler Icon">
+    <img class="api-splash-info-icon" src="/assets/lib/trusted-services/img/snapi-digital-enabler.svg" alt="Digital Enabler Icon">
     <h5 class="gov-led-title">
       New Opportunities for Digital Transactions 
     </h5>
@@ -29,7 +29,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12">
-    <img class="api-splash-info-icon" src="/assets/lib/data/img/snapi-digital-enabler.svg" alt="Digital Enabler Icon">
+    <img class="api-splash-info-icon" src="/assets/lib/trusted-services/img/snapi-digital-enabler.svg" alt="Digital Enabler Icon">
     <h5 class="gov-led-title">
       Enabling Partnerships
     </h5>
@@ -38,7 +38,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12">
-    <img class="api-splash-info-icon" src="/assets/lib/data/img/snapi-digital-enabler.svg" alt="Digital Enabler Icon">
+    <img class="api-splash-info-icon" src="/assets/lib/trusted-services/img/snapi-digital-enabler.svg" alt="Digital Enabler Icon">
     <h5 class="gov-led-title">
       Enabling Digital Signatures 
     </h5>

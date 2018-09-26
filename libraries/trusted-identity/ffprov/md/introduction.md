@@ -14,7 +14,7 @@ The diagram shows an example of what an alternative form factor solution provide
 
 <br>
 
-![Form Factor Authentication Flow](/assets/lib/ndi/ffprov/img/ff_flow.png)
+![Form Factor Authentication Flow](/assets/lib/trusted-identity/ffprov/img/ff_flow.png)
 
 <br>
 

@@ -18,6 +18,6 @@ The diagram below shows the typical RA configuration and the user registration f
 
 <br>
 
-![Form Factor Authentication Flow](/assets/lib/ndi/secra/img/ra_flow.png)
+![Form Factor Authentication Flow](/assets/lib/trusted-identity/secra/img/ra_flow.png)
 
 

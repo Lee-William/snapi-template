@@ -4,7 +4,7 @@
 
 The Directory Services (Replica) is one of the NDI modules which is deployed at the federated site. The following diagram shows a reference deployment configuration at the federated site.
 
-![Directory Service Replica](/assets/lib/ndi/appwebdev/img/dsreplica.png)
+![Directory Service Replica](/assets/lib/trusted-access/appwebdev/img/dsreplica.png)
 
 The Directory Services (Replica) consists of the following components:
 
@@ -26,7 +26,7 @@ The micro-services may run on any commodity VM or container platform.  The data 
 
 The following diagram shows a reference deployment configuration of the ASP Core at the federated site.
 
-![ASP Core](/assets/lib/ndi/appwebdev/img/aspcore.png)
+![ASP Core](/assets/lib/trusted-access/appwebdev/img/aspcore.png)
 
 The ASP Core consists of the following components:
 
@@ -45,15 +45,15 @@ The ASP Core consists of the following components:
   + External Form Factor Authentication Services such as that provided by Mobile Connect for authentication based on other form factors.
 
 + ASP Micro-Services – this is a group of micro-services which constitute the ASP core.
-  
+
   + OIDC Provider – orchestrates authentication and authorization based on OpenID Connect / OAuth 2.0 flows.  It calls the Directory Services to retrieve form factor attributes to ascertain the type and location of the end-user’s preferred form factor, and the serial number of the certificate associated with it.  It calls the OCSP services to check certificate status and invokes the Form Factor Authentication Services (Soft Token or Biometric) via the Form Factor Authentication Interface to authenticate the end-user with his preferred form factor.  Finally, it interacts with the Authorization Server via the Domain Authorization Interface to obtain the Access Token required to access the target protected domain.  The OIDC Provider module generates the ID Token and calls the Crypto Services to sign it with the ASP private key stored securely in the HSM.
- 
+
   + Domain Authorization Interface – this is a standard interface used by the ASP to interface with the Authorization Server of the organization (i.e. the federated site), based on the OAuth 2.0 Token Exchange draft specs.
 
   + Data Services – this is the data layer which abstracts database/cache specific integration from the other ASP micro-services.
 
   + Crypto Services – this is the cryptographic layer which abstracts HSM specific integration from the other ASP micro-services.
-  
+
   + Push Notification Interface – this is the abstraction layer which abstracts push notification specific integration from the other ASP micro-services.
 
   + Form Factor (Soft Token) Authenticator – the abstract layer which abstracts form factor specific integration for authentication from the OIDC Provider micro-service.
@@ -61,10 +61,10 @@ The ASP Core consists of the following components:
 The ASP Core needs to integrate to the following on-site modules:
 
  + CRL Batch – this is a batch process to periodically download the CRL files from the CRL distribution point (CDP) of the NDI CA via HTTP.  The CRL files serve as fallback source for certificate status check in the event of an OCSP outage.  The CRL Batch also scans the CRL file belonging to the root CA after every download to ensure the issuing CA certificates are not revoked.
- 
+
  + Distributed Cache – the distributed cache allows multiple instances of the OIDC Provider micro-service to put and retrieve transient data (e.g. authorization code) during the OIDC flows.  The federated site may use the distributed cache solution which comes with the ASP Core if it does not have an existing distributed cache system.
 
-  + HSM (Hardware Security Module) – a minimum FIPS L3 certified hardware based security module to store the ASP private keys for generating signature and random numbers for ID tokens issued by the ASP. 
+  + HSM (Hardware Security Module) – a minimum FIPS L3 certified hardware based security module to store the ASP private keys for generating signature and random numbers for ID tokens issued by the ASP.
 
   + Authorization Server – this is the Identity and Access Management (IAM) system used by the organization to manage and enforce access control policies on its protected resources.   On successful user authentication, the ASP interfaces with the Authorization Server via the Domain Authorization Interface to obtain an access token which is returned to the relying party (client app) for it to access the protected resources subsequently.
 

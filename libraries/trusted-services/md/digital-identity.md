@@ -5,7 +5,7 @@
 </div>
 <div class="row api-splash-info-points">
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon icon-rect" src="/assets/lib/data/img/snapi-consent-based.svg" alt="Smart Business Icon">
+    <img class="api-splash-info-icon icon-rect" src="/assets/lib/trusted-services/img/snapi-consent-based.svg" alt="Smart Business Icon">
     <h3 class="api-info-point-title">
       Smart Businesses  
     </h3>
@@ -14,7 +14,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon" src="/assets/lib/data/img/snapi-paperless.svg" alt="Digital Proof Icon">
+    <img class="api-splash-info-icon" src="/assets/lib/trusted-services/img/snapi-paperless.svg" alt="Digital Proof Icon">
     <h3 class="api-info-point-title">
       Digital Proof for Physical Identity
     </h5>
@@ -23,7 +23,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon" src="/assets/lib/data/img/snapi-digital-enabler.svg" alt="Digital Relationship Icon">
+    <img class="api-splash-info-icon" src="/assets/lib/trusted-services/img/snapi-digital-enabler.svg" alt="Digital Relationship Icon">
     <h3 class="api-info-point-title">
       Digital Relationships
     </h5>

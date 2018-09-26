@@ -4,7 +4,7 @@
 
 The Directory Services (Replica) is one of the NDI modules which is deployed at the federated site. The following diagram shows a reference deployment configuration at the federated site.
 
-![Directory Service Replica](/assets/lib/ndi/appwebdev/img/dsreplica.png)
+![Directory Service Replica](/assets/lib/trusted-access/appwebdev/img/dsreplica.png)
 
 The Directory Services (Replica) consists of the following components:
 
@@ -26,7 +26,7 @@ The micro-services may run on any commodity VM or container platform.  The data 
 
 The following diagram shows a reference deployment configuration of the ASP Core at the federated site.
 
-![ASP Core](/assets/lib/ndi/appwebdev/img/aspcore.png)
+![ASP Core](/assets/lib/trusted-access/appwebdev/img/aspcore.png)
 
 The ASP Core consists of the following components:
 

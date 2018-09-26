@@ -1,6 +1,6 @@
 # A New Way of Authentication for Mobile App Developers
 
-![appdev authentication](/assets/lib/appwebdev/img/appdevauthentication.png)
+![appdev authentication](/assets/lib/trusted-access/appwebdev/img/appdevauthentication.png)
  
 Your Mobile App interacts with the NDI App to create a seamless login experience for the user.  The integration with the NDI App is done by launching it with parameters through deep linking, similar to the OAuth flow on the Web but instead of going to different URLs it will between app to app.  Integrating with the NDI App simplifies the authentication task for your Mobile App as the NDI App handles most of the interactions with the ASP.
 
@@ -27,7 +27,7 @@ The NDI Sandbox is a full-featured system (albeit much diminished in scale and r
 
 The NDI Sandbox provides the DemoKeys app which let you enrol test users to NDI Sandbox and create digital identities for them.  Download and install the DemoKeys app from https://sandbox.ndi.io and follow the steps to create test user ids which you can use to try out the ASP API.
  
-![createtestidentity](/assets/lib/appwebdev/img/createtestidentity.png)
+![createtestidentity](/assets/lib/trusted-access/appwebdev/img/createtestidentity.png)
 
 
 Try Out NDI Login

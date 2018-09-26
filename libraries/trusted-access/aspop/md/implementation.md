@@ -2,11 +2,11 @@
 
 ## ASP Operating Modes
 
-The ASP may be operated in the 2 modes – as an OIDC Provider, or as a pure-play authenticator.  The operating modes will decide how relying parties (i.e. the client app) and the Authorization Server of the federated site interact with the ASP.  In both modes, the ASP is only responsible for authenticating the user and generates the ID token, it is the organization’s Authorization Server which determines whether the relying party and the user are authorized to access its protected resources and issues the access token accordingly. 
+The ASP may be operated in the 2 modes – as an OIDC Provider, or as a pure-play authenticator.  The operating modes will decide how relying parties (i.e. the client app) and the Authorization Server of the federated site interact with the ASP.  In both modes, the ASP is only responsible for authenticating the user and generates the ID token, it is the organization’s Authorization Server which determines whether the relying party and the user are authorized to access its protected resources and issues the access token accordingly.
 
 ### Mode 1: ASP as an OpenID Connect Provider
 
-![ASP mode 1](\assets\lib\aspop\img\aspmode1.png)
+![ASP mode 1](/assets/lib/trusted-access/aspop/img/aspmode1.png)
 
 The ASP acts as an OIDC Provider, handling the OIDC flow with the relying party.  This operating mode is useful for organizations which are planning to expose their capabilities through API and may not have a OAuth 2.0/OIDC enabled Authorization Server.  During the OIDC flow, the ASP performs user authentication with the user’s NDI form factor, on successful authentication, it calls the organization’s Authorization Server to obtain an access token.  The Authorization Server determines whether the relying party and user has proper access (based on the organization’s access policy) and generates the access token accordingly.  The ASP returns the access token to the relying party which may then use it to access protected resources.
 
@@ -14,9 +14,9 @@ In this operating mode, the ASP integrates with the Authorization Server of the 
 
 ### Mode 2: ASP as an Authenticator
 
-![ASP mode 2](\assets\lib\aspop\img\aspmode2.png)
- 
-The ASP acts as an authenticator service which the Authorization Server calls to perform user authentication with the user’s NDI form factor.  This operation mode is applicable for organizations which are already offering OAuth 2.0 or OIDC based authorization to relying parties accessing their protected resources.  In this scenario, organizations typically use an Authorization Server (or IAM) module to handle the OAuth 2.0/OIDC flows with relying parties.  During the OAuth 2.0/OIDC flow, the Authorization Server module calls the ASP authentication API to perform user authentication with the user’s NDI form factor.  On successful user authentication, the Authorization Server determines whether the relying party and user have the proper access (based on the organization’s access policies), then generates and returns an access token to the relying party which it uses to access protected resources. 
+![ASP mode 2](/assets/lib/trusted-access/aspop/img/aspmode2.png)
+
+The ASP acts as an authenticator service which the Authorization Server calls to perform user authentication with the user’s NDI form factor.  This operation mode is applicable for organizations which are already offering OAuth 2.0 or OIDC based authorization to relying parties accessing their protected resources.  In this scenario, organizations typically use an Authorization Server (or IAM) module to handle the OAuth 2.0/OIDC flows with relying parties.  During the OAuth 2.0/OIDC flow, the Authorization Server module calls the ASP authentication API to perform user authentication with the user’s NDI form factor.  On successful user authentication, the Authorization Server determines whether the relying party and user have the proper access (based on the organization’s access policies), then generates and returns an access token to the relying party which it uses to access protected resources.
 
 In this operating mode, the Authorization Server of the organization will integrate with the ASP through the ASP Authentication API.
 
@@ -30,13 +30,13 @@ These are the 3 approaches which can be taken to setup a federated ASP:
 ## Cloud ASP Service
 This is the simplest option for federation.  The ASP is available as a cloud service, and a dedicated Cloud ASP Service instance may be created for the organization which will operate it.
 
-![cloud ASP approach](\assets\lib\aspop\img\cloudaspapproach.png)
+![cloud ASP approach](/assets/lib/trusted-access/aspop/img/cloudaspapproach.png)
 
 The Cloud ASP Service integrates with the following on-site modules:
 
 |Modules | Description |
 | ------ | ----------- |
-|Authorization Server of the organization.<br><br>This is the module used by the organization to manage and enforce access control policies on its protected resources.  An IAM product may be used to fulfil this role. | For Mode 1 – ASP as the OIDC Provider the Cloud ASP Service initiates the call to the Authorization Server for token exchange.  The Authorization Server will integrate with the ASP through the Domain Authorization Interface.<br><br> For Mode 2 – ASP as an Authenticator, the Authorization Server initiates the call to the Cloud ASP Service to perform user authentication.  The Authorization Server will integrate with the ASP through the ASP Authentication API. <br><br>Integration requirements:<br>- Internet access of appropriate bandwidth for integration between ASP and the Authorization Server<br>- Certificate-based mTLS secure protocol between ASP and Authorization Server. 
+|Authorization Server of the organization.<br><br>This is the module used by the organization to manage and enforce access control policies on its protected resources.  An IAM product may be used to fulfil this role. | For Mode 1 – ASP as the OIDC Provider the Cloud ASP Service initiates the call to the Authorization Server for token exchange.  The Authorization Server will integrate with the ASP through the Domain Authorization Interface.<br><br> For Mode 2 – ASP as an Authenticator, the Authorization Server initiates the call to the Cloud ASP Service to perform user authentication.  The Authorization Server will integrate with the ASP through the ASP Authentication API. <br><br>Integration requirements:<br>- Internet access of appropriate bandwidth for integration between ASP and the Authorization Server<br>- Certificate-based mTLS secure protocol between ASP and Authorization Server.
 | Relying Parties (i.e. client apps) accessing the protected resources of the organization. | This is only applicable for Mode 1 – ASP as the OIDC Provider.  The organization’s relying parties integrate with the ASP through the ASP OpenID Connect interface. <br><br>Integration requirements:<br>- Internet access of appropriate bandwidth for integration between relying parties and ASP<br>- Certificate-based mTLS secure protocol between relying parties and ASP. |
 
 ## Federated ASP Pack
@@ -47,20 +47,20 @@ This option is for organizations which have on-premises requirement.  Obtain and
 
 These are the pre-requisites for Federated ASP Pack deployment to the federated site:
 Components	Description
-Servers – to run the ASP and DS micro-services	These may be commodity VMs running a Linux based OS (RedHat Enterprise Linux recommended).  The ASP and DS micro-services support load-balancing and horizontal scaling based on virtual IP address. 
+Servers – to run the ASP and DS micro-services	These may be commodity VMs running a Linux based OS (RedHat Enterprise Linux recommended).  The ASP and DS micro-services support load-balancing and horizontal scaling based on virtual IP address.
 A container version of the ASP Core and DS Replica is available to run on PaaS / container platform which supports Docker.
 Database – to host the DS data stores	These may be any SQL database (MySQL Enterprise recommended).  
 If your existing database is NoSQL, the DS Data Services micro-service will have to be customized to integrate with your NoSQL, as there is currently no industry standards for accessing NoSQL databases.
 Hardware Secure Module (HSM) – to store ASP keys	These may be any FIPS L3 certificate HSM which supports PKCS#11.
 If your HSM does not support PKCS#11, the ASP Crypto Services micro-service will have to be customized to integrate with your HSM using proprietary interfaces.
 Distributed Cache – to store transient data shared by the ASP micro-service instances	These may be any distributed cache which supports the JCache interface (JSR107).
-If your distributed cache does not support JCache, the ASP Data Services micro-service will have to be customized to integrate with your distributed cache system.  Alternatively, you may use the distributed cache solution of the ASP Core package. 
+If your distributed cache does not support JCache, the ASP Data Services micro-service will have to be customized to integrate with your distributed cache system.  Alternatively, you may use the distributed cache solution of the ASP Core package.
 
 ### Deployment Overview
 
 The following diagram shows an overview of a Federated ASP Pack deployment with integration points to on-site and off-site components.
 
-![deployment overview](\assets\lib\aspop\img\deploymentoverview.png)
+![deployment overview](/assets/lib/trusted-access/aspop/img/deploymentoverview.png)
 
 The NDI modules to be deployed in the federated site are:
 - ASP Core – comprising a group of micro-services providing the core features of the ASP
@@ -68,7 +68,7 @@ The NDI modules to be deployed in the federated site are:
 
 The ASP integrates with the following on-site modules, integration approach to these on-site modules will depend on the operating mode which the organization use to run the ASP.
 
-| Module | Description | 
+| Module | Description |
 |--------|-------------|
 | Authorization Server of the organization. <br><br>This is the module used by the organization to manage and enforce access control policies on its protected resources.  An IAM product may be used to fulfil this role. | For Mode 1 – ASP as the OIDC Provider, the ASP will initiate the call to the Authorization Server for token exchange.  The Authorization Server will integrate with the ASP through the Domain Authorization Interface.<br><br>For Mode 2 – ASP as an Authenticator, the Authorization Server will be initiating a call to the ASP to perform user authentication.  The Authorization Server will integrate with the ASP through the ASP Authentication API.<br><br>Integration requirements:<br>- Internet access of appropriate bandwidth for integration between ASP and the Authorization Server<br>-Certificate-based mTLS secure protocol between ASP and Authorization Server.
 |Relying Parties (i.e. client apps) accessing protected resources of the organization.|This is only applicable for Mode 1 – ASP as the OIDC Provider.  The organization’s relying parties integrate with the ASP through the ASP OpenID Connect interface.<br><br>Integration requirements:<br>- Internet access of appropriate bandwidth for integration between relying parties and ASP<br>- Certificate-based mTLS secure protocol between relying parties and ASP.
@@ -78,7 +78,7 @@ The ASP integrates with the following off-site modules:
 
 |Module |	Description|
 |-------|--------------|
-|Directory Services (Master) – to enable replication of data to the Directory Service Replica on the federated site. | Federated site to allow HTTPS access over Internet for the Directory Service (Master) to call the DS Subscriber, through certificate-based mTLS secure protocol. 
+|Directory Services (Master) – to enable replication of data to the Directory Service Replica on the federated site. | Federated site to allow HTTPS access over Internet for the Directory Service (Master) to call the DS Subscriber, through certificate-based mTLS secure protocol.
 |OCSP (Online Certificate Status Protocol) service – to obtain certificate status during user authentication.|Federated site to allow HTTPS access over Internet for the ASP OIDC Services to call the NDI OCSP service, through certificate-based mTLS secure protocol.
 |CA CRL distribution point – to download CRL file as a fallback for certificate status check when the OCSP service is unavailable.|Federated site to download the CRL file periodically from the NDI CA CRL distribution point.  This may be done with HTTP or FTP.  The CRL files to be downloaded to a location accessible by the ASP OIDC Services module.
 |Form Factor Authenticator – to initiate user authentication with the user’s preferred form factor.  The ASP comes with a built-in Form Factor Authenticator for the NDI soft token form factor.  However, if the user’s preferred form factor is an alternative form factor (e.g. crypto-SIM), the ASP will need to route the authentication request to the corresponding Form Factor Authenticator which may be hosted remotely.|Federated site to allow HTTPS access over Internet for the ASP OIDC Services to call the remotely hosted Form Factor Authenticator services of available alternative form factors (e.g. crypto-SIM), through certificate-based mTLS secure protocol. |
@@ -88,7 +88,7 @@ The following sections provide more details on the NDI modules which are to be d
 ### Directory Services (Replica)
 The Directory Services (Replica) is one of the NDI modules which is deployed at the federated site. The following diagram shows a reference deployment configuration at the federated site.
 
-![directory services replica](\assets\lib\aspop\img\directoryservicesreplica.png)
+![directory services replica](/assets/lib/trusted-access/aspop/img/directoryservicesreplica.png)
 
 The Directory Services (Replica) consists of the following components:
 
@@ -98,14 +98,14 @@ The Directory Services (Replica) consists of the following components:
 - Directory Service API micro-service – this is the API layer which the ASP calls to retrieve form factor, client app and extension data from the data stores.
 - Directory Service Replicator micro-service – this is to enable data updates from the Directory Services (Master) to be replicated to the data stores.  It consists of the DS Subscriber API and DS Updater micro-service.  The DS Subscriber should be deployed on a web server or behind an API Gateway in the DMZ of the federated site.  It should be exposed securely through the Internet for the Directory Services (Master) to consume.   Data updates received by the DS Subscriber is updated to the data stores through the DS Updater.
 - Data Services micro-service – this is the data layer which abstracts database specific integration from the DS API and DS Updater.
-- 
+-
 The micro-services may run on any commodity VM or container platform.  The data stores may reside in the federated site’s existing database as long as the database supports standard SQL.  For NoSQL databases, which currently do not have a common standard, it may be necessary to customize the Data Services to integrate with the specific NoSQL database.
 
-### ASP Core 
+### ASP Core
 
 The following diagram shows a reference deployment configuration of the ASP Core at the federated site.
 
-![asp core](\assets\lib\aspop\img\aspcore.png)
+![asp core](/assets/lib/trusted-access/aspop/img/aspcore.png)
 
 The ASP Core consists of the following components:
 - Service Gateway – this is a collection of APIs exposing capabilities of the ASP as follows:
@@ -116,33 +116,33 @@ The ASP Core consists of the following components:
   - CA designated CRL location to periodically downloads the CRL files as fallback for certificate status check in the event of an OCSP outage
   - External Form Factor Authentication Services such as that provided by Mobile Connect for authentication based on other form factors.
 - ASP Micro-Services – this is a group of micro-services which constitute the ASP core.
-  - OIDC Provider – orchestrates authentication and authorization based on OpenID Connect / OAuth 2.0 flows.  It calls the Directory Services to retrieve form factor attributes to ascertain the type and location of the end-user’s preferred form factor, and the serial number of the certificate associated with it.  It calls the OCSP services to check certificate status and invokes the Form Factor Authentication Services (Soft Token or Biometric) via the Form Factor Authentication Interface to authenticate the end-user with his preferred form factor.  Finally, it interacts with the Authorization Server via the Domain Authorization Interface to obtain the Access Token required to access the target protected domain.  The OIDC Provider module generates the ID Token and calls the Crypto Services to sign it with the ASP private key stored securely in the HSM. 
+  - OIDC Provider – orchestrates authentication and authorization based on OpenID Connect / OAuth 2.0 flows.  It calls the Directory Services to retrieve form factor attributes to ascertain the type and location of the end-user’s preferred form factor, and the serial number of the certificate associated with it.  It calls the OCSP services to check certificate status and invokes the Form Factor Authentication Services (Soft Token or Biometric) via the Form Factor Authentication Interface to authenticate the end-user with his preferred form factor.  Finally, it interacts with the Authorization Server via the Domain Authorization Interface to obtain the Access Token required to access the target protected domain.  The OIDC Provider module generates the ID Token and calls the Crypto Services to sign it with the ASP private key stored securely in the HSM.
   - Domain Authorization Interface – this is a standard interface used by the ASP to interface with the Authorization Server of the organization (i.e. the federated site), based on the OAuth 2.0 Token Exchange draft specs.
   - Data Services – this is the data layer which abstracts database/cache specific integration from the other ASP micro-services.   
-  - Crypto Services – this is the cryptographic layer which abstracts HSM specific integration from the other ASP micro-services. 
+  - Crypto Services – this is the cryptographic layer which abstracts HSM specific integration from the other ASP micro-services.
   - Push Notification Interface – this is the abstraction layer which abstracts push notification specific integration from the other ASP micro-services.
   - Form Factor (Soft Token) Authenticator – the abstract layer which abstracts form factor specific integration for authentication from the ASP OIDC Provider micro-service.  The Form Factor Authenticator is an extension service which is a mechanism to let alternative solutions to interoperate with NDI.  NDI provides the Form Factor Authenticator to handle NDI Soft Token form factor authentication.  A NDI-certified form factor provider e.g. Mobile Connect may offer a Form Factor Authenticator for authentication of a user using his crypto-SIM form factor.  The ASP OIDC Provider micro-service will be able to invoke the crypto-SIM Form Factor Authenticator (which may be on-site or remotely hosted) through the same Form Factor Authenticator interface.
 
 The ASP Core needs to integrate to the following on-site modules:
-- CRL Batch – this is a batch process to periodically download the CRL files from the CRL distribution point (CDP) of the NDI CA via HTTP.  The CRL files serve as fallback source for certificate status check in the event of an OCSP outage.  The CRL Batch also scans the CRL file belonging to the root CA after every download to ensure the issuing CA certificates are not revoked. 
+- CRL Batch – this is a batch process to periodically download the CRL files from the CRL distribution point (CDP) of the NDI CA via HTTP.  The CRL files serve as fallback source for certificate status check in the event of an OCSP outage.  The CRL Batch also scans the CRL file belonging to the root CA after every download to ensure the issuing CA certificates are not revoked.
 - Distributed Cache – the distributed cache allows multiple instances of the OIDC Provider micro-service to put and retrieve transient data (e.g. authorization code) during the OIDC flows.  The federated site may use the distributed cache solution which comes with the ASP Core if it does not have an existing distributed cache system.
-- HSM (Hardware Security Module) – a minimum FIPS L3 certified hardware based security module to store the ASP private keys for generating signature and random numbers for ID tokens issued by the ASP. 
+- HSM (Hardware Security Module) – a minimum FIPS L3 certified hardware based security module to store the ASP private keys for generating signature and random numbers for ID tokens issued by the ASP.
 •	Authorization Server – this is the Identity and Access Management (IAM) system used by the organization to manage and enforce access control policies on its protected resources.   On successful user authentication, the ASP interfaces with the Authorization Server via the Domain Authorization Interface to obtain an access token which is returned to the relying party (client app) for it to access the protected resources subsequently.
 
 ### ASP Extensions
-The authentication request from the OIDC Provider is forwarded to the target form factor via the Form Factor Authentication Extensions, the default implementations provided are the Soft Token Authenticator and the Biometric Authenticator.  The Soft Token Form Factor Authenticator handles the interactions with the NDI Soft Token form factor, using the Push Notification Interface to send the authentication request to the target form factor in the end-user’s mobile device.  The Biometric Form Factor Authenticator forwards the authentication request to the Biometric Services module of the NDI platform. 
+The authentication request from the OIDC Provider is forwarded to the target form factor via the Form Factor Authentication Extensions, the default implementations provided are the Soft Token Authenticator and the Biometric Authenticator.  The Soft Token Form Factor Authenticator handles the interactions with the NDI Soft Token form factor, using the Push Notification Interface to send the authentication request to the target form factor in the end-user’s mobile device.  The Biometric Form Factor Authenticator forwards the authentication request to the Biometric Services module of the NDI platform.
 
 ## Deep Integration
 
 This option is suitable for organizations which intend to enhance their existing authentication system to support NDI.
 
-![deep integration](\assets\lib\aspop\img\deepintegration.png)
+![deep integration](/assets/lib/trusted-access/aspop/img/deepintegration.png)
 
 The organization’s authentication system integrates with the following modules:
 
 |Module| Description |
 |------|-------------|
-|Directory Services – to obtain the user’s preferred form factor details (e.g. form factor id, type, status, certificate serial, form factor specific attributes, etc.) and the form factor authenticator endpoint URL. |The authentication system integrates with the Directory Services through the Directory Service API.  It calls the Directory Services API to get the user’s form factor record using the user’s NDI id.<br>It then calls the Directory Services API to obtain the endpoint URL of the appropriate Form Factor Authenticator service using the form factor type (ff_type). 
+|Directory Services – to obtain the user’s preferred form factor details (e.g. form factor id, type, status, certificate serial, form factor specific attributes, etc.) and the form factor authenticator endpoint URL. |The authentication system integrates with the Directory Services through the Directory Service API.  It calls the Directory Services API to get the user’s form factor record using the user’s NDI id.<br>It then calls the Directory Services API to obtain the endpoint URL of the appropriate Form Factor Authenticator service using the form factor type (ff_type).
 |Form Factor Authenticator – to authenticate the user with his preferred form factor.|The authentication system invokes the Form Factor Authenticator service to perform user authenticator, by calling the Form Factor Authenticator API at the Form Factor Authenticator endpoint.<br><br>The Form Factor Authenticator returns a signed response in the form of a JSON Web Token (JWT) structure, the authentication system must verify the signed response as specified in the Signed Response Verification section.
 |OCSP Service – to obtain the current status of the certificate associated with the user’s form factor. | The authentication system invokes the NDI OCSP service using the standard Online Certificate Status Protocol (OCSP) as described in RFC6960, at the NDI OCSP endpoint over HTTPS.<br><br>The authentication system obtains the status of the certificate using the form factor’s certificate serial number (cert_sn), which may be good, revoked or unknown.  The authentication system must check that the certificate status is good. |
 
@@ -152,7 +152,7 @@ The organization’s authentication system integrates with the following modules
 
 Integration between the NDI components and the organization’s components is secured by transport level protection and application level authorization.
 
-![secure protocol](\assets\lib\aspop\img\secureprotocol.png)
+![secure protocol](/assets/lib/trusted-access/aspop/img/secureprotocol.png)
 
 ### Application Level Authorization
 
@@ -167,9 +167,9 @@ The federated site is required to provide the CA-signed certificates and the ass
 
 ## Domain Authorization Interface
 
-Integration between the ASP and the federated site’s Authorization Server is through the Domain Authorization Interface, which is based on the OAuth 2.0 – Token Exchange draft specifications (draft-ietf-oauth-token-exchange-14). 
+Integration between the ASP and the federated site’s Authorization Server is through the Domain Authorization Interface, which is based on the OAuth 2.0 – Token Exchange draft specifications (draft-ietf-oauth-token-exchange-14).
 
-This integration is applicable for Mode 1 – ASP as the OIDC Provider, where the ASP calls the federated site’s Authorization Server to obtain an access token, after successfully authenticating the user.  The Authorization Server is to implement the Domain Authorization Interface described as follows: 
+This integration is applicable for Mode 1 – ASP as the OIDC Provider, where the ASP calls the federated site’s Authorization Server to obtain an access token, after successfully authenticating the user.  The Authorization Server is to implement the Domain Authorization Interface described as follows:
 
 ### Request
 
@@ -198,7 +198,7 @@ Parameter	In	Type	Description
 access_token	Body	String	The access token generated by the Authorization Server, which can be used to access services and resources of the protected domain
 issued_token_type	Body	String	The issued token type, which is "urn:ietf:params:oauth:token-type:access_token"
 token_type	Body	String	The type of access token returned, which is always "Bearer"
-expires_in	Body	String	The lifetime (in seconds) of the access token.  For example, the value "600" denotes the access token will expire in 10 mins from the time the response was generated. 
+expires_in	Body	String	The lifetime (in seconds) of the access token.  For example, the value "600" denotes the access token will expire in 10 mins from the time the response was generated.
 
 Client Error, invalid request (e.g. missing parameters)
 HTTP/1.1 400 Bad Request
@@ -244,7 +244,7 @@ Content-Type: application/json
 Parameter	In	Type	Description
 id_token	Body	String	The ID token generated by the ASP after a successful user authentication
 token_type	Body	String	The type of access token returned, which is always "Bearer"
-expires_in	Body	String	The lifetime (in seconds) of the access token.  For example, the value "600" denotes the access token will expire in 10 mins from the time the response was generated. 
+expires_in	Body	String	The lifetime (in seconds) of the access token.  For example, the value "600" denotes the access token will expire in 10 mins from the time the response was generated.
 
 Client Error, invalid request (e.g. missing parameters)
 HTTP/1.1 400 Bad Request
@@ -265,7 +265,7 @@ Content-Type: application/json
 }
 
 ## Directory Services API
-For organizations which choose the Deep Integration federation option, the organization’s authentication system integrates with the Directory Services to obtain form factor attributes and extension endpoint info. 
+For organizations which choose the Deep Integration federation option, the organization’s authentication system integrates with the Directory Services to obtain form factor attributes and extension endpoint info.
 
 ### Get Form Factor Attributes
 
@@ -328,7 +328,7 @@ ff_id	Body	String	The form factor id
 ff_type	Body	String	The form factor type
 ff_host	Body	String	The reference to the host device hosting the form factor
 status	Body	String	The form factor status – “active”, “suspended”, “revoked”, or “dormant”
-preferred	Body	String	“y” – this is user’s preferred form factor 
+preferred	Body	String	“y” – this is user’s preferred form factor
 used_for	Body	String	The intended usage of this form factor – “authn” or “signing”
 ial	Body	String	The identity assurance level – “1”, “2” or “3”
 ia_meth	Body	String	A space delimited string containing the identity methods performed on this form factor
@@ -408,7 +408,7 @@ The Signed Response from the end-user’s form factor is a JSON Web Signature (J
 |Parameter|Description|Checks to Perform|
 |---------|---------|---------|
 JOSE Header
-typ	“JWT”	
+typ	“JWT”
 alg	Signature algorithm – “ES256”	Must be “ES256” – ECC P256
 x5c	The X.509 certificate corresponding to the key used to sign the JWS, in base64-coded DER format	Certificate must be owned by the end-user.  The certificate serial number must match the certificate serial number in the form factor attributes retrieved from the Directory Services.
 		Certificate must not be expired.  Check the validity period field in the certificate against system time.
@@ -439,7 +439,7 @@ As the CRL may not contain the latest certificate revocation status, the federat
 
 The form factor record fetched from the Directory Services contains the form factor status which closely reflects the status of its associated certificate.  In most situations, the revocation of certificates is done through the RA API, which will update the form factor status of the associated form factor record in the Directory Services (master) accordingly to “revoked”.  The updated form factor status is then propagated to the Directory Services replicas at federated sites.
 
-The ASP checks the form factor status to ensure it is “active” before proceeding with user authentication.  For an organization which uses the Deep Integration federation option, the organization’s authentication system will have to perform the form factor status check. 
+The ASP checks the form factor status to ensure it is “active” before proceeding with user authentication.  For an organization which uses the Deep Integration federation option, the organization’s authentication system will have to perform the form factor status check.
 
 As there is a small latency in propagation of updates to the Directory Services replicas, the form factor status may not reflect the latest certificate revocation status of its associated certificate.  The federated site has to put in place risk management mechanism to determine the type of transactions to allow during this fallback state.
 
@@ -447,7 +447,7 @@ As there is a small latency in propagation of updates to the Directory Services 
 
 This scenario applies to remotely hosted Form Factor Authenticator services.  In the event of the remotely hosted Form Factor Authenticator service is not available, the ASP will switch to use the alternate endpoint URI to invoke the alternate instance of the Authenticator service.  The default trigger for the switch is based on the number of timeout errors encountered calling the Authenticator service, the trigger value may be set in the ASP configuration.  Alternatively, the switch may be triggered by an external event sent by the federated site’s monitoring system.
 
-For an organization which uses the Deep Integration federation option, the organization’s authentication system will have to switch to use the alternate endpoint URI to invoke the alternate instance of the Form Factor Authenticator service. 
+For an organization which uses the Deep Integration federation option, the organization’s authentication system will have to switch to use the alternate endpoint URI to invoke the alternate instance of the Form Factor Authenticator service.
 
 ## Directory Services
 
@@ -457,5 +457,3 @@ The Directory Services Replica has a cache mechanism (DS cache) which can be ena
 ### Directory Services Replication Failure
 
 In the event of the Directory Service replication service failure, updates will not be propagated to the Directory Services Replicas at federated sites.  New users onboarded to NDI during the outage will not be able to login using NDI at federated sites.  The federated site may continue to rely on its Directory Services replica for existing NDI users as long as the OCSP service is available to provide the latest certificate revocation status.
-
- 

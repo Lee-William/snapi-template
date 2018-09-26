@@ -39,7 +39,7 @@ You will need client credentials for your Web App to perform authentication and 
 
 The NDI Sandbox provides the DemoKeys app which let you enrol test users to NDI Sandbox and create digital identities for them.  Download and install the DemoKeys app from [link](https://sandbox.api.ndi.gov.sg) and follow the steps to create test user ids which you can use to try out the ASP API.
 
-![Flow for creating test identity accounts](/assets/lib/ndi/appwebdev/img/create-test-digital-identity.png)
+![Flow for creating test identity accounts](/assets/lib/trusted-access/appwebdev/img/create-test-digital-identity.png)
 
 ## Make the First Call
 
