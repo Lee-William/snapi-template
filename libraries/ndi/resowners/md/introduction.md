@@ -8,7 +8,7 @@ The ASP can be federated – it may be run and operated independently from the G
 
 This guide focuses on how the ASP may be federated and the integration required.  The following diagram shows an overview of a federated ASP deployment with integration points to on-site and off-site components.
 
-![ASP Overview](\assets\lib\resowners\img\aspoverview.png)
+![ASP Overview](/assets/lib/ndi/resowners/img/aspoverview.png)
 
 The NDI modules to be deployed in the federated site are:
 
@@ -40,7 +40,7 @@ The ASP may be operated in the 2 modes – as a pure-play authenticator, or as a
 
 ### ASP as an Authenticator
 
-![ASP as an Authenticator](\assets\lib\resowners\img\aspauthenticator.png)
+![ASP as an Authenticator](/assets/lib/ndi/resowners/img/aspauthenticator.png)
 
 The ASP acts as an authenticator service which the Authorization Server calls to perform user authentication with the user’s NDI form factor.  This operation mode is applicable for organizations which are already offering OAuth 2.0 or OIDC based authorization to relying parties accessing their protected resources.  In this scenario, organizations typically use an Authorization Server (or IAM) module to handle the OAuth 2.0/OIDC flows with relying parties.  During the OAuth 2.0/OIDC flow, the Authorization Server module calls the ASP authentication API to perform user authentication with the user’s NDI form factor.  On successful user authentication, the Authorization Server generates and returns an access token to the relying party which it may use to access protected resources.
 
@@ -48,7 +48,7 @@ In this operating mode, the Authorization Server of the organization will integr
 
 ### ASP as an OpenID Connect Provider(OP)
 
-![ASP as an OIDC Provider](\assets\lib\resowners\img\aspoidcprovider.png)
+![ASP as an OIDC Provider](/assets/lib/ndi/resowners/img/aspoidcprovider.png)
 
 The ASP acts as an OIDC Provider, handling the OIDC flow with the relying party.  This operating mode is useful for organizations which are planning to expose their capabilities through API and may not have a OAuth 2.0/OIDC enabled Authorization Server.  During the OIDC flow, the ASP performs user authentication with the user’s NDI form factor, on successful authentication, it calls the organization’s Authorization Server to obtain an access token.  It returns the access token to the relying party which may then use it to access protected resources.
 

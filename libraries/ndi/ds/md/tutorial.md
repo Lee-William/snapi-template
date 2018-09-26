@@ -1,9 +1,3 @@
-# Release History
-
-| Date | Revision | By | Comments |
-| ------ | -- | ----------- | ------------------- |
-| 23-July-2018   | 0.1 | Yee Wee LOW | First Draft |
-
 # Configure Sandbox
 
 The NDI Sandbox is a full-featured system (albeit much diminished in scale and resiliency compared to the actual system) showcasing the key use cases and flows of NDI.  It serves as a playground for developers to experiment with the API to quickly gain an understanding of how NDI works.  Follow these steps to start your exploration.  
