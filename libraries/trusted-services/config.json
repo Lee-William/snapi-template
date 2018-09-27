@@ -3,7 +3,7 @@
   "name": "trusted-services",
   "label": "Trusted Services APIs",
   "desc": "-- Trusted Services Description -- Catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident.",
-  "logo": "logo_ndi.png",
+  "logo": "trusted-services-icon.png",
   "libraries": ["ds"],
   "splashPage": {
       "introText": "A step towards building Smart Nation, catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident.",

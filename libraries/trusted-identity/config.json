@@ -3,7 +3,7 @@
   "name": "trusted-identity",
   "label": "Trusted Identity APIs",
   "desc": "-- Trusted Identity Description -- Catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident.",
-  "logo": "logo_ndi.png",
+  "logo": "trusted-identity-icon.png",
   "libraries": ["ffprov","secra"],
   "splashPage": {
       "introText": "A step towards building Smart Nation, catalyst for digital transformation of all aspects of Singaporean lives through unique and secure national identity for every citizen/resident.",
