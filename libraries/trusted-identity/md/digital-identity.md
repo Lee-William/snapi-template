@@ -5,30 +5,33 @@
 </div>
 <div class="row api-splash-info-points">
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon icon-rect" src="/assets/lib/trusted-identity/img/snapi-consent-based.svg" alt="Smart Business Icon">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/certificate.png" alt="NCA">
     <h3 class="api-info-point-title">
-      Smart Businesses  
+      National Certificate Authority  
     </h3>
     <p>
-      Build your business serving people based on their unique, singular, trusted and secure identity., be a smart service provider for Smart Nation.
+      A National Certificate Authority (NCA) will be set up to issue to all Singaporeans and Permanent Residents a <strong>digital certificate of their identity</strong>.
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon" src="/assets/lib/trusted-identity/img/snapi-paperless.svg" alt="Digital Proof Icon">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/trusted-identity-icon.png" alt="Digital Identity">
     <h3 class="api-info-point-title">
-      Digital Proof for Physical Identity
+      Secure Digital Identity
     </h5>
     <p>
-      Virtual identities are not a solution for physical world, but digital identities definitely are, because they represent and encapsulate everything personal about a physical being in real world.
+      Digital certificates issued are based on <strong>Public-Key Infrastructure (PKI)</strong>, and will involve a unique private key generated for each person.
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon" src="/assets/lib/trusted-identity/img/snapi-digital-enabler.svg" alt="Digital Relationship Icon">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/multi-tiered.png" alt="Multi-Tiered">
     <h3 class="api-info-point-title">
-      Digital Relationships
+      Multi-tiered Identity Assurance
     </h5>
     <p>
-      Not only that NDI enables citizen-centric and service-focused collaborations between businesses, it can give a smart touch to personal relationships – think of solutions that will let users digitally consent their beloved to perform acts with care on their behalf.
+      A <strong>multi-tiered</strong> identity assurance model allows users to conduct more sensitive transactions as their identity assurance level increases.
+    </p>
+    <p>
+      A person's identity assurance level  is upgraded by using a variety of 3rd party and biometrics authentication mechanisms to authenticate themselves.
     </p>
   </div>
 </div>
