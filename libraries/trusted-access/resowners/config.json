@@ -1,8 +1,8 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "resowners",
-  "liblabel": "Service Providers",
-  "libdesc": "Protected domain owners/service providers that are looking to offer NDI authentication service",
+  "liblabel": "Federated ASP",
+  "libdesc": "Service providers that are looking to offer NDI authentication service",
   "defaultPath": "introduction",
   "logo": "logo_ndi.png",
   "items": [{
@@ -21,24 +21,33 @@
       ],
       "path": "implementation",
       "text": "Technical Reference",
-      "mdContent": "implementation-components.md",
+      "mdContent": "implementation-fundamentals.md",
       "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-components",
-          "text": "Components",
-          "mdContent": "implementation-components.md"
+          "path": "implementation-fundamentals",
+          "text": "NDI Fundamentals",
+          "mdContent": "implementation-fundamentals.md"
         },
         {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-deployment",
-          "text": "Deployment",
-          "mdContent": "implementation-deployment.md"
+          "path": "implementation-federation",
+          "text": "Federation Approach",
+          "mdContent": "implementation-federation.md"
+        },
+		    {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-integration",
+          "text": "Integration Reference",
+          "mdContent": "implementation-integration.md"
         },
 		    {
           "//": ["This is a submenu item in your library",
@@ -46,7 +55,7 @@
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
           "path": "implementation-failover",
-          "text": "Failover Arrangements",
+          "text": "Failover Considerations",
           "mdContent": "implementation-failover.md"
         }
       ]
@@ -56,45 +65,15 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "tutorial",
-      "text": "Tutorials",
-      "mdContent": "tutorial.md"
-    },
-	  {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
-      "path": "resources",
-      "text": "Resources",
-      "mdContent": "resources.md"
-    },
-	  {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
-      "path": "support",
-      "text": "Support",
-      "mdContent": "support-contactus.md",
-			"children": [
-				{
-					"path": "support-contactus",
-					"text": "Contact Us",
-					"mdContent": "support-contactus.md"
-				},
-				{
-					"path": "support-faq",
-					"text": "FAQs",
-					"mdContent": "support-faq.md"
-				}
-			]
+      "path": "gettingstarted",
+      "text": "Getting Started",
+      "mdContent": "gettingstarted.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],
       "path": "ndisandbox",
       "text": "NDI Sandbox",
-      "redirectURL": "https://sandbox.api.ndi.gov.sg"
+      "redirectURL": "https://sandbox.demo.ndi.gov.sg"
     },
     {
       "//": ["This is horizontal divider for your menu"],
@@ -130,15 +109,6 @@
           "path": "apispecs-dsv001",
           "text": "ds v0.0.1",
           "apiSpecs": "dsv0.0.1.yaml"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "apispecs-rav001",
-          "text": "ra v0.0.1",
-          "apiSpecs": "rav0.0.1.yaml"
         }
       ]
     }
