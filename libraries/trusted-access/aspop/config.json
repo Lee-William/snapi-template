@@ -4,7 +4,7 @@
   "liblabel": "ASP Operator",
   "libdesc": "Eligible and interested parties looking to work with NDI and operate as alternative ASP providers ",
   "defaultPath": "introduction",
-  "logo": "logo_ndi.png",
+  "logo": "icon-aspop.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",

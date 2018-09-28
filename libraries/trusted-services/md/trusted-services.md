@@ -5,7 +5,7 @@
 </div>
 <div class="row api-splash-info-points">
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/trusted-services-icon.png" alt="Digital Signing">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/icon-ds.png" alt="Digital Signing">
     <h3 class="api-info-point-title">
       Digital Signing Made Easy  
     </h3>

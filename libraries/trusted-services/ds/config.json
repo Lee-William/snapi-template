@@ -4,7 +4,7 @@
   "liblabel": "Digital Signing",
   "libdesc": "Digital signing product or service providers looking to integrate with NDI will find this API useful",
   "defaultPath": "introduction",
-  "logo": "logo_ndi.png",
+  "logo": "icon-ds.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",

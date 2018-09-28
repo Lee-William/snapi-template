@@ -4,7 +4,7 @@
   "liblabel": "App & Web Developer",
   "libdesc": "Developers who are developing mobile or web app(also known as Relying Parties) will find this set of APIs useful",
   "defaultPath": "introduction",
-  "logo": "logo_ndi.png",
+  "logo": "icon-appwebdev.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
