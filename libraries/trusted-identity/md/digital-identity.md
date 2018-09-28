@@ -5,7 +5,7 @@
 </div>
 <div class="row api-splash-info-points">
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/certificate.png" alt="NCA">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/trusted-identity-certificate.svg" alt="NCA">
     <h3 class="api-info-point-title">
       National Certificate Authority  
     </h3>
@@ -14,7 +14,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/trusted-identity-icon.png" alt="Digital Identity">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-identity/img/trusted-identity-pki.svg" alt="Digital Identity">
     <h3 class="api-info-point-title">
       Secure Digital Identity
     </h5>
