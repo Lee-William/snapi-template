@@ -1,6 +1,6 @@
 <div class="row api-splash-section-title">
-  <div class="col-sm-12">
-    <h2 class="splash-title">An Open and Federated Trusted Access Layer</h2>
+  <div class="col-lg-7 col-md-12 col-sm-12">
+    <h2 class="splash-title">Open and Federated Trusted Access</h2>
   </div>
 </div>
 <div class="row api-splash-info-points">

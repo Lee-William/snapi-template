@@ -1,5 +1,5 @@
 <div class="row api-splash-section-title">
-  <div class="col-sm-12">
+  <div class="col-lg-7 col-md-12 col-sm-12">
     <h2 class="splash-title">National Digital Identity for everyone</h2>
   </div>
 </div>

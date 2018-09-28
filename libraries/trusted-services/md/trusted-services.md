@@ -1,6 +1,6 @@
 <div class="row api-splash-section-title">
-  <div class="col-sm-12">
-    <h2 class="splash-title">Trusted Services for real world use cases</h2>
+  <div class="col-lg-7 col-md-12 col-sm-12">
+    <h2 class="splash-title">Services for real world use cases</h2>
   </div>
 </div>
 <div class="row api-splash-info-points">
