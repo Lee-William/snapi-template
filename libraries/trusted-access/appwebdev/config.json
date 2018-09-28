@@ -139,7 +139,7 @@
       "//": ["This is a menu item that redirects to an external link"],
       "path": "ndisandbox",
       "text": "NDI Sandbox",
-      "redirectURL": "https://sandbox.api.ndi.gov.sg"
+      "redirectURL": "https://sandbox.demo.ndi.gov.sg"
     },
     {
       "//": ["This is horizontal divider for your menu"],
