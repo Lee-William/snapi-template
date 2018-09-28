@@ -10,7 +10,7 @@ info:
   contact:
     email: apiteam@ndi.sg.io
   x-logo:
-    url: 'assets/ndi-logo.png'
+    url: '/assets/lib/trusted-access/img/ndi-logo.png'
   license:
     name: Apache-2.0
     url: 'https://opensource.org/licenses/Apache-2.0'
@@ -21,7 +21,7 @@ info:
     API, first go to the Authorization section to learn how to obtain an access
     token to access the API.
 
-	<ul>
+    <ul>
         <li> Access technical reference for mobile developers <a href="https://isomerpages.github.io/isomerpages-ndi/files/techref/appdev/appdev">here</a></li>
         <li> Access technical reference for web developers <a href="https://isomerpages.github.io/isomerpages-ndi/files/techref/appdev/webdev">here</a></li>
         <li> Access technical reference for Resource Operators <a href="https://isomerpages.github.io/isomerpages-ndi/files/techref/aspproviders/aspprov">here</a></li>
@@ -36,25 +36,25 @@ info:
     # Overview
       The Authentication Service Provider (ASP) is a key component of the NDI platform which performs authentication and authorization.  Client apps accessing resources (API, data) in protected domains (e.g. Government agency, bank systems) may invoke the ASP to authenticate the end-user and obtain the access tokens to access the protected resources.
       Client apps invoke the ASP through an interface and interaction flows based on the widely supported OpenID Connect (OIDC) specifications.
-      The ASP can be federated – it may be run and operated independently from the Government NDI cluster, e.g. a financial institution may run an instance of ASP on its platform to serve the needs of its applications.  
+      The ASP can be federated - it may be run and operated independently from the Government NDI cluster, e.g. a financial institution may run an instance of ASP on its platform to serve the needs of its applications.
       <br><br>
 
-      The ASP may be operated in the 2 modes – as an OIDC Provider, or as a pure-play authenticator.  The operating modes will decide how relying parties (i.e. the client app) and the Authorization Server of the federated site interact with the ASP.  In both modes, the ASP is only responsible for authenticating the user and generates the ID token, it is the organization’s Authorization Server which determines whether the relying party and the 
+      The ASP may be operated in the 2 modes - as an OIDC Provider, or as a pure-play authenticator.  The operating modes will decide how relying parties (i.e. the client app) and the Authorization Server of the federated site interact with the ASP.  In both modes, the ASP is only responsible for authenticating the user and generates the ID token, it is the organization's Authorization Server which determines whether the relying party and the
       user are authorized to access its protected resources and issues the access token accordingly.
 
-      ## Mode 1: ASP as an OpenID Connect Provider 
+      ## Mode 1: ASP as an OpenID Connect Provider
 
-      <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="assets/openIDProvider.png"/>
+      <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="../img/openIDProvider.png"/>
 
-      The ASP acts as an OIDC Provider, handling the OIDC flow with the relying party.  This operating mode is useful for organizations which are planning to expose their capabilities through API and may not have a OAuth 2.0/OIDC enabled Authorization Server.  During the OIDC flow, the ASP performs user authentication with the user’s NDI form factor, on successful authentication, it calls the organization’s Authorization Server to obtain an access token.  The Authorization Server determines whether the relying party and user has proper access (based on the organization’s access policy) and generates the access token accordingly.  The ASP returns the access token to the relying party which may then use it to access protected resources.
+      The ASP acts as an OIDC Provider, handling the OIDC flow with the relying party.  This operating mode is useful for organizations which are planning to expose their capabilities through API and may not have a OAuth 2.0/OIDC enabled Authorization Server.  During the OIDC flow, the ASP performs user authentication with the user's NDI form factor, on successful authentication, it calls the organization's Authorization Server to obtain an access token.  The Authorization Server determines whether the relying party and user has proper access (based on the organization's access policy) and generates the access token accordingly.  The ASP returns the access token to the relying party which may then use it to access protected resources.
       <br><br>
       In this operating mode, the ASP integrates with the Authorization Server of the organization through the Domain Authorization Interface.
 
       ## Mode 2: ASP as an Authenticator
 
-       <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="assets/authenticator.png"/>
-      
-      The ASP acts as an authenticator service which the Authorization Server calls to perform user authentication with the user’s NDI form factor.  This operation mode is applicable for organizations which are already offering OAuth 2.0 or OIDC based authorization to relying parties accessing their protected resources.  In this scenario, organizations typically use an Authorization Server (or IAM) module to handle the OAuth 2.0/OIDC flows with relying parties.  During the OAuth 2.0/OIDC flow, the Authorization Server module calls the ASP authentication API to perform user authentication with the user’s NDI form factor.  On successful user authentication, the Authorization Server determines whether the relying party and user have the proper access (based on the organization’s access policies), then generates and returns an access token to the relying party which it uses to access protected resources. 
+       <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="../img/authenticator.png"/>
+
+      The ASP acts as an authenticator service which the Authorization Server calls to perform user authentication with the user's NDI form factor.  This operation mode is applicable for organizations which are already offering OAuth 2.0 or OIDC based authorization to relying parties accessing their protected resources.  In this scenario, organizations typically use an Authorization Server (or IAM) module to handle the OAuth 2.0/OIDC flows with relying parties.  During the OAuth 2.0/OIDC flow, the Authorization Server module calls the ASP authentication API to perform user authentication with the user's NDI form factor.  On successful user authentication, the Authorization Server determines whether the relying party and user have the proper access (based on the organization's access policies), then generates and returns an access token to the relying party which it uses to access protected resources.
       <br><br>
       In this operating mode, the Authorization Server of the organization will integrate with the ASP through the ASP Authentication API.
 
@@ -75,11 +75,11 @@ info:
     # Support
       For Technical queries, you may contact XXXX@someemail.gov.sg
       For business queries, you may contact XXXX@someemail.gov.sg
-      
-        
+
+
 #The above sections starting with # indicates a section by itself. To add more content simply Use # to represent a new section
 #These are all non APIs related documentations, API definitions should all be below
-    
+
 
 #These are the tags for the side bar (the one on the left)
 tags:
@@ -104,7 +104,7 @@ x-tagGroups:
       - User Authentication
       - Certificates, Token & Configurations
 
-#=============================== ASP Oauth2 start =========================== 
+#=============================== ASP Oauth2 start ===========================
 paths:
 
   '/asp/auth':
@@ -114,15 +114,15 @@ paths:
       summary: Initiate user authentication or authorization (GET)
       description: >-
         OIDC authorization endpoint. The client call this endpoint to start the
-        OIDC flow.  The ODIC flow consists of both user authentication and 
+        OIDC flow.  The ODIC flow consists of both user authentication and
         authorization.  The authorization endpoint performs the user authentication
         part of the OIDC flow, resulting in an authorization code given to the
         calling client which it use to call the token endpoint to continue with
         the authorization part of the OIDC flow.<br><br>
 
-        These are the different ways the client may interact with the ASP to 
+        These are the different ways the client may interact with the ASP to
         carry out user authentication: <br>
-      
+
 
         1. Use the standard NDI Login page for user authentication.  The client
         redirects the user agent to this endpoint, which returns the NDI Login page
@@ -141,7 +141,7 @@ paths:
         his mobile device) via the appropriate form factor authentication servce.
         For mobile soft token, the user is notified to enter his PIN in the NDI App
         to unlock the soft token to sign on the authentication challenge. <br><br>
-        
+
         3. Use QR code.  The client calls this endpoint to request for a QR code
         which encodes the authentication challenge, it then displays on its login
         page to let the user scan with his NDI App. The NDI App will then let the user
@@ -149,7 +149,7 @@ paths:
         challenge. <br><br>
 
         4. If the client is a trusted mobile app, it may interact with the NDI App
-        through the NDI mobile SDK, which calls this endpoint to obtain an 
+        through the NDI mobile SDK, which calls this endpoint to obtain an
         authentication challenge.  The NDI App let the user
         enter his PIN to unlock the soft token to sign on the authentication
         challenge. <br><br>
@@ -250,7 +250,7 @@ paths:
           description: Success, the NDI Login page
           content:
             text/html:
-              schema: 
+              schema:
                   type: string
                   format: html
         '302':
@@ -259,16 +259,16 @@ paths:
             via redirect to the client's redirect uri.
           content:
             text/html:
-              schema: 
+              schema:
                   type: string
                   format: html
         '500':
           description: Error
           content:
             application/json:
-              schema: 
+              schema:
                   type: object
-                  properties: 
+                  properties:
                       err_msg :
                           description: error message
                           type: string
@@ -290,7 +290,7 @@ paths:
                 client_id:
                   description: The client id assigned to the client <b>(Mandatory)</b>
                   type: string
-                  
+
                 nonce:
                   description: >-
                     A random unqiue reference generated by the client, which will be
@@ -298,7 +298,7 @@ paths:
                     authentication. The client may use this to tie the ID token to a
                     particular authenticated session. <b>(Mandatory)</b>
                   type: string
-                
+
                   scope:
                     description: The scope of access required
                     type: string
@@ -306,7 +306,7 @@ paths:
                   response_type:
                     description: The response type, may be code or idtoken. Default to code if not specified.
                     type: string
-                  
+
                   state:
                     description: >-
                       The random string generated by the client to counter CSRF, if
@@ -315,7 +315,7 @@ paths:
                       uri.  The client is to match the value of the state returned with
                       its copy to ensure the redirect is from the ASP.
                     type: string
-                  
+
                     acr_values:
                       description: >-
                         The client may capture the user's NDI Id using its UI instead of the
@@ -326,10 +326,10 @@ paths:
 
                     prompt:
                       description: >-
-                        Description to be added  
+                        Description to be added
                       type: string
 
-                  #sample Data for this call       
+                  #sample Data for this call
                   example:
                     client_id: sample_client_id
                     nonce: Insert sample nonce here
@@ -344,7 +344,7 @@ paths:
           description: Success, the NDI Login page
           content:
             text/html:
-              schema: 
+              schema:
                   type: string
                   format: html
         '302':
@@ -353,7 +353,7 @@ paths:
             via redirect to the client's redirect uri.
           content:
             text/html:
-              schema: 
+              schema:
                   type: string
                   format: html
         '500':
@@ -362,7 +362,7 @@ paths:
             description: Success, the NDI Login page
             content:
               text/html:
-                schema: 
+                schema:
                     type: string
                     format: html
 
@@ -382,14 +382,14 @@ paths:
             schema:
               type: object
               properties:
-                ff_auth_ref: 
+                ff_auth_ref:
                   type: string
                   description: The form factor authentication reference
 
                 usr_action:
                   type: string
                   description: This may be 'accept', 'consent' or 'reject'
-                
+
                 response:
                   type: string
                   description: The signed response (an encoded JWS), this is not present if
@@ -407,7 +407,7 @@ paths:
 
   '/asp/responses/qrcodes':
     post:
-      tags: 
+      tags:
         - User Authentication
       operationId: initiateQRAuth
       summary: QR Code Authentication
@@ -435,13 +435,13 @@ paths:
                 response:
                   description: The signed response (encoded JWS). This is not present if usr_action is reject
                   type: string
-                
+
       responses:
         '302':
           description: Return signed responses to the originating ASP of Auth challenge
           content:
             text/html:
-              schema: 
+              schema:
                   type: string
                   format: html
 
@@ -467,13 +467,13 @@ paths:
                 ndi_id:
                   type: string
                   description: The User's NDI ID
-                
+
       responses:
         '302':
           description: Send an authentication challenge to the User's Form factor
           content:
             text/html:
-              schema: 
+              schema:
                   type: string
                   format: html
 
@@ -527,7 +527,7 @@ paths:
                   access_token: eaddc450-2c9d-11e8-a837-45c1283ec0b5
                   expires_in: 600
                   token_type: Bearer
-                  
+
   '/asp/certs':
     get:
       tags:
@@ -546,7 +546,7 @@ paths:
           description: Success, the JWK Set
           content:
             application/json:
-              schema: 
+              schema:
                 type: object
                 properties:
                   keys:
@@ -573,14 +573,14 @@ paths:
           description: Error
           content:
             application/json:
-              schema: 
+              schema:
                   type: object
-                  properties: 
+                  properties:
                       err_msg :
                           description: error message
                           type: string
       security: []
-  
+
   '/asp/.well-known/openid-configuration':
     get:
       tags:
