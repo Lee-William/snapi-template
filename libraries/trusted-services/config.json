@@ -2,11 +2,11 @@
   "//": "This is the config file for your API Package. Please follow the examples below.",
   "name": "trusted-services",
   "label": "Trusted Services",
-  "desc": "Services Built on NDI's Trusted Data, Trusted Identity, and Trusted Access layers, become key enablers for the Smart Nation movement.",
+  "desc": "Digital services built on NDI's Trusted Data, Trusted Identity, and Trusted Access layers, are key enablers to realise a Smart Nation.",
   "logo": "trusted-services-icon.png",
   "libraries": ["ds"],
   "splashPage": {
-      "introText": "Services Built on NDI's Trusted Data, Trusted Identity, and Trusted Access layers, become key enablers for the Smart Nation movement. These Trusted Services can enable many real world use cases to make the lives of the citizens and residents smarter and more convenient.",
+      "introText": "Digital services built on NDI's Trusted Data, Trusted Identity, and Trusted Access layers, are key enablers to realise a Smart Nation. These Trusted Services can enable many real world use cases to make the lives of the citizens and residents smarter and more convenient.",
       "introImg" : "trusted-services-stack.png",
       "sectionMds" : [
           "trusted-services.md"
