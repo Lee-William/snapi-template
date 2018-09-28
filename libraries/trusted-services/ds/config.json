@@ -2,9 +2,9 @@
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "ds",
   "liblabel": "Digital Signing",
-  "libdesc": "Digital signing product or service providers looking to integrate with NDI will find this API useful",
+  "libdesc": "Developers of web/mobile applications where their e-services allow users to use their NDI digital identity to conduct digital signing as part of their transactions",
   "defaultPath": "introduction",
-  "logo": "icon-ds.png",
+  "logo": "logo_ndi.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -21,15 +21,39 @@
       ],
       "path": "implementation",
       "text": "Technical Reference",
-      "mdContent": "implementation.md",
-      "children": [{
+      "mdContent": "implementation.md"
+    },
+    {
+      "//": ["This is a menu item in your library",
+        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+      ],
+      "path": "gettingstarted",
+      "text": "Getting Started",
+      "mdContent": "gettingstarted.md"
+    },
+    {
+      "//": ["This is a menu item that redirects to an external link"],
+      "path": "ndisandbox",
+      "text": "NDI Sandbox",
+      "redirectURL": "https://sandbox.demo.ndi.gov.sg"
+    },
+    {
+      "//": ["This is horizontal divider for your menu"],
+      "hr": "--"
+    },
+    {
+      "path": "apispecs",
+      "text": "API Specifications",
+      "children": [
+        {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-components",
-          "text": "Components",
-          "mdContent": "implementation-components.md"
+          "path": "apispecs-hsv001",
+          "text": "HSS v0.0.1",
+          "apiSpecs": "hsv0.0.1.yaml"
         }
       ]
     }
