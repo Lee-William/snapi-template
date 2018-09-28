@@ -4,7 +4,7 @@
   "label": "Trusted Access",
   "desc": "An open and federated Trusted Access layer, built on the foundations of Trusted Data and Trusted Identity.",
   "logo": "trusted-access-icon.png",
-  "libraries": ["appwebdev","aspop"],
+  "libraries": ["appwebdev","resowners"],
   "splashPage": {
       "introText": "Built on the foundations of Trusted Data and Trusted Identity, the Trusted Access layer will be open and federated, consisting of multiple Authenticated Services Providers from various sectors.",
       "introImg" : "trusted-access-stack.png",
