@@ -1,6 +1,6 @@
-# Introduction 
+# Introduction
 
-This technical guide is meant for developers of Web or Mobile Apps integrating with the NDI Authentication Service Provider (ASP), to perform user authentication with NDI.  The App may also leverage the NDI ASP as an OpenID Connect Provider, to obtain access tokens to access API/resources of a protected domain, which may be a Government or commercial entity such as a bank.
+This section is meant for developers of Web or Mobile Apps, looking to integrate with the NDI Authentication Service Provider (ASP) in order to carry out user authentication with NDI.  Developers may also leverage on the NDI ASP as an OpenID Connect Provider, to obtain access tokens to access API/resources of a protected domain, which could possibly be a Government or commercial entity such as a bank.
 
 ## NDI Authentication Service Overview
 
