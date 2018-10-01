@@ -4,7 +4,7 @@
   "liblabel": "Digital Signing",
   "libdesc": "Developers of web/mobile applications where their e-services allow users to use their NDI digital identity to conduct digital signing as part of their transactions",
   "defaultPath": "introduction",
-  "logo": "icon-ds.svg",
+  "logo": "icon-ds.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -28,9 +28,9 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "gettingstarted",
+      "path": "tutorial-gettingstarted",
       "text": "Getting Started",
-      "mdContent": "gettingstarted.md"
+      "mdContent": "tutorial-gettingstarted.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],

@@ -7,26 +7,69 @@ servers:
   - url: 'https://sandbox.ndi.io:3031/api/v1' #sandbox API link
     description: NDI API Sandbox
 info:
+  version: 0.0.3
+  title: National Digital Identity (NDI) - Domain Authorization
+  termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
+  contact:
+    email: ndi_support@ndi.gov.sg
+  x-logo:
+    url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
+  license:
+    name: Apache-2.0
+    url: 'https://opensource.org/licenses/Apache-2.0'
   description: >-
     This is the API store where you can discover everything about integrating
     with the National Digital Identity (NDI) platform.  You can find out more
     about NDI at [http://ndi.sg.io/home](http://ndi.sg.io/home).  To try out the
     API, first go to the Authorization section to learn how to obtain an access
     token to access the API.
-  version: 1.0.0
-  title: National Digital Identity (NDI) - Domain Authorization
-  termsOfService: 'http://ndi.sg.io/terms/'
-  contact:
-    email: apiteam@ndi.sg.io
-  license:
-    name: Apache-2.0
-    url: 'https://opensource.org/licenses/Apache-2.0'
+
+    # Release Notes
+      * 1.0.0(Release Date)
+        * Initial release of API
+      ## Release Notes and Compatibility
+      Explain what kind of versioning are we use here
+
+    # Overview
+      The Authorization Service Provider is a key component of the NDI platform which performs authorization to determine if client apps are eligible to access resources (API, data) in protected domains (e.g. Government agency, bank systems) may invoke the ASP to authenticate the end-user and obtain the access tokens to access the protected resources.
+      <br><br>
+
+      ## Mode 1: ASP as an OpenID Connect Provider
+
+      <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="../img/openIDProvider.png"/>
+
+      The ASP acts as an OIDC Provider, handling the OIDC flow with the relying party.  This operating mode is useful for organizations which are planning to expose their capabilities through API and may not have a OAuth 2.0/OIDC enabled Authorization Server.  During the OIDC flow, the ASP performs user authentication with the user's NDI form factor, on successful authentication, it calls the organization's Authorization Server to obtain an access token.  The Authorization Server determines whether the relying party and user has proper access (based on the organization's access policy) and generates the access token accordingly.  The ASP returns the access token to the relying party which may then use it to access protected resources.
+      <br><br>
+      In this operating mode, the ASP integrates with the Authorization Server of the organization through the Domain Authorization Interface.
+
+      ## Mode 2: ASP as an Authenticator
+
+       <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="../img/authenticator.png"/>
+
+      The ASP acts as an authenticator service which the Authorization Server calls to perform user authentication with the user's NDI form factor.  This operation mode is applicable for organizations which are already offering OAuth 2.0 or OIDC based authorization to relying parties accessing their protected resources.  In this scenario, organizations typically use an Authorization Server (or IAM) module to handle the OAuth 2.0/OIDC flows with relying parties.  During the OAuth 2.0/OIDC flow, the Authorization Server module calls the ASP authentication API to perform user authentication with the user's NDI form factor.  On successful user authentication, the Authorization Server determines whether the relying party and user have the proper access (based on the organization's access policies), then generates and returns an access token to the relying party which it uses to access protected resources.
+      <br><br>
+      In this operating mode, the Authorization Server of the organization will integrate with the ASP through the ASP Authentication API.
+
+    # Environment
+      Sandbox environment
+
+    # Security
+
+      ## OAuth 2.0
+      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
+      The sequence diagram illustrates the steps involved to integrate your API with NDI <br>
+      {Insert image here}
+
+      ## OAuth 2.0
+      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
+
+    # Error Handling
+      Insert content of Error Handlin here
 
 #These are the tags for the side bar (the one on the left)
 tags:
   - name: Domain Authorization Interface
     description: Domain Authorization Interface
-
 
 paths:
   '/token':

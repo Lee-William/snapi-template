@@ -4,30 +4,23 @@ servers:
   - url: 'https://sandbox.api.ndi.gov.sg/hss/api/v1/hss' #sandbox API link
     description: NDI API Sandbox
 info:
-  version: 0.3.0
+  version: 0.0.3
   title: National Digital Identity (NDI) - Hash Signing API
-  termsOfService: 'http://ndi-api.gov.sg/termsofuse/'
+  termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
     email: ndi_support@ndi.gov.sg
   x-logo:
-    url: 'assets/ndi-logo.png'
+    url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
   license:
     name: Apache-2.0
     url: 'https://opensource.org/licenses/Apache-2.0'
   description: |
     This is the API store where you can discover everything about integrating
     with the National Digital Identity (NDI) platform.  You can find out more
-    about NDI at [here](https://ndi-api.gov.sg/).  To try out the
-    API, first go to the Authorization section to learn how to obtain an access
-    token to access the API.
-
-    <ul>
-        <li> Access technical reference for mobile developers <a href="https://uat.ndi-api.gov.sg/library/trusted-access/appwebdev">here</a></li>
-        <li> Access technical reference for web developers <a href="https://uat.ndi-api.gov.sg/library/trusted-access/appwebdev">here</a></li>
-    </ul>
+    about NDI at [here](https://ndi-api.gov.sg/).  
 
     # Release Notes
-      * 0.3.0 (1-Oct-2018)
+      * 0.0.3 (1-Oct-2018)
         * Initial release of API
 
     # Overview
@@ -37,14 +30,10 @@ info:
       Sandbox environment
 
     # Security
-     
+
       ## OAuth 2.0
       NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
-      The sequence diagram illustrates the steps involved to integrate your API with NDI <br>
-      {Insert image here}
 
-    # Error Handling
-      Coming Soon
 
 #These are the tags for the side bar (the one on the left)
 tags:
@@ -101,7 +90,7 @@ paths:
           schema:
             type: string
 
-        -- clientData:
+        - clientData:
           - name: hash_alg
             in: query
             required: true

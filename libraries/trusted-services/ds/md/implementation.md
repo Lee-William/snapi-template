@@ -1,7 +1,7 @@
 ### Mobile Digital Signing Flow
 <br/>
 
-![Mobile Digital Signing Flow](/assets/lib/trusted-services/resowners/img/mobiledsflow.png)
+![Mobile Digital Signing Flow](/assets/lib/trusted-services/ds/img/mobiledsflow.png)
 
 The Digital Signature Application Provider (DSAP) may choose to use NDI to authenticate the user, so that the correct document is presented to the user. However, this is not discussed in the scope of the present document. You may refer to “Technical Guide – Client App (Web)” for the details.
 

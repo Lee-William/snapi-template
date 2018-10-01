@@ -1,10 +1,10 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
-  "libname": "appwebdev",
-  "liblabel": "App & Web Developer",
-  "libdesc": "Developers who are developing mobile or web app(also known as Relying Parties) will find this set of APIs useful",
+  "libname": "svcproviders",
+  "liblabel": "Service Providers",
+  "libdesc": "Service providers that are looking to leverage on NDI authentication service or to operate as Authentication Service Providers",
   "defaultPath": "introduction",
-  "logo": "icon-appwebdev.png",
+  "logo": "icon-aspop.png",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -20,73 +20,43 @@
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
       "path": "implementation",
-      "text": "Technical References(Mobile App)",
-      "mdContent": "implementation-appdev.md",
-      "children": [
-        {
+      "text": "Technical Reference",
+      "mdContent": "implementation-fundamentals.md",
+      "children": [{
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-appdev",
-          "text": "Technical Reference for Mobile App Developers",
-          "mdContent": "implementation-appdev.md"
-        }
-      ]
-    },
-    {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
-      "path": "implementation",
-      "text": "Technical References(Web)",
-      "mdContent": "implementation-webdev-intro.md",
-      "children": [
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-webdev-intro",
-          "text": "Introduction",
-          "mdContent": "implementation-webdev-intro.md"
+          "path": "implementation-fundamentals",
+          "text": "NDI Fundamentals",
+          "mdContent": "implementation-fundamentals.md"
         },
         {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-webdev-aspapi",
-          "text": "ASP API Reference",
-          "mdContent": "implementation-webdev-aspapi.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-webdev-discovery",
-          "text": "Discovery Document",
-          "mdContent": "implementation-webdev-discovery.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-webdev-security",
-          "text": "Security Tokens",
-          "mdContent": "implementation-webdev-security.md"
+          "path": "implementation-federation",
+          "text": "Federation Approach",
+          "mdContent": "implementation-federation.md"
         },
 		    {
           "//": ["This is a submenu item in your library",
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-webdev-exception",
-          "text": "Exception Handling",
-          "mdContent": "implementation-webdev-exception.md"
+          "path": "implementation-integration",
+          "text": "Integration Reference",
+          "mdContent": "implementation-integration.md"
+        },
+		    {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-failover",
+          "text": "Failover Considerations",
+          "mdContent": "implementation-failover.md"
         }
       ]
     },
@@ -95,9 +65,9 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "tutorial-gettingstarted",
+      "path": "gettingstarted",
       "text": "Getting Started",
-      "mdContent": "tutorial-gettingstarted.md"
+      "mdContent": "gettingstarted.md"
     },
     {
       "//": ["This is a menu item that redirects to an external link"],
@@ -130,6 +100,15 @@
           "path": "apispecs-authzv001",
           "text": "authz v0.0.1",
           "apiSpecs": "authzv0.0.1.yaml"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "apispecs-dsv001",
+          "text": "ds v0.0.1",
+          "apiSpecs": "dsv0.0.1.yaml"
         }
       ]
     }

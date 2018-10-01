@@ -1,64 +1,38 @@
-### Getting Started
+### Step by Step Guide
+<br/>
 
-#### NDI Sandbox
+#### Configure Sandbox
+<br/>
 
-##### What NDI sandbox is about
-<br/> 
+The NDI Sandbox is a full-featured system (albeit much diminished in scale and resiliency compared to the actual system) showcasing the key use cases and flows of NDI.  It serves as a playground for developers to experiment with the API to quickly gain an understanding of how NDI works.  Follow these steps to start your exploration.
 
-The sandbox playground provides a safe environment to experiment NDI APIs and help on steps required to integrate with your application. The operations that you perform in the sandbox doesn't affect the live, public data on main NDI site. This guide directs you to create an application account, that you will use to register an application using NDI developer Portal Home Page following steps to call desired API’s.
+##### Create Test Digital Identity
+<br/>
 
-Specifically, it tells you HOW TO
+The NDI Sandbox provides the DemoKeys app which let you enrol test users to NDI Sandbox and create digital identities for them.  Download and install the respective DemoKeys app from https://sandbox.demo.ndi.gov.sg for your phone or follow the steps to create test user ids which you can use to try out the ASP API.
 
-1. Register your Application
-2. Get client ID and client secret key for your Application
-3. Request Auth Code from API Gateway
-4. Request Access token from API Gateway
-5. Call the APIs
+1. Download and install the Sandbox Mobile App from:
+   + Android users click [here](https://bit.ly/2NH3loL)  
+   + IOS Users click [here](https://bit.ly/2QyitmR) (_once downloaded, do trust the certificate from “Government Technology Agency” in your [Profiles & Device Management] setting._)
 
-#### How to register your application
+2. Follow steps listed below to start registration process:
+   ![Enrolment Flow](/assets/lib/trusted-access/appwebdev/img/enrolmentflow.png)
 
+##### Try Out NDI Login
+<br/>
 
-## How to get the client ID and client secret key for your application
+You should use the Demo-WebApp application provided by the Sandbox to ensure the test users you created are working.
 
+1.	Open browser on your mobile device to https://sandbox.demo.ndi.gov.sg/demowapp/home
+2.	Click Try Out NDI Login, the Demo-WebApp screen appears, click NDI Login to launch the NDI Login screen:
+![NDI Login Screen](/assets/lib/trusted-access/appwebdev/img/ndiloginscreen.png)
+3.	Enter the test user id and click Login.
+4.	You should receive a push notification on your device informing you of an authentication request. Clicking on the notification opens the DemoKeys Form Factor screen to let you enter the PIN to unlock the digital key of the test user.
 
-## How to get AuthCode from NDI API gateway
+#### Create Client Credentials for your applications
+<br/>
 
+You will need client credentials for your Web/Mobile App to perform authentication and authorization with Sandbox API.  You can create them through the Sandbox Client Registration process [here](https://sandbox.demo.ndi.gov.sg/clnreg):
 
-## How to request Access Token from NDI API gateway
+![Client Registration Flow](/assets/lib/trusted-access/appwebdev/img/clientregistrationflow.png)
 
-
-## How to call NDI APIs
-
-## Create Client Credentials
-
-You will need client credentials for your Web App to perform authentication and authorization with Sandbox ASP. You can create them through the Sandbox Client Registration process at [link](https://sandbox.api.ndi.gov.sg/clnreg):
-
-![Create Client Credentials]
-(/assets/lib/img/generate-client-credentials.png)
-
-## Create Test Digital Identity
-
-The NDI Sandbox provides the DemoKeys app which let you enrol test users to NDI Sandbox and create digital identities for them.  Download and install the DemoKeys app from [link](https://sandbox.api.ndi.gov.sg) and follow the steps to create test user ids which you can use to try out the ASP API.
-
-![Flow for creating test identity accounts](/assets/lib/trusted-access/appwebdev/img/create-test-digital-identity.png)
-
-## Make the First Call
-
-After ensuring your test users are working, you are all set to make your first API call. Invoke the ASP authorization endpoint as follows:
-`https://sandbox.ndi.sg/api/v1/asp/auth?client_id={client_id}&response_type=code&scope=openid&redirect_uri={redirect_uri}&
-state={state}&nonce={nonce}`
-
-| Parameters   | Description |
-| ------------ | ----------- |
-| client_id    | Client ID assigned to your Web/Mobile App by the Client Registration process |
-| redirect_uri | URI to return the authorization code to your Web/Mobile App, e.g. `https://www.example.com/redirect` |
-| state        | A one-time randomly generated unique string which will be returned along with the authorization code as a means to prevent CSRF and can also be used to maintain state |
-| nonce        | A one-time randomly generated unique string which will be included in the ID token as a means to prevent replay attacks |
-
-You may now proceed to explore the other ASP API at the Developer Portal and download the Demo-WebApp sample code as a reference for integrating the ASP API into your Web App/Mobile App. If you are building a mobile app, you may want to refer to Integration with the NDI App.
-
-## Register Your Web / Mobile App
-
-When you complete the integration of your App with NDI using the NDI Sandbox, you are ready to register your App at the Developer Portal to start the actual testing and deployment process. During the NDI Client App Registration process, you will be required to provide information about your organization, detail use case description of your App, and the expected TPS of authentication and other API calls.  This information will be taken as inputs to the review process to grant the use of NDI to your App.
-
-Visit this [link - TBD](https://sandbox.ndi.gov.sg) for more information on NDI Client App Registration.
