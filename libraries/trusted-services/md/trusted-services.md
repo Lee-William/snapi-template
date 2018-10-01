@@ -5,7 +5,7 @@
 </div>
 <div class="row api-splash-info-points">
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/icon-ds.png" alt="Digital Signing">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/trusted-services-signing.svg" alt="Digital Signing">
     <h3 class="api-info-point-title">
       Digital Signing Made Easy  
     </h3>
@@ -14,7 +14,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/click.png" alt="One Click">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/trusted-services-one-click.svg" alt="One Click">
     <h3 class="api-info-point-title">
       1-click Account Registration & Identity Verification
     </h5>
@@ -23,7 +23,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/unlimited.png" alt="Unlimited Possibilities">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-services/img/trusted-services-infinite.svg" alt="Unlimited Possibilities">
     <h3 class="api-info-point-title">
       Unlimited Possibilities
     </h5>
