@@ -7,28 +7,22 @@ servers:
   - url: 'https://sandbox.ndi.io:3031/api/v1' #sandbox API link
     description: NDI API Sandbox
 info:
-  version: 0.0.3
+  version: 0.3.2
   title: National Digital Identity (NDI) - Domain Authorization
   termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
     email: ndi_support@ndi.gov.sg
   x-logo:
     url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
-  license:
-    name: Apache-2.0
-    url: 'https://opensource.org/licenses/Apache-2.0'
   description: >-
     This is the API store where you can discover everything about integrating
-    with the National Digital Identity (NDI) platform.  You can find out more
-    about NDI at [http://ndi.sg.io/home](http://ndi.sg.io/home).  To try out the
-    API, first go to the Authorization section to learn how to obtain an access
+    with the National Digital Identity (NDI) platform.  To try out the
+    API, first go to the token endpoint section to learn how to obtain an access
     token to access the API.
 
     # Release Notes
-      * 1.0.0(Release Date)
+      * 0.3.2 (Release Date)
         * Initial release of API
-      ## Release Notes and Compatibility
-      Explain what kind of versioning are we use here
 
     # Overview
       The Authorization Service Provider is a key component of the NDI platform which performs authorization to determine if client apps are eligible to access resources (API, data) in protected domains (e.g. Government agency, bank systems) may invoke the ASP to authenticate the end-user and obtain the access tokens to access the protected resources.

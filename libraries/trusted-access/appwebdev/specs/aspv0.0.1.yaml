@@ -4,34 +4,22 @@ servers:
   - url: 'https://asp.ndiplay.cf/api/v1' #sandbox API link
     description: NDI API Sandbox
 info:
-  version: 0.0.3
+  version: 0.3.2
   title: National Digital Identity (NDI) - ASP API
   termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
     email: ndi_support@ndi.gov.sg
   x-logo:
     url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
-  license:
-    name: Apache-2.0
-    url: 'https://opensource.org/licenses/Apache-2.0'
   description: |
     This is the API store where you can discover everything about integrating
-    with the National Digital Identity (NDI) platform.  You can find out more
-    about NDI at [here](http://{Insert Valid URL here}).  To try out the
-    API, first go to the Authorization section to learn how to obtain an access
+    with the National Digital Identity (NDI) platform. To try out the
+    API, first go to the token endpoint section to learn how to obtain an access
     token to access the API.
 
-    <ul>
-        <li> Access technical reference for mobile developers <a href="https://isomerpages.github.io/isomerpages-ndi/files/techref/appdev/appdev">here</a></li>
-        <li> Access technical reference for web developers <a href="https://isomerpages.github.io/isomerpages-ndi/files/techref/appdev/webdev">here</a></li>
-        <li> Access technical reference for Resource Operators <a href="https://isomerpages.github.io/isomerpages-ndi/files/techref/aspproviders/aspprov">here</a></li>
-    </ul>
-
     # Release Notes
-      * 1.0.0(Release Date)
+      * 0.3.2 (Release Date)
         * Initial release of API
-      ## Release Notes and Compatibility
-      Explain what kind of versioning are we use here
 
     # Overview
       The Authentication Service Provider (ASP) is a key component of the NDI platform which performs authentication and authorization.  Client apps accessing resources (API, data) in protected domains (e.g. Government agency, bank systems) may invoke the ASP to authenticate the end-user and obtain the access tokens to access the protected resources.
@@ -75,11 +63,10 @@ info:
 tags:
 
 
-  - name: User Authentication
+  - name: Authentication
     description: >-
       These end points are called to perform User Authentication. After the endpoints are called, a form factor will be sent
       to the user's preferred form factor.
-
 
   - name: Certificates, Token & Configurations
     description: >-
@@ -91,7 +78,8 @@ tags:
 x-tagGroups:
   - name: API Definitions
     tags:
-      - User Authentication
+      - Authentication
+      - Authorization 
       - Certificates, Token & Configurations
 
 #=============================== ASP Oauth2 start ===========================
@@ -100,7 +88,7 @@ paths:
   '/asp/auth':
     get:
       tags:
-        - User Authentication
+        - Authentication
       summary: Initiate user authentication or authorization (GET)
       description: >-
         OIDC authorization endpoint. The client call this endpoint to start the
@@ -265,7 +253,7 @@ paths:
       security: []
     post:  #There is a GET and POST for authentication, therefore there is 2 diff separate one
       tags:
-        - User Authentication
+        - Authentication
       summary: Initiate user authentication or authorization (POST)
       description: >-
         This works exactly the same as GET authentication above.
@@ -359,7 +347,7 @@ paths:
   '/asp/responses':
     post:
       tags:
-        - User Authentication
+        - Authentication
       operationId: responses
       summary: Callback endpoint called by form factor
       description: >-
@@ -398,7 +386,7 @@ paths:
   '/asp/responses/qrcodes':
     post:
       tags:
-        - User Authentication
+        - Authentication
       operationId: initiateQRAuth
       summary: QR Code Authentication
       description: >-
@@ -438,7 +426,7 @@ paths:
   '/asp/auth/login':
     post:
       tags:
-        - User Authentication
+        - Authentication
       summary: Endpoint called by the NDI Login page
       description: >-
         This endpoint is called by the NDI Login page when the user click the

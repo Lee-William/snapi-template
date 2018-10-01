@@ -3,9 +3,9 @@
 
 This section is meant for:
 
-1.  Service Providers playing the role of Relying Parties, i.e. consuming Authentication Services provided by NDI Authentication Service Provider(ASP), to allow users of their platform to be authenticated via NDI ID
-   
-2.  Service Providers who are offering to operate as a federated Authentication Service Provider (ASP) to offer Authentication Services to eligible Relying Parties
++ Service Providers playing the role of Relying Parties, i.e. consuming Authentication Services provided by NDI Authentication Service Provider(ASP), to allow users of their platform to be authenticated via NDI ID
+
++ Service Providers who are offering to operate as a federated Authentication Service Provider (ASP) to offer Authentication Services to eligible Relying Parties
 
 #### NDI Authentication Service Overview
 <br/>
