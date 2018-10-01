@@ -1,8 +1,8 @@
 {
   "//": "This is the config file for your API library. Please follow the examples below.",
   "libname": "resowners",
-  "liblabel": "Federated ASP",
-  "libdesc": "Service providers that are looking to offer NDI authentication service",
+  "liblabel": "Service Providers",
+  "libdesc": "Parties that are looking to offer NDI authentication service or to operate as federated ASP Provider",
   "defaultPath": "introduction",
   "logo": "icon-federated.svg",
   "items": [{
