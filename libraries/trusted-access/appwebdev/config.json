@@ -28,7 +28,7 @@
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-integration",
+          "path": "implementation-appdev",
           "text": "Technical Reference for Mobile App Developers",
           "mdContent": "implementation-appdev.md"
         },
@@ -37,7 +37,7 @@
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
-          "path": "implementation-integration",
+          "path": "implementation-webdev",
           "text": "Technical Reference for Web Developers",
           "mdContent": "implementation-webdev.md"
         },
