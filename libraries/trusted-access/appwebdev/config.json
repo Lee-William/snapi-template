@@ -20,7 +20,7 @@
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
       "path": "implementation",
-      "text": "Technical References",
+      "text": "Technical References for Mobile App Developers",
       "mdContent": "implementation-appdev.md",
       "children": [
         {
@@ -79,6 +79,62 @@
         }
       ]
     },
+    {
+      "//": ["This is a menu item in your library",
+        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+      ],
+      "path": "implementation",
+      "text": "Technical References for Web App Developers",
+      "mdContent": "implementation-webdev-intro.md",
+      "children": [
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-webdev-intro",
+          "text": "Introduction",
+          "mdContent": "implementation-webdev-intro.md"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-webdev-aspapi",
+          "text": "ASP API Reference",
+          "mdContent": "implementation-webdev-aspapi.md"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-webdev-discovery",
+          "text": "Discovery Document",
+          "mdContent": "implementation-webdev-discovery.md"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-webdev-security",
+          "text": "Security Tokens",
+          "mdContent": "implementation-webdev-security.md"
+        },
+		    {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-webdev-exception",
+          "text": "Exception Handling",
+          "mdContent": "implementation-webdev-exception.md"
+        }
+      ]
+    },
 	  {
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
@@ -86,52 +142,12 @@
       ],
       "path": "tutorial",
       "text": "Tutorials",
-      "mdContent": "tutorial-gettingstarted.md",
+      "mdContent": "gettingstarted.md",
 			"children": [
 				{
 					"path": "tutorial-gettingstarted",
 					"text": "Getting Started",
-					"mdContent": "tutorial-gettingstarted.md"
-				},
-				{
-					"path": "tutorial-integration",
-					"text": "Integration",
-					"mdContent": "tutorial-integration.md"
-				},
-				{
-					"path": "tutorial-tryoutndilogin",
-					"text": "Try out NDI Login",
-					"mdContent": "tutorial-tryoutndilogin.md"
-				}
-			]
-    },
-	  {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
-      "path": "resources",
-      "text": "Resources",
-      "mdContent": "resources.md"
-    },
-    {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
-      "path": "support",
-      "text": "Support",
-      "mdContent": "support-contactus.md",
-			"children": [
-				{
-					"path": "support-contactus",
-					"text": "Contact Us",
-					"mdContent": "support-contactus.md"
-				},
-				{
-					"path": "support-faq",
-					"text": "FAQs",
-					"mdContent": "support-faq.md"
+					"mdContent": "gettingstarted.md"
 				}
 			]
     },
@@ -139,7 +155,7 @@
       "//": ["This is a menu item that redirects to an external link"],
       "path": "ndisandbox",
       "text": "NDI Sandbox",
-      "redirectURL": "https://sandbox.api.ndi.gov.sg"
+      "redirectURL": "https://sandbox.demo.ndi.gov.sg"
     },
     {
       "//": ["This is horizontal divider for your menu"],

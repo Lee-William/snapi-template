@@ -1,5 +1,6 @@
-# A New Way of Authentication for Web Developers
- 
+### A New Way of Authentication for Web Developers
+<br/>
+
 The authentication mechanism used by ASP differs from the traditional approach where the client app captures the end-user’s user credentials/secrets through a login screen and forwards the credentials/secrets to a backend user management system which verifies against a centralized password database.  
 The ASP authentication mechanism utilizes a distributed approach as follows:
 -	Instead of having its own login screen, the Web App (client app) invokes the authorization endpoint of the ASP, redirecting the end-user to the NDI Login Page.  The end-user enters his/her NDI id and click submit on the Login Page.  This triggers the authentication and authorization flow orchestrated by the ASP. 
