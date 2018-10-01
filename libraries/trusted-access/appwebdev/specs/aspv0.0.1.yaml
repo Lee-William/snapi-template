@@ -1,7 +1,7 @@
 #Default Parameters needed for a YAML file
 openapi: 3.0.0
 servers:
-  - url: 'https://asp.ndiplay.cf/api/v1' #sandbox API link
+  - url: 'https://sandbox.api.ndi.gov.sg/asp/v1/asp' #sandbox API link
     description: NDI API Sandbox
 info:
   version: 0.3.2

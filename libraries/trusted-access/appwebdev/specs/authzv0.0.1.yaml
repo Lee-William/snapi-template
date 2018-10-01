@@ -1,10 +1,7 @@
 #Default Parameters needed for a YAML file
 openapi: 3.0.0
 servers:
-  - url: 'https://ndi.sg.io:3035/api/v1' #Real API link
-    description: NDI API
-    variables: {}
-  - url: 'https://sandbox.ndi.io:3031/api/v1' #sandbox API link
+  - url: 'https://sandbox.demo.ndi.gov.sg/as' #sandbox API link
     description: NDI API Sandbox
 info:
   version: 0.3.2
@@ -15,10 +12,13 @@ info:
   x-logo:
     url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
   description: >-
-    This is the API store where you can discover everything about integrating
-    with the National Digital Identity (NDI) platform.  To try out the
-    API, first go to the token endpoint section to learn how to obtain an access
-    token to access the API.
+    The authorization service (otherwise known as domain authorization service) takes care of verifying whether issued tokens 
+    (e.g. id tokens and access tokens) are valid.
+
+    This service also allow ASPs to exchange access tokens based on OAuth2.0 standards.
+    The exchanging of tokens is usually initiated by ASPs when a valid authorization code 
+    is presented by a client app to ASP. The ASP will first generate a ID token and uses the 
+    id token to call this service to exchange for an access token. 
 
     # Release Notes
       * 0.3.2 (Release Date)

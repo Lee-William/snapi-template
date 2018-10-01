@@ -91,24 +91,6 @@
           "path": "apispecs-aspv001",
           "text": "ASP v0.0.1",
           "apiSpecs": "aspv0.0.1.yaml"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "apispecs-authzv001",
-          "text": "authz v0.0.1",
-          "apiSpecs": "authzv0.0.1.yaml"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "apispecs-dsv001",
-          "text": "ds v0.0.1",
-          "apiSpecs": "dsv0.0.1.yaml"
         }
       ]
     }

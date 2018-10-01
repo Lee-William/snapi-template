@@ -1,28 +1,37 @@
 #Default Parameters needed for a YAML file
 openapi: 3.0.0
 servers:
-  - url: 'https://ndi.sg.io:3032/api/v1' #Real API link
-    description: NDI API
-    variables: {}
-  - url: 'https://sandbox.ndi.io:3031/api/v1' #sandbox API link
+  - url: 'https://sandbox.api.ndi.gov.sg/TBC' #sandbox API link
     description: NDI API Sandbox
 info:
-  description: >-
-    This is the API store where you can discover everything about integrating
-    with the National Digital Identity (NDI) platform.  You can find out more
-    about NDI at [http://ndi.sg.io/home](http://ndi.sg.io/home).  To try out the
-    API, first go to the Authorization section to learn how to obtain an access
-    token to access the API.
-  version: 1.0.0
-  title: National Digital Identity (NDI) - Directory-User
-  termsOfService: 'http://ndi.sg.io/terms/'
+  version: 0.3.2
+  title: National Digital Identity (NDI) - ASP API
+  termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
-    email: apiteam@ndi.sg.io
-  license:
-    name: Apache-2.0
-    url: 'https://opensource.org/licenses/Apache-2.0'
-    
+    email: ndi_support@ndi.gov.sg
+  x-logo:
+    url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
+  description: |
+    This is the API store where you can discover everything about integrating
+    with the National Digital Identity (NDI) platform. 
 
+    # Release Notes
+      * 0.3.2 (Release Date)
+        * Initial release of API
+
+    # Overview
+
+    # Environment
+      Sandbox environment
+
+    # Security
+
+      ## OAuth 2.0
+      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
+
+
+#The above sections starting with # indicates a section by itself. To add more content simply Use # to represent a new section
+#These are all non APIs related documentations, API definitions should all be below
 
 #These are the tags for the side bar (the one on the left)
 tags:
