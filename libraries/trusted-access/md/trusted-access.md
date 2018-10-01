@@ -5,7 +5,7 @@
 </div>
 <div class="row api-splash-info-points">
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-access/img/federated.png" alt="Federated ASPs">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-access/img/trusted-access-federated.svg" alt="Federated ASPs">
     <h3 class="api-info-point-title">
       Federated Authentication Services Providers (ASP)
     </h3>
@@ -17,7 +17,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-access/img/trust-framework-2.png" alt="Trust Framework">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-access/img/trusted-access-framework.svg" alt="Trust Framework">
     <h3 class="api-info-point-title">
       Common Trust Framework
     </h5>
@@ -34,7 +34,7 @@
     </p>
   </div>
   <div class="col-md-4 col-sm-12 api-splash-info-single">
-    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-access/img/multiple-factors.png" alt="Multi Factors">
+    <img class="api-splash-info-icon mb-3" src="/assets/lib/trusted-access/img/trusted-access-authentication.svg" alt="Multi Factors">
     <h3 class="api-info-point-title">
       Multiple Authentication & Form Factors
     </h5>
