@@ -1,5 +1,4 @@
 ### Step by Step Guide
-<br/>
 
 #### Configure Sandbox
 <br/>
@@ -29,10 +28,82 @@ You should use the Demo-WebApp application provided by the Sandbox to ensure the
 3.	Enter the test user id and click Login.
 4.	You should receive a push notification on your device informing you of an authentication request. Clicking on the notification opens the DemoKeys Form Factor screen to let you enter the PIN to unlock the digital key of the test user.
 
-#### Create Client Credentials for your applications
+##### Create Client Credentials for your applications
 <br/>
 
 You will need client credentials for your Web/Mobile App to perform authentication and authorization with Sandbox API.  You can create them through the Sandbox Client Registration process [here](https://sandbox.demo.ndi.gov.sg/clnreg):
 
 ![Client Registration Flow](/assets/lib/trusted-access/appwebdev/img/clientregistrationflow.png)
 
+<br/>
+
+#### For Web Developers
+
+##### Make the First Call
+<br/>
+
+After ensuring your test users are working, you are all set to make your first API call.  Invoke the ASP authorization endpoint as follows:
+
+````
+https://sandbox.api.ndi.gov.sg/asp/api/v1/asp/auth?client_id={your_client_id}&
+                response_type=code&
+scope=openid&redirect_uri={your_redirect_uri}&
+state={random_state}&nonce={random_nonce}
+
+````
+
+Replace:	
++ {your_client_id} with the client id assigned to your Web App by the Client Registration process
+
++ {your_redirect_uri} with the URI to return the authorization code to your Web App, e.g. https://www.ganymede.com/code
+
++ {random_state} with a random alphanumeric string, e.g. 10af9431enf5
+
++ {random_nonce} with a random alphanumeric string, e.g. da5492bc0h
+
+On successful invocation, the NDI Login screen appears.
+You may now proceed to explore the other ASP API at the Developer Portal and download the Demo-WebApp sample code as a reference for integrating the ASP API into your Web App. 
+
+##### Register Your Web App
+<br/>
+
+When you complete the integration of your Web App with NDI using the NDI Sandbox, you are ready to register your Web App at the Developer Portal to start the actual testing and deployment process.  During the NDI Client App Registration process, you will be required to provide information about your organization, detail use case description of your Web App, and the expected TPS of authentication and other API calls.  This information will be taken as inputs to the review process to grant the use of NDI to your Web App.
+
+Visit the Developer Portal for more information on NDI Client App Registration.
+
+<br/>
+
+#### For Mobile Developers
+
+##### Make the First Call
+<br/>
+
+After ensuring your test users are working, you are all set to make your first API call.  Invoke the ASP authorization endpoint as follows:
+
+```` 
+
+https://sandbox.api.ndi.gov.sg/asp/api/v1/asp/auth?client_id={your_client_id}&
+response_type=code&scope=openid&redirect_uri={your_redirect_uri}&
+state={random_state}&nonce={random_nonce}
+
+````
+
+Replace:
+
++ {your_client_id} with the client id assigned to your Mobile App by the Client Registration process
+
++ {your_redirect_uri} with the URI to return the authorization code to your Mobile App, e.g. https://www.ganymede.com/code
+
++ {random_state} with a random alphanumeric string, e.g. 10af9431enf5
+
++ {random_nonce} with a random alphanumeric string, e.g. da5492bc0h
+
+On successful invocation, the NDI Login screen appears.
+You may now proceed to explore and try out the other ASP API at the Developer Portal and download the Demo-WebApp sample code as a reference for integrating the ASP API into your Mobile App.
+
+##### Register Your Mobile App
+<br/>
+
+When you complete the integration of your Mobile App with NDI using the NDI Sandbox, you are ready to register your Mobile App at the Developer Portal to start the actual testing and deployment process.  During the NDI Client App Registration process, you will be required to provide information about your organization, detail use case description of your Mobile App, and the expected TPS of authentication and other API calls.  This information will be taken as inputs to the review process to grant the use of NDI to your Mobile App.
+
+Visit the Developer Portal for more information on NDI Client App Registration. 
