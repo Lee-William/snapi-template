@@ -1,24 +1,21 @@
 ### Mobile Digital Signing Flow
 <br/>
 
-![Mobile Digital Signing Flow](..\img\mobiledsflow.png)
+![Mobile Digital Signing Flow](/assets/lib/trusted-services/resowners/img/mobiledsflow.png)
 
 The Digital Signature Application Provider (DSAP) may choose to use NDI to authenticate the user, so that the correct document is presented to the user. However, this is not discussed in the scope of the present document. You may refer to “Technical Guide – Client App (Web)” for the details.
 
-1. It is recommended to authenticate the user using NDI, for high risk transaction. An OIDC id token and access token will be issued, which you must use to access HSS APIs. (See “Technical Guide – Client App (Web)” for the details.)
-
-2. If you are not authenticating the user using NDI, you have to obtain a client credential grant from the ASP Authorisation Endpoint using your client info. 
-
-You should collect NDI Id from the user through the client app,so that together with security tokens obtain in “Gain access”, are provided when composing the Sign Request. 
+If you choose to authenticate the user using NDI, an OIDC id_token will be issued, which you can use to represent client info and user identifier when composing the Sign Request. 
+If not, you should collect NDI Id from the user from the client app.
 
 The HSS signing flow mechanism utilizes a distributed approach as follows:
-+ On receiving the sign request, the HSS obtains the end-user’s form factor attributes from the NDI User Directory, based on the NDI id.  The form factor attributes consist of the end-user’s preferred form factor type, the form factor address (e.g. push notification id), etc.  In this case, the end-user’s preferred form factor is the NDI Soft Token. The HSS then routes the sign notification via push notification to the NDI App residing on the end-user’s mobile device where the soft token form factor resides.
++ Instead of having its own login screen, the Web App (client app) invokes the signHash endpoint of the HSS, redirecting the end-user to the NDI Login Page.  The end-user enters his/her NDI id and click submit on the Login Page.  This triggers the signHash flow orchestrated by the HSS. 
 
-+ The end-user receives the push notification on his mobile device, inspects the description (e.g. name of the client app and scope of access requested) and accepts the sign request.  In accepting the sign request, the end-user may have to enter a PIN (or use phone-specific biometric) to unlock the soft token.
++ On receiving the sign request (consisting only the end-user’s NDI id) from the NDI Login Page, the HSS obtains the end-user’s form factor attributes from the NDI User Directory, based on the NDI id.  The form factor attributes consist of the end-user’s preferred form factor type, the form factor address (e.g. push notification id), etc.  In this case, the end-user’s preferred form factor is the NDI Soft Token. The HSS then routes the sign request (in the form of a signed challenge) via push notification to the NDI App residing on the end-user’s mobile device where the soft token form factor resides.
 
-+ The soft token verifies the sign request, generates a signature value with the end-user’s private key and returns the sign response to the HSS via the NDI App. 
++ The end-user receives the push notification on his mobile device, inspects the description (e.g. name of the client app and scope of access requested) and accepts the sign request.  In accepting the sign request, the end-user may have to enter a PIN (or use phone-specific biometric) to unlock the soft token. 
 
-+ The HSS verifies the signature of the signed response with the end-user’s digital certificate, after checking the integrity of digital certificate by verifying the certificate chain of trust, and the status of the digital certificate with the CA’s Online Certificate Status Protocol (OCSP) service.
++ The soft token verifies the sign request, generates a response signed with the end-user’s private key and returns the signed response to the HSS via the NDI App.
 
 + On successful verification, the Web App receives the sign response from the HSS via redirect URI provided in the sign request or client registry.
 
@@ -27,7 +24,7 @@ The HSS signing flow mechanism utilizes a distributed approach as follows:
 ### Hash Signing Service APIs
 <br/>
 
-#### SignHash API
+#### SignHash Endpoint
 <br/>
 
 Your Web App uses this endpoint to initiate the user signing flow.  The Web App is to redirect the user agent to this endpoint, which typically returns the NDI Login page for the user to enter his NDI Id for identification. The HSS then routes the sign request to the user's form factor (e.g. the NDI soft token on his mobile device) via the appropriate protocols. In the case of NDI soft token, the sign request is sent to the user via push notification to his mobile device, where the user enters his PIN to unlock the soft token to sign on the document’s hash. The sign response is returned to the HSS which verifies the signature with the user's certificate.  If all is well, the HSS returns the sign response to the Web App via HTTP redirect. The destination of the HTTP redirect is the redirect_uri parameter that you have configured for your Web App during Client App Registration.  
@@ -38,6 +35,7 @@ As part of the security model, if your Web App passed to the signHash endpoint a
 
 To ensure the sign response is returned to a server in a controlled environment instead of frontend code residing in the user’s desktop/mobile browser, the redirect_uri must be a legit domain name under your control which can be whitelisted by the HSS.
 
+
 > Request
 
 ````
@@ -47,10 +45,7 @@ GET {basePath}/hss/signatures/signHash
 <table>
 <thead>
 <tr class="header">
-<th><strong>Required</strong></th>
-<th></th>
-<th></th>
-<th></th>
+<th align="left" colspan=4><strong>Required</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -91,10 +86,7 @@ GET {basePath}/hss/signatures/signHash
 <td>This is the message digest produced by applying a hash function on a document. This value shall be displayed on Web App to allow user to perform visual validation for the signing session. The NDI App will display this value as part of the sign request.</td>
 </tr>
 <tr class="odd">
-<td><strong>Optional</strong></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left" colspan=4><strong>Optional</strong></td>
 </tr>
 <tr class="even">
 <td><strong>Parameter</strong></td>
@@ -139,7 +131,7 @@ GET {basePath}/hss/signatures/signHash
 <td>The Web App may provide the date-time given to process the request before timeout in yyyy-mm-dd<strong>T</strong>hh:mm:ss+08:00 e.g. 2018-06-21T18:36:36+08:00. HSS can rely on this value to provide the sign response before session timeout on the Web App. If this parameter is not specified, a default timeout of 600 seconds is used.</td>
 </tr>
 <tr class="odd">
-<td>tx_doc_name</td>
+    <td>tx_doc_name</td>
 <td>Body</td>
 <td>String</td>
 <td>The document name displayed on Web App to allow user to perform visual validation for the signing session. If specified, the NDI App will display this value as part of the sign request.</td>
@@ -204,10 +196,7 @@ Content-Type: application/json</p>
 <table>
 <thead>
 <tr class="header">
-<th><strong>Interpreting JWS</strong></th>
-<th></th>
-<th></th>
-<th></th>
+<th align="left" colspan=4><strong>Interpreting JWS</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -379,9 +368,7 @@ Content-Type: application/json</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td>JOSE Header</td>
-<td></td>
-<td></td>
+<td align="left" colspan=3>JOSE Header</td>
 </tr>
 <tr class="even">
 <td>typ</td>
@@ -401,9 +388,7 @@ Content-Type: application/json</p>
 <p>The Web App is to download the ASP JWK set from the ASP discovery endpoint on a regular basis, as the ASP will periodically refresh its signing keys. It would be considered safe to download the JWK set on a daily basis.</p></td>
 </tr>
 <tr class="odd">
-<td>JWT Payload</td>
-<td></td>
-<td></td>
+<td align="left" colspan=3>JWT Payload</td>
 </tr>
 <tr class="even">
 <td>iss</td>
@@ -436,9 +421,7 @@ Content-Type: application/json</p>
 <td>Your Web App is to check that this value matches the copy in its cache, to protect against replay attacks.</td>
 </tr>
 <tr class="even">
-<td>JWT Signature</td>
-<td></td>
-<td></td>
+<td align="left" colspan=3>JWT Signature</td>
 </tr>
 <tr class="odd">
 <td>signature</td>
