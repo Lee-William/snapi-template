@@ -15,25 +15,27 @@ The NDI Sandbox provides the DemoKeys app which let you enrol test users to NDI 
    + IOS Users click [here](https://bit.ly/2QyitmR) (_once downloaded, do trust the certificate from “Government Technology Agency” in your [Profiles & Device Management] setting._)
 
 2. Follow steps listed below to start registration process:
-   ![Enrolment Flow](/assets/lib/trusted-access/appwebdev/img/enrolmentflow.png)
+   ![Enrolment Flow](/assets/lib/trusted-access/resowners/img/enrolmentflow.png)
 
 ##### Try Out NDI Login
 <br/>
 
 You should use the Demo-WebApp application provided by the Sandbox to ensure the test users you created are working.
 
-1.	Open browser on your mobile device to https://sandbox.demo.ndi.gov.sg/demowapp/home
-2.	Click Try Out NDI Login, the Demo-WebApp screen appears, click NDI Login to launch the NDI Login screen:
-![NDI Login Screen](/assets/lib/trusted-access/appwebdev/img/ndiloginscreen.png)
-3.	Enter the test user id and click Login.
-4.	You should receive a push notification on your device informing you of an authentication request. Clicking on the notification opens the DemoKeys Form Factor screen to let you enter the PIN to unlock the digital key of the test user.
+1. Open browser on your mobile device to https://sandbox.demo.ndi.gov.sg/demowapp/home
+
+2. Click Try Out NDI Login, the Demo-WebApp screen appears, click NDI Login to launch the NDI Login screen:
+![NDI Login Screen](/assets/lib/trusted-access/resowners/img/ndi-web-login.png)
+
+3. Enter the test user id and click Login.
+4. You should receive a push notification on your device informing you of an authentication request. Clicking on the notification opens the DemoKeys Form Factor screen to let you enter the PIN to unlock the digital key of the test user.
 
 ##### Create Client Credentials for your applications
 <br/>
 
 You will need client credentials for your Web/Mobile App to perform authentication and authorization with Sandbox API.  You can create them through the Sandbox Client Registration process [here](https://sandbox.demo.ndi.gov.sg/clnreg):
 
-![Client Registration Flow](/assets/lib/trusted-access/appwebdev/img/clientregistrationflow.png)
+![Client Registration Flow](/assets/lib/trusted-access/resowners/img/create-client-credentials.png)
 
 <br/>
 

@@ -24,7 +24,7 @@ You should use the Demo-WebApp application provided by the Sandbox to ensure the
 
 1.	Open browser on your mobile device to https://sandbox.demo.ndi.gov.sg/demowapp/home
 2.	Click Try Out NDI Login, the Demo-WebApp screen appears, click NDI Login to launch the NDI Login screen:
-![NDI Login Screen](/assets/lib/trusted-access/appwebdev/img/ndiloginscreen.png)
+![NDI Login Screen](/assets/lib/trusted-access/appwebdev/img/ndi-web-login.png)
 3.	Enter the test user id and click Login.
 4.	You should receive a push notification on your device informing you of an authentication request. Clicking on the notification opens the DemoKeys Form Factor screen to let you enter the PIN to unlock the digital key of the test user.
 
@@ -33,7 +33,7 @@ You should use the Demo-WebApp application provided by the Sandbox to ensure the
 
 You will need client credentials for your Web/Mobile App to perform authentication and authorization with Sandbox API.  You can create them through the Sandbox Client Registration process [here](https://sandbox.demo.ndi.gov.sg/clnreg):
 
-![Client Registration Flow](/assets/lib/trusted-access/appwebdev/img/clientregistrationflow.png)
+![Client Registration Flow](/assets/lib/trusted-access/appwebdev/img/create-client-credentials.png)
 
 <br/>
 
