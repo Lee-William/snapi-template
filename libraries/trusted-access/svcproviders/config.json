@@ -4,7 +4,7 @@
   "liblabel": "Service Providers",
   "libdesc": "Service providers that are looking to leverage on NDI authentication service or to operate as Authentication Service Providers",
   "defaultPath": "introduction",
-  "logo": "icon-aspop.png",
+  "logo": "icon-federated.svg",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
