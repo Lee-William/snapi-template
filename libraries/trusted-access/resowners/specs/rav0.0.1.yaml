@@ -22,12 +22,10 @@ info:
     # Overview
 
     # Environment
-      Sandbox environment
 
-    # Security
-
-      ## OAuth 2.0
-      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
+      ## Available Environments
+      
+      Sandbox/Dev: https://sandbox.api.ndi.gov.sg/<TBC>
 
 
 #The above sections starting with # indicates a section by itself. To add more content simply Use # to represent a new section

@@ -1,7 +1,7 @@
 #Default Parameters needed for a YAML file
 openapi: 3.0.0
 servers:
-  - url: 'https://asp.ndiplay.cf/api/v1' #sandbox API link
+  - url: 'https://sandbox.api.ndi.gov.sg/asp/api' #sandbox API link
     description: NDI API Sandbox
 info:
   version: 0.3.2
@@ -46,22 +46,12 @@ info:
       <br><br>
       In this operating mode, the Authorization Server of the organization will integrate with the ASP through the ASP Authentication API.
 
-    # Environment
-      Sandbox environment
-
-    # Security
-
-      ## OAuth 2.0
-      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
-
-
 #The above sections starting with # indicates a section by itself. To add more content simply Use # to represent a new section
 #These are all non APIs related documentations, API definitions should all be below
 
 
 #These are the tags for the side bar (the one on the left)
 tags:
-
 
   - name: Authentication
     description: >-
@@ -85,7 +75,7 @@ x-tagGroups:
 #=============================== ASP Oauth2 start ===========================
 paths:
 
-  '/asp/auth':
+  '/v1/asp/auth':
     get:
       tags:
         - Authentication
@@ -251,7 +241,7 @@ paths:
                           description: error message
                           type: string
 
-  '/asp/responses':
+  '/v1/asp/responses':
     post:
       tags:
         - Authentication
@@ -290,7 +280,7 @@ paths:
         '500':
           description: "Error"
 
-  '/asp/responses/qrcodes':
+  '/v1/asp/responses/qrcodes':
     post:
       tags:
         - Authentication
@@ -330,7 +320,7 @@ paths:
                   type: string
                   format: html
 
-  '/asp/auth/login':
+  '/v1/asp/auth/login':
     post:
       tags:
         - Authentication
@@ -362,7 +352,7 @@ paths:
                   type: string
                   format: html
 
-  '/asp/token':
+  '/v1/asp/token':
     post:
       tags:
         - Certificates, Token & Configurations
@@ -413,7 +403,7 @@ paths:
                   expires_in: 600
                   token_type: Bearer
 
-  '/asp/certs':
+  '/v1/asp/certs':
     get:
       tags:
         - Certificates, Token & Configurations
@@ -466,7 +456,7 @@ paths:
                           type: string
       security: []
 
-  '/asp/.well-known/openid-configuration':
+  '/v1/asp/.well-known/openid-configuration':
     get:
       tags:
         - Certificates, Token & Configurations
@@ -487,6 +477,4 @@ paths:
 
 externalDocs:
   description: Find out more about NDI here.
-  url: 'http://ndi.sg.io/home'
-
-security: []
+  url: 'https://www.ndi-api.gov.sg'

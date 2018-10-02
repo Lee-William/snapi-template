@@ -44,22 +44,6 @@ info:
       <br><br>
       In this operating mode, the Authorization Server of the organization will integrate with the ASP through the ASP Authentication API.
 
-    # Environment
-      Sandbox environment
-
-    # Security
-
-      ## OAuth 2.0
-      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
-      The sequence diagram illustrates the steps involved to integrate your API with NDI <br>
-      {Insert image here}
-
-      ## OAuth 2.0
-      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
-
-    # Error Handling
-      Insert content of Error Handlin here
-
 #These are the tags for the side bar (the one on the left)
 tags:
   - name: Domain Authorization Interface

@@ -1,7 +1,7 @@
 #Default Parameters needed for a YAML file
 openapi: 3.0.0
 servers:
-  - url: 'https://sandbox.api.ndi.gov.sg/hss/api/v1/hss' #sandbox API link
+  - url: 'https://sandbox.api.ndi.gov.sg/hss/api' #sandbox API link
     description: NDI API Sandbox
 info:
   version: 0.0.3
@@ -11,9 +11,6 @@ info:
     email: ndi_support@ndi.gov.sg
   x-logo:
     url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
-  license:
-    name: Apache-2.0
-    url: 'https://opensource.org/licenses/Apache-2.0'
   description: |
     This is the API store where you can discover everything about integrating
     with the National Digital Identity (NDI) platform.  You can find out more
@@ -27,13 +24,10 @@ info:
       The Hash Signing(HSS) APIs are meant for developers of web-based signature applications (Web App accessed by users through the desktop or mobile browsers) to interface with the NDI Hash Signing Service(HSS), so that citizens can use their NDI digital identity for signing.  
 
     # Environment
-      Sandbox environment
 
-    # Security
-
-      ## OAuth 2.0
-      NDI APIs will be using the OAuth2.0 workflow to perform authentication & authorisation.
-
+      ## Available Environments
+      
+      Sandbox/Dev: https://sandbox.api.ndi.gov.sg/hss
 
 #These are the tags for the side bar (the one on the left)
 tags:
@@ -59,14 +53,11 @@ x-tagGroups:
 
 #=============================== API start ===========================
 paths:
-  '/signatures/signHash':
+  '/v1/hss/signatures/signHash':
     get:
       tags:
        - Hash Signing Service
       summary: Sign Hash
-      servers: 
-        - url: "https://sandbox.api.ndi.gov.sg/hss/api/v1/hss"
-          description: "Sandbox"
       description: >- 
         HSS signHash endpoint. The client call this endpoint to provide the sign request. This endpoint also accepts ODIC id_token and OAuth2 access_token where provided. The client can obtain the security tokens from the ASP authorization endpoint, which supports a few ways to perform user authentication (See ASP authorization endpoint) e.g. ascertain user identity before displaying the yet-to-be-signed document.
         On the other hand, the client can interact directly this endpoint directly to provide the sign request:
@@ -163,7 +154,7 @@ paths:
         '400':
           description: "Error"
 
-  '/responses':
+  '/v1/hss/responses':
     post:
       tags:
           - Hash Signing Service
@@ -193,14 +184,11 @@ paths:
         '400':
           description: "Error"
 
-  '/certs':
+  '/v1/hss/certs':
     get:
       tags:
        - Hash Signing Service
       summary: certs
-      servers: 
-        - url: "sandbox.api.ndi.gov.sg/hss/api/v1/hss"
-          description: "Sandbox"
       description: >- 
         Get the JSON Web Key (JWK) Set containing the signing keys of this ASP. The signing keys (public keys) are used by the form factor local agent (or the form factor authenticator) to verify the signed challenges sent by the ASP. The signing key to use is indicated by the kid value in the header of the signed challenge JWS. The JWK set should be downloaded periodically as the ASP refreshes its signing keys regularly.
 
@@ -213,14 +201,11 @@ paths:
         '400':
           description: "Error"
 
-  '/.well-known/openid-configuration':
+  '/v1/hss/.well-known/openid-configuration':
     get:
       tags:
        - Hash Signing Service
       summary: Openid-Config
-      servers: 
-        - url: "https://sandbox.api.ndi.gov.sg/hss/api/v1/hss"
-          description: "Sandbox"
       description: >- 
         Get the OpenID Connect discovery document of this ASP. The discovery document is downloaded by relying parties to find out the onfiguration of and capabilities supported by the ASP e.g. authorization url, token url, etc.  Relying parties should download the discovery document periodically as ASP configuration may change from time to time.
 
@@ -231,3 +216,7 @@ paths:
             description: "Success - Response contain the discovery document"
           '400':
             description: "Error"
+
+externalDocs:
+  description: Find out more about NDI here.
+  url: 'https://www.ndi-api.gov.sg'
