@@ -201,22 +201,6 @@ paths:
         '400':
           description: "Error"
 
-  '/v1/hss/.well-known/openid-configuration':
-    get:
-      tags:
-       - Hash Signing Service
-      summary: Openid-Config
-      description: >- 
-        Get the OpenID Connect discovery document of this ASP. The discovery document is downloaded by relying parties to find out the onfiguration of and capabilities supported by the ASP e.g. authorization url, token url, etc.  Relying parties should download the discovery document periodically as ASP configuration may change from time to time.
-
-      operationId: openid-configuration
-        
-      responses:
-          '200':
-            description: "Success - Response contain the discovery document"
-          '400':
-            description: "Error"
-
 externalDocs:
   description: Find out more about NDI here.
   url: 'https://www.ndi-api.gov.sg'
