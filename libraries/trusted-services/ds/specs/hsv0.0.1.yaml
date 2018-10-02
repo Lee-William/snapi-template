@@ -13,8 +13,7 @@ info:
     url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
   description: |
     This is the API store where you can discover everything about integrating
-    with the National Digital Identity (NDI) platform.  You can find out more
-    about NDI at [here](https://ndi-api.gov.sg/).  
+    with the National Digital Identity (NDI) platform's hash signing service.   
 
     # Release Notes
       * 0.0.3 (1-Oct-2018)
@@ -23,33 +22,19 @@ info:
     # Overview
       The Hash Signing(HSS) APIs are meant for developers of web-based signature applications (Web App accessed by users through the desktop or mobile browsers) to interface with the NDI Hash Signing Service(HSS), so that citizens can use their NDI digital identity for signing.  
 
-    # Environment
-
-      ## Available Environments
-      
-      Sandbox/Dev: https://sandbox.api.ndi.gov.sg/hss
-
 #These are the tags for the side bar (the one on the left)
 tags:
 
-  - name: User Authentication
+  - name: Hash Signing Service
     description: >-
-      These end points are called to perform User Authentication. After the endpoints are called, a form factor will be sent
-      to the user's preferred form factor.
-
-
-  - name: Certificates, Token & Configurations
-    description: >-
-      Operations for Digital Certificates. The services for this category includes: </br> </br>
-      <b>1. Exchange for the security tokens (ID token and access token) with the authorization code</b> </br>
-      <b>2. Get the JWK Set containing the signing keys<b>
+      These end points are called to perform hash signing where a signed user hash 
+      could be returned and used to generate a digitally signed document.
 
 #x-Tag groups are used to further group the tags
 x-tagGroups:
   - name: API Definitions
     tags:
       - Hash Signing Service
-      - Certificates, Token & Configurations
 
 #=============================== API start ===========================
 paths:
