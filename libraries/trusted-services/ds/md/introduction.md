@@ -15,27 +15,3 @@ In considering the use of mobile digital signature, we consider only the process
 
 Provision of a mobile signature indicates only that the citizen would like to proceed with a transaction as presented, regardless of whether the citizen is allowed/entitled to do so.
 
-#### Hash Signing Service (HSS) Overview
-
-Coordination and management of the digital signature process represents an opportunity to define a Hash Signing Service for citizens and application providers alike. Such an approach might:
-
-+ Accelerate adoption of digital signature by Digital Signature Application Providers (DSAP) (and consequently adoption by citizens).
-  
-+ Allow implementation/deployment of a standardised API
-
-+ Permit access to an existing base of endusers possessing SingPass accounts
-
-+ Coordinate activation of digital signature functionality for endusers
-  
-+ Coordinate the processing of signature requests for DSAP
-
-+ Provide a manageable approach to risk reduction
-  
-NDI HSS provides a standardised means to form a digital signature using NDI-provisioned digital identity (using form factors such as NDI soft token)
-The HSS is essentially a signing gateway, the API is defined to standardise the communication with the signature application:
-
-1. Signature request/issued
-
-2. Signature response/received
-
-Typically, this means that a user will trigger the signing request from the signature application, HSS will relay the request to the user’s registered mobile device, where the user can use the NDI provisioned digital identity to create a digital signature.
