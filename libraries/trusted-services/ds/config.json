@@ -4,7 +4,7 @@
   "liblabel": "Digital Signing",
   "libdesc": "Developers of web/mobile applications where their e-services allow users to use their NDI digital identity to conduct digital signing as part of their transactions",
   "defaultPath": "introduction",
-  "logo": "icon-ds.png",
+  "logo": "icon-ds.svg",
   "items": [{
       "//": ["This is a menu item in your library",
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
