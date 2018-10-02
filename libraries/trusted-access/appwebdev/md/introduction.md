@@ -1,8 +1,10 @@
-# Introduction
+### Introduction
+<br/>
 
 This section is meant for developers of Web or Mobile Apps, looking to integrate with the NDI Authentication Service Provider (ASP) in order to carry out user authentication with NDI.  Developers may also leverage on the NDI ASP as an OpenID Connect Provider, to obtain access tokens to access API/resources of a protected domain, which could possibly be a Government or commercial entity such as a bank.
 
-## NDI Authentication Service Overview
+#### NDI Authentication Service Overview
+<br/>
 
 A protected domain refers to a network of computerized systems run by an organization (e.g. Government agency, bank) to manage its digital assets (e.g. customer data, accounts and transactions).  
 

@@ -116,7 +116,7 @@ This endpoint supports the Redirection option.  The API definition is as follows
 <table>
 <thead>
 <tr class="header">
-<th><strong>Required</strong></th>
+<th colspan="4"><strong>Required</strong></th>
 <th></th>
 <th></th>
 <th></th>

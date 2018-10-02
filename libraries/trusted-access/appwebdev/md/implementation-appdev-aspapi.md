@@ -79,15 +79,15 @@ The Token API is accessed via HTTPS/REST as follows:
 <table>
 <thead>
 <tr class="header">
-<th><strong>Success, the ID token and access token are returned</strong></th>
-<th></th>
-<th></th>
-<th></th>
+    <th colspan="4">
+        <strong>Success, the ID token and access token are returned</strong>
+    </th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><p>HTTP/1.1 200 OK</p>
+<td colspan="4">
+<p>HTTP/1.1 200 OK</p>
 <p>Content-Type: application/json</p>
 <p>{</p>
 <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
@@ -95,10 +95,7 @@ The Token API is accessed via HTTPS/REST as follows:
 <p>&quot;expires_in&quot; : 600</p>
 <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
 <p>“refresh_token” : “24cd99ba-35da-28e4-b76e-4ef5e80f700f”</p>
-<p>}</p></td>
-<td></td>
-<td></td>
-<td></td>
+</td>
 </tr>
 <tr class="even">
 <td><strong>Parameter</strong></td>
@@ -187,15 +184,17 @@ The Token API is accessed via HTTPS/REST as follows:
 </table>
 
 ### Refresh Token API
-
+<br/>
 
 > The Refresh Token API let a client app obtain a new access token
 > without going through user authentication. The client app must supply
 > the refresh token it obtained from the Token Exchange API to the
 > Refresh Token request as follows:
 >
+
 #### Request
->
+<br/>
+
 <b>POST {basePath}/asp/token</b>
 
 <table>
@@ -264,15 +263,12 @@ The Token API is accessed via HTTPS/REST as follows:
 <table>
 <thead>
 <tr class="header">
-<th><strong>Success, the ID token and access token are returned</strong></th>
-<th></th>
-<th></th>
-<th></th>
+<th colspan="4"><strong>Success, the ID token and access token are returned</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><p>HTTP/1.1 200 OK</p>
+<td colspan="4"><p>HTTP/1.1 200 OK</p>
 <p>Content-Type: application/json</p>
 <p>{</p>
 <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
@@ -280,9 +276,6 @@ The Token API is accessed via HTTPS/REST as follows:
 <p>&quot;expires_in&quot; : 600</p>
 <p>“refresh_token” : “77a906e51-94d4-26e8-cd6f-aed2fb9fa38e”</p>
 <p>}</p></td>
-<td></td>
-<td></td>
-<td></td>
 </tr>
 <tr class="even">
 <td><strong>Parameter</strong></td>
