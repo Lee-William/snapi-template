@@ -37,6 +37,15 @@
             "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
+          "path": "implementation-appdev-integration",
+          "text": "Integration",
+          "mdContent": "implementation-appdev-integration.md"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
           "path": "implementation-appdev-aspapi",
           "text": "ASP API Reference",
           "mdContent": "implementation-appdev-aspapi.md"
