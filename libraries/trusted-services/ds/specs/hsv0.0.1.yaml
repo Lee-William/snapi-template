@@ -39,7 +39,7 @@ x-tagGroups:
 #=============================== API start ===========================
 paths:
   '/v1/hss/signatures/signHash':
-    get:
+    post:
       tags:
        - Hash Signing Service
       summary: Sign Hash
@@ -96,7 +96,7 @@ paths:
           schema:
             type: string
 
-        - name: redirect_uri
+        - name: callback_uri
           in: query
           required: false
           schema:
@@ -107,6 +107,12 @@ paths:
           required: false
           schema:
             type: string
+            
+        - name: tx_state
+          in: query
+          required: false
+          schema:
+            type: string            
 
         - name: tx_expiry
           in: query
@@ -127,6 +133,18 @@ paths:
             type: string
 
         - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+
+        - name: prompt
+          in: query
+          required: false
+          schema:
+            type: string
+
+        - name: display
           in: query
           required: false
           schema:
@@ -169,6 +187,45 @@ paths:
         '400':
           description: "Error"
 
+  '/v1/hss/responses/qrcodes':
+    post:
+      tags:
+          - Hash Signing Service
+      summary: Responses
+      description: >-  
+        This is the callback endpoint called by the form factor (or form factor auth service) to return the signed response to the originating HSS of the authentication challenge.
+      operationId: qrresponses
+      requestBody:
+        content:
+            application/json:
+                schema:
+                    type: object
+                    properties:
+                      oid_ref:
+                        description: The hss reference for the request
+                        type: string
+                      usr_action:
+                        description: This may be accept, consent or reject
+                        type: string
+                      response: 
+                        description: the signed response (an encoded JWS), this is not present if usr_action is 'reject';
+                        type: string
+                      signedData:
+                        type: object
+                        properties:
+                          signedHash:
+                            description: This containes the sign value for the hash
+                            type: string
+                          certPEM:
+                            description: This contains the digital certificate of the client
+                            type: string
+
+      responses:
+        '200':
+          description: Success,The signed response, this is not present if usr_action is reject.
+        '400':
+          description: "Error"
+
   '/v1/hss/certs':
     get:
       tags:
@@ -185,7 +242,7 @@ paths:
 
         '400':
           description: "Error"
-
+          
 externalDocs:
   description: Find out more about NDI here.
   url: 'https://www.ndi-api.gov.sg'
