@@ -3,11 +3,11 @@ openapi: 3.0.0
 servers:
 # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/sohhaofeng1989/ndi-gt-hash-signing/2.0.0
+    url: https://virtserver.swaggerhub.com/sohhaofeng1989/ndi-gt-hash-signing/2.1.0
   - url: 'https://sandbox.api.ndi.gov.sg/api/v2/hss' #sandbox API link
     description: NDI API Sandbox
 info:
-  version: "2.0.0"
+  version: "2.1.0"
   title: National Digital Identity (NDI) - Hash Signing API
   termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
@@ -29,12 +29,12 @@ info:
     # Overview
       The Hash Signing(HSS) APIs are meant for developers of web-based signature applications (Web App accessed by users through the desktop or mobile browsers) to interface with the NDI Hash Signing Service(HSS), so that citizens can use their NDI Mobile App to sign documents that can be archived and verified for long-term non-repudiation purposes.
       
-    # Functional Flow
+    # Functional Flow (QR)
       There is a 2-part process for Digital Signing Partners (DSPs) or Relying Parties (RPs) to integrate with NDI's HSS. The diagram below illustrates a high-level overview of the functional flow.
           
       <b> First Leg </b>
 
-      <img src="./img/first-leg.png"></img>
+      <img src="/assets/lib/trusted-services/ds/img/first-leg.png"></img>
       
       1. The first leg begins with the RP/DSP initiating a GET call to the QR authentication endpoint. This results in a signature reference object that is meant to be encoded as a QR image and displayed on the front-end of the DSP/RP's application.
       
@@ -46,13 +46,43 @@ info:
       
       <b> Second Leg </b>
 
-      <img src="./img/second-leg.png"></img>
+      <img src="/assets/lib/trusted-services/ds/img/second-leg.png"></img>
       
-      1. The second leg begins with the RP/DSP initiating a POST call to HSS's sign-hash endpoint. The RP/DSP shall make use of this endpoint to pass the PadEs document hash, challenge code and signature reference ID to HSS. A valid request shall return the user's signature over the document hash. Do  note that the response timing of the sign-hash endpoint relies on user-interaction. Thus, a prolonged HTTP connection has to be maintained between the RP/DSP and NDI's HSS
+      1. The second leg begins with the RP/DSP initiating a POST call to HSS's sign-hash endpoint. The RP/DSP shall make use of this endpoint to pass the PadEs document hash, challenge code and signature reference ID to HSS. A valid request shall return a HTTP Status code of 201.
       
       2. The HSS displays the 6-digit challenge code and document hash on the user's form factor. The end-user is then requested to consent on signing on the displayed document hash.
       
-      3. The resultant signature shall be sent to the RP/DSP via the prolonged connection from Step 1 of Second Leg. Thus, concluding the second leg.
+      3. The resultant signature shall be sent to the RP/DSP via the Client Notification Endpoint. Thus, concluding the second leg.
+      
+      # Functional Flow (PN)
+      
+      Similar to the QR flow, the HSS signing flow for Push Notification utilizes a 2-part approach. DSP/RP subscribing to the PN flow should only perform the first-leg as a one-off authentication to retrieve the user's public certificate. The ritual of performing the first-leg will only repeat if the user's public certificate has expired or been revoked. The 2-part approach is as follow.
+        
+      <b> First Leg </b>
+        
+      <img src="/assets/lib/trusted-services/ds/img/first-leg-pn.png"></img>
+
+      1. The RP/DSP performs a one-time OIDC Handshake with NDI's ASP. After the user performs a successful authentication, his/her OIDC id_token will be issued to the RP/DSP.
+
+      2. The RP/DSP performs a POST call to the PN trigger endpoint, passing in the user's id_token under the id_token_hint field. The HSS shall return a digital-signing reference ID or "sign_ref" upon successful invocation.
+
+      3. A PN is sent to the user's mobile device.
+
+      4. The user consents on releasing his/her public certificate to the DSP/RP.
+
+      5. His/her public cerificate will be sent to HSS via an internal endpoint.
+
+      6. The user certificate shall be sent to the RP/DSP via its registered Client Notification Endpoint. The signature ref ID and several other CIBA parameters will be passed alongside the user certificate via this endpoint as well. Thus, concluding the first leg.
+
+      <b> Second Leg </b>
+
+      <img src="/assets/lib/trusted-services/ds/img/second-leg-pn.png"></img>
+
+      1. The second leg begins with the RP/DSP initiating a POST call to HSS's sign-hash endpoint. </br> If the first-leg was performed prior to this operation, the RP/DSP shall make use of this endpoint to pass the PadEs document hash, challenge code and signature reference ID to HSS. A valid request shall return a HTTP Status code of 201. </br>If the first-leg was NOT performed prior to this operation, the RP/DSP shall make use of this endpoint to pass the PadEs document hash, challenge code and CIBA Request parameters to HSS. A valid request shall return a digital-signing reference ID (sign_ref) with a HTTP Status code of 201.
+      
+      2. The HSS displays the 6-digit challenge code and document hash on the user's form factor. The end-user is then requested to consent on signing on the displayed document hash.
+
+      3. The resultant signature shall be sent to the RP/DSP via the Client Notification Endpoint. Thus, concluding the second leg.
 
 #These are the tags for the side bar (the one on the left)
 tags:
@@ -67,7 +97,8 @@ x-tagGroups:
 
   - name: HSS First Leg
     tags:
-      - QR Authentication Endpoint for Hash Signing Service
+      - PN Trigger Endpoint
+      - QR Authentication Endpoint
       - Internal Endpoint for interaction between NDI Mobile and HSS
       - Client Notification Endpoint
 
@@ -80,10 +111,43 @@ x-tagGroups:
 
 
 paths:
+
+  '/signatures/push-notification/consent':
+    post:
+      tags:
+       - PN Trigger Endpoint
+      summary: Triggering a PN for User Consent to Release Public Certificate
+      description: |
+        HSS PN Trigger Endpoint. The client shall invoke this endpoint to retrieve a signature reference ID that shall be kept as reference for the span of the digital-signing session. This endpoint is the start of the Client-Intitated Backchannel Authetication (CIBA) [Push Mode flow](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.5). The NDI mobile App returns the public certificate of the user from the mobile soft token (via the client's callback uri). The client may then optionally proceed with the creation of a PAdES document hash, which may require OCSP responses and timestamp tokens.
+      operationId: createPushNotificationForUserCertConsent
+     
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pnNotificationConsentRequest'
+              
+      responses:
+        '201':
+          description: "A Signature Reference ID Object containing information for the RP to keep as reference for the digital-signing session"
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/signatureReferenceIdentifier"
+        '400':
+          description: "Forbidden"
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/oidcError"
+
+
   '/signatures/sign-ref':
     get:
       tags:
-       - QR Authentication Endpoint for Hash Signing Service
+       - QR Authentication Endpoint
       summary: Getting a Signature reference ID for QR Display
       description: |
         HSS QR Authentication Endpoint. The client shall invoke this endpoint to retrieve a signature reference ID that shall be displayed as a QR-encoded image. This authentication endpoint is the start of the Client-Intitated Backchannel Authetication (CIBA) [Push Mode flow](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.5). The NDI mobile App returns the public certificate of the user from the mobile soft token (via the client's callback uri). The client may then optionally proceed with the creation of a PAdES document hash, which may require OCSP responses and timestamp tokens.
@@ -140,10 +204,11 @@ paths:
                 $ref: "#/components/schemas/oidcError"
 
   '/signatures/sign-ref/{sign-ref}': 
+    
     post:
       tags:
        - Internal Endpoint for interaction between NDI Mobile and HSS
-      summary: Creation of a Signature Reference (Internal)
+      summary: Signature Reference Challenge(Internal)
       description: >- 
         This is an endpiont exposed internally by the HSS (Note: Only meant to be invoked by the NDI Mobile/Form-Factor).
         The NDI mobile App (Form-factor) shall utilize this method to send the end-user's public certificate to the HSS as well. This relies on a prolong HTTP connection and the response shall be a document hash and challenge code generated by the RP/DSP.
@@ -154,7 +219,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/signatureReferenceCreationRequest'
+              $ref: '#/components/schemas/signatureReferenceChallengeRequest'
       parameters:
         - name: sign-ref
           in: path
@@ -168,25 +233,59 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/signatureReferenceCreationResponse'
+                $ref: '#/components/schemas/signatureReferenceChallengeResponse'
 
         '400':
           description: "Forbidden"
+    
+    put:
+      tags:
+       - Internal Endpoint for interaction between NDI Mobile and HSS
+      summary: Update Signatureth Reference with Signature (Internal)
+      description: >- 
+        This is an endpiont exposed internally by the HSS (Note: Only meant to be invoked by the NDI Mobile/Form-Factor).
+        The NDI mobile App (Form-factor) shall utilize this method to send the end-user's signature over the document hash.
+      operationId: updateSignatureReference
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/signatureReferenceUpdateRequest'
+      parameters:
+        - name: sign-ref
+          in: path
+          required: true
+          schema:
+            type: string
 
+      responses:
+        '200':
+          description: "Digital Signing Session updated with User's Signature"
+          
+        '400':
+          description: "Forbidden"
   '/ndi/callback':
     get:
       tags:
           - Client Notification Endpoint
       summary: Client Notification Endpoint (web-hook)
       description: >-  
-        This is the registered Client Notification Endpoint that RPs or Digital Signing Platforms (DSP) would expose as a webhook/callback. This webhook/callback will be a means for the RP/DSP to receive the respective end user's public certificate in a sub claim (presented as a claim in a jwt). According to OpenID Connect's CIBA Specifications, this endpoint must enforce TLS on NDI's HSS and requests to this endpoint must be authenticated using a bearer token (Authorization Header) created by the Client. This bearer token must be the same "client_notification_token" that was passed to NDI's HSS in the QR Authentication Endpoint phase.
+        This is the registered Client Notification Endpoint that RPs or Digital Signing Platforms (DSP) would expose as a webhook/callback. This webhook/callback will be a means for the RP/DSP to receive the respective end user's public certificate in a sub claim (presented as a claim in a jwt) or the user's signature over the document hash. According to OpenID Connect's CIBA Specifications, this endpoint must enforce TLS on NDI's HSS and requests to this endpoint must be authenticated using a bearer token (Authorization Header) created by the Client. This bearer token must be the same "client_notification_token" that was passed to NDI's HSS in the QR Authentication Endpoint phase.
         
       operationId: clientNotificationEndpoint
       
       parameters:
         - name: usr_cert
           in: query
-          required: true
+          required: false
+          schema:
+            type: string
+        
+        - name: signature
+          in: query
+          required: false
           schema:
             type: string
 
@@ -204,7 +303,7 @@ paths:
             
       responses:
         '200':
-          description: Success. The Document Signing Session has resulted in the end-user's public certificate sent to the DSP/RP.
+          description: Success. The Document Signing Session has resulted in the end-user's public certificate/signature sent to the DSP/RP.
         '400':
           description: "Error"
 
@@ -214,7 +313,7 @@ paths:
           - Hash Signing Endpoint
       summary: Allows the RP/DSP to request the end-user to sign on a well-formed PaDES document hash.
       description: >-  
-        This is the endpoint called by RP/DSP to trigger notification on the user's form-factor to solicit user consent for signing on a document hash. This relies on a prolonged HTTP connection and returns the user's signature over the document hash. 
+        This is the endpoint called by RP/DSP to trigger notification on the user's form-factor to solicit user consent for signing on a document hash. This endpoint is applicable to both QR and PN flow.
         
       operationId: hashSigningService
       parameters:
@@ -228,21 +327,60 @@ paths:
         content:
             application/json:
                 schema:
-                   $ref: "#/components/schemas/userSignatureNotificationRequest"
+                  oneOf:
+                  - $ref: "#/components/schemas/userSignatureNotificationRequestFromQR"
+                  - $ref: "#/components/schemas/userSignatureNotificationRequestFromPN"
 
       responses:
         '201':
-          description: Created. Returns another Signature Reference ID meant for the RP/DSP to keep track of.
+          description : "User Notified to Sign"
           content:
-              application/json:
-                schema: 
-                  $ref: "#/components/schemas/userSignature"
+            application/json:
+                schema:
+                  oneOf:
+                  - $ref: "#/components/schemas/signatureReferenceIdentifier"
+                  - $ref: "#/components/schemas/userSignatureNotificationCreated"
         '400':
           description: "Error"
 
 components:
   schemas:
     
+    pnNotificationConsentRequest : 
+     type: object
+     
+     properties:
+        client_id:
+          type: string
+          description: The RP/DSP's Client Identifier
+          minLength: 3
+          maxLength: 255
+        nonce:
+          type: string
+          description: A client-side nonce generated which cannot be predicted, to ensure the challenge is always unique and not subjected to replay attacks. This is to be generated using methods compliant with NIST SP 800-90A Rev 1, specifically with SHA-256
+        client_notification_token:
+          type: string
+          description: It is a bearer token provided by the Client that will be used by the OpenID Provider to authenticate the notificqtion request to the Client. The length of the token MUST NOT exceed 1024 characters and it MUST conform to the syntax for Bearer credentials as defined in Section 2.1 of [RFC6750]. Clients MUST ensure that it contains sufficient entropy (a minimum of 128 bits while 160 bits is recommended) to make brute force guessing or forgery of a valid token computationally infeasible - the means of achieving this are implementation specific, with possible approaches including secure pseudorandom number generation or cryptographically secured self-contained tokens
+        id_token_hint:
+          type: string
+          description: The id_token of the authenticated NDI user. This id_token can be retrieved by performing an OIDC handshake with NDI's ASP
+        response_type:
+          type: string
+          description: urn:openid:params:grant-type:ciba
+     required:
+      - client_id
+      - nonce
+      - client_notification_token
+      - id_token_hint
+      - response_type
+    
+    userSignatureNotificationCreated : 
+     type: object
+     properties:
+       msg: 
+        type: string
+        description: Fixed at 'User Notified to Sign'
+      
     basicHttpAuthorization : 
       type: string
       description: A base64 encoded string concatenated client_id, ':' and client_secret
@@ -293,42 +431,33 @@ components:
       - unauthorized_client
       - unsupported_grant_type
       - invalid_scope
-
-    signatureReferenceCreationRequest :
+      
+    signatureReferenceChallengeRequest :
       type: object
       properties:
-        client_id:
-          type: string
-          description: The Relying Party's Client Identifier
-          minLength: 32
-          maxLength: 255
         nonce:
           type: string
-        client_notification_token:
-          type: string
-          description: The client notification token captured from the QR code
-        login_hint:
-          type: string
-          description: The login_hint captured from the QR Code
-        response_type:
-          type: string
-          description: response_type captured from the QR Code
+          description: A client-side nonce generated which cannot be predicted, to ensure the challenge is always unique and not subjected to replay attacks. This is to be generated using methods compliant with NIST SP 800-90A Rev 1, specifically with SHA-256
         x5c:
           type: string
           description: The End User's public certificate (For Document Signing)
-        scope:
-          type: string
-          description: Scope captured from the QR
       required:
-      - client_id
-      - client_notification_token
-      - response_type
       - x5c
-      - scope
+      - nonce
       
-    signatureReferenceCreationResponse :
+    signatureReferenceChallengeResponse :
       type: object
       properties:
+        client_name:
+          type: string
+          description: The name of the RP/DSP
+          minLength: 5
+          maxLength: 255
+        doc_name:
+          type: string
+          description: The name of the document that the user is signing on
+          minLength: 5
+          maxLength: 255
         doc_hash:
           type: string
           description: The PadEs document hash formed by the RP/DSP
@@ -337,19 +466,26 @@ components:
         challenge_code:
           type: string
           description: 6 Digit challenge code meant for display on the user's form factor for verification
-        scope:
+        nonce:
           type: string
-          description: Scope captured from the QR
+          description: An echo of the nonce value sent in the request by the NDI Mobile Client.
+        signed_challenge:
+          type: string
+          description: A JWS encapsulating the above mentioned fields in its payload
       required:
-      - client_id
-      - client_notification_token
-      - response_type
-      - x5c
-      - scope
+      - client_name
+      - doc_name
+      - doc_hash
+      - challenge_code
+      - nonce
+      - signed_challenge
       
-    userSignatureNotificationRequest :
+    userSignatureNotificationRequestFromQR :
       type: object
       properties:
+        doc_name:
+          type: string
+          description: The name of the document that the user is signing on
         doc_hash:
           type: string
           description: The PadEs document hash formed by the RP/DSP
@@ -360,9 +496,37 @@ components:
           type: string
           description: A unique identifier in the format of a UUIDv4. This identifies the Document Signing Session.
       required:
+      - doc_name
       - doc_hash
       - challenge_code
       - sign_ref
+      
+    userSignatureNotificationRequestFromPN :
+      type: object
+      properties:
+        doc_name:
+          type: string
+          description: The name of the document that the user is signing on
+        doc_hash:
+          type: string
+          description: The PadEs document hash formed by the RP/DSP
+        challenge_code:
+          type: number
+          description: 6 Digit challenge code meant for display on the user's form factor for verification.
+        response_type:
+          type: string
+          description: urn:openid:params:grant-type:ciba
+        id_token_hint:
+          type: string
+          description: The id_token of the authenticated NDI user. This id_token can be retrieved by performing an OIDC handshake with NDI's ASP. This is only applicable if the RP/DSP starts the digital-signing session with this endpoint.
+        sign_ref:
+          type: string
+          description: A unique identifier in the format of a UUIDv4. This identifies the Document Signing Session. This is only applicable if the first-leg of the PN has been executed previously.
+          
+      required:
+      - doc_name
+      - doc_hash
+      - challenge_code
       
     userSignature :
       type: object
@@ -370,7 +534,28 @@ components:
         signature:
           type: string
           description: The user's signature over the document hash
-
+          
+    signatureReferenceUpdateRequest :
+      type: object
+      properties:
+        signature:
+          type: string
+          description: The user's signature
+          minLength: 5
+          maxLength: 1024
+        timestamp:
+          type: number
+          description: The exact unix timestamp when the user has consented to sign over the document hash.
+          
+        signed_response:
+          type: string
+          description: A JWS that encapsulates the user's public-cert, timestamp, challenge code, sign_ref and document hash signature in its payload.
+          
+      required:
+      - signature
+      - timestamp
+      - signed_response
+      
 externalDocs:
   description: Find out more about NDI here.
   url: 'https://www.ndi-api.gov.sg'

@@ -1,7 +1,7 @@
 ### Introduction
 <br/>
 
-This technical guide is meant for developers of web-based Signature Applications (Web App accessed by users through the desktop or mobile browsers) to interface with the NDI HSS, so that citizens can use their NDI digital identity for signing.
+This technical guide is meant for developers of web-based Signature Applications (Web App accessed by users through the desktop or mobile browsers) to interface with the NDI's Hash Signing Services so that citizens can use their NDI Mobile for signing.
 
 ![Hash signing Overview](/assets/lib/trusted-services/ds/img/hsoverview.png)
 
