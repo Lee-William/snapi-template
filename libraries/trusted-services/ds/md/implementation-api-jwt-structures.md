@@ -1,10 +1,10 @@
-      # JWT Specifications
+# JWT Specifications
       
-      ## DSP/RP Client Notification Token (Client Notification Endpoint)
+## DSP/RP Client Notification Token (Client Notification Endpoint)
     
-      As per OpenID Connect's [CIBA Push flow](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.9), all requests to the client notification endpoint is authorized via a client notification token that was first issued by the DSP/RP at the QR Authentication Endpoint. The recommended structure of the client notification token is as follow:
+   As per OpenID Connect's [CIBA Push flow](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.9), all requests to the client notification endpoint is authorized via a client notification token that was first issued by the DSP/RP at the QR Authentication Endpoint. The recommended structure of the client notification token is as follow:
 
-      <div class="table-responsive-sm">
+   <div class="table-responsive-sm">
         <table class="table table-striped table-bordered mb-0">
         <thead>
         <tr>
@@ -43,13 +43,14 @@
         </thread>
         </table>
         </div>
-    <h2> Internal Tokens Between HSS and NDI Mobile </h2>
-        
-    <b>Signed Challenge</b>
-        
-    The signedChallenge is a JWS object sent back to the NDI Mobile as a response to the Signature Reference Challenge endpoint
 
-    <div class="table-responsive-sm">
+<h2> Internal Tokens Between HSS and NDI Mobile </h2>
+        
+<b>Signed Challenge</b>
+
+The signedChallenge is a JWS object sent back to the NDI Mobile as a response to the Signature Reference Challenge endpoint
+
+<div class="table-responsive-sm">
     <table class="table table-striped table-bordered mb-0">
     <thead>
     <tr>
@@ -99,13 +100,13 @@
     </tr>
     </thread>
     </table>
-    </div>
+</div>
     
-    <b>Signed Response</b>
+<b>Signed Response</b>
+	   
+The signedResponse is a JWS object sent to the HSS as a request to the update signature reference endpoint (PUT).
     
-    The signedResponse is a JWS object sent to the HSS as a request to the update signature reference endpoint (PUT).
-    
-    <div class="table-responsive-sm">
+<div class="table-responsive-sm">
     <table class="table table-striped table-bordered mb-0">
     <thead>
     <tr>
@@ -162,4 +163,4 @@
     </tr>
     </thread>
     </table>
-    </div>
+</div>
