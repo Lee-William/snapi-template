@@ -37,8 +37,17 @@
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
           "path": "implementation-api",
-          "text": "Hash Signing APIs",
-          "mdContent": "implementation-api.md"
+          "text": "Hash Signing API - QR Flow",
+          "mdContent": "implementation-api-qr.md"
+        },
+        {
+          "//": ["This is a submenu item in your library",
+            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
+            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
+          ],
+          "path": "implementation-api",
+          "text": "Hash Signing API - Push Notification Flow",
+          "mdContent": "implementation-api-pn.md"
         },
         {
           "//": ["This is a submenu item in your library",
@@ -98,8 +107,8 @@
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
           "path": "apispecs-hsv001",
-          "text": "HSS v0.3.2",
-          "apiSpecs": "hsv0.0.1.yaml"
+          "text": "HSS v2.0.0",
+          "apiSpecs": "hsv2.0.0.yaml"
         }
       ]
     }
