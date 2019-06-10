@@ -349,12 +349,6 @@ paths:
           schema:
             type: string
 
-        - name: scope
-          in: query
-          required: false
-          schema:
-            type: string
-
       responses:
         '200':
           description: "A Signature Reference ID Object containing information for the RP to encode and display as a QR"
