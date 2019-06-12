@@ -472,7 +472,7 @@ paths:
           in: header
           required: true
           schema:
-            $ref: "#/components/schemas/basicHttpAuthorization"
+            $ref: "#/components/schemas/bearerToken"
             
       responses:
         '200':
@@ -511,8 +511,8 @@ paths:
             application/json:
                 schema:
                   oneOf:
-                  - $ref: "#/components/schemas/signatureReferenceIdentifier"
-                  - $ref: "#/components/schemas/userSignatureNotificationCreated"
+                  - $ref: "#/components/schemas/signatureReferenceIdentifierForPN"
+                  - $ref: "#/components/schemas/userSignatureNotificationCreatedForQR"
         '400':
           description: "Error"
 
@@ -547,7 +547,7 @@ components:
       - id_token_hint
       - response_type
     
-    userSignatureNotificationCreated : 
+    userSignatureNotificationCreatedForQR : 
      type: object
      properties:
        msg: 
@@ -557,8 +557,41 @@ components:
     basicHttpAuthorization : 
       type: string
       description: A base64 encoded string concatenated client_id, ':' and client_secret
+    bearerToken : 
+      type: string
+      description: The DSP/RP's Client Notification Token as a Bearer Token
     
     signatureReferenceIdentifier : 
+     type: object
+     properties:
+        auth_req_id:
+          type: string
+          description: In accordance to the OpenID Connect Client Initiated Backchannel
+            Authentication Push Flow, this is a unique identifier to identify the authentication
+            request made by the Client. It MUST contain sufficient entropy (a minimum of
+            128 bits while 160 bits is recommended) to make brute force guessing or forgery
+            of a valid auth_req_id computationally infeasible - the means of achieving this
+            are implementation specific, with possible approaches including secure pseudorandom
+            number generation or cryptographically secured self-contained tokens.
+          minLength: 3
+          maxLength: 255
+        expires_in:
+          type: number
+          description: unix timestamp in seconds that indicates when the Document Signing
+            Session expires
+        sign_ref:
+          type: string
+          description: A unique identifier in the format of a UUIDv4. This identifies the
+            Document Signing Session and should be QR-encoded by the RP/Document-Signing Platform OR kept as a session by the RP/DSP.
+        nonce:
+          type: string
+     required:
+      - auth_req_id
+      - expires_in
+      - sign_ref
+      - nonce
+      
+    signatureReferenceIdentifierForPN : 
      type: object
      properties:
         auth_req_id:
