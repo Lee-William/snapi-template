@@ -440,7 +440,7 @@ paths:
           - Client Notification Endpoint
       summary: Client Notification Endpoint (web-hook)
       description: >-  
-        This is the registered Client Notification Endpoint that RPs or Digital Signing Platforms (DSP) would expose as a webhook/callback. This webhook/callback will be a means for the RP/DSP to receive the respective end user's public certificate in a sub claim (presented as a claim in a jwt) or the user's signature over the document hash. According to OpenID Connect's CIBA Specifications, this endpoint must enforce TLS on NDI's HSS and requests to this endpoint must be authenticated using a bearer token (Authorization Header) created by the Client. This bearer token must be the same "client_notification_token" that was passed to NDI's HSS in the QR Authentication Endpoint phase.
+        This is the registered Client Notification Endpoint that RPs or Digital Signing Platforms (DSP) would expose as a webhook/callback. This webhook/callback will be a means for the RP/DSP to receive the respective end user's public certificate in a usr_cert query parameter or the user's signature over the document hash in a signature query parameter. According to OpenID Connect's CIBA Specifications, this endpoint must enforce TLS on NDI's HSS and requests to this endpoint must be authenticated using a bearer token (Authorization Header) created by the Client. This bearer token must be the same "client_notification_token" that was passed to NDI's HSS in the QR Authentication Endpoint phase.
         
       operationId: clientNotificationEndpoint
       
