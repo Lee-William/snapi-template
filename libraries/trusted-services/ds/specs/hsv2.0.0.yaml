@@ -286,7 +286,12 @@ paths:
       description: |
         HSS PN Trigger Endpoint. The client shall invoke this endpoint to retrieve a signature reference ID that shall be kept as reference for the span of the digital-signing session. This endpoint is the start of the Client-Intitated Backchannel Authetication (CIBA) [Push Mode flow](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.5). The NDI mobile App returns the public certificate of the user from the mobile soft token (via the client's callback uri). The client may then optionally proceed with the creation of a PAdES document hash, which may require OCSP responses and timestamp tokens.
       operationId: createPushNotificationForUserCertConsent
-     
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            $ref: "#/components/schemas/basicHttpAuthorization"
       requestBody:
         description: Optional description in *Markdown*
         required: true
@@ -532,11 +537,6 @@ components:
      type: object
      
      properties:
-        client_id:
-          type: string
-          description: The RP/DSP's Client Identifier
-          minLength: 3
-          maxLength: 255
         nonce:
           type: string
           description: A client-side nonce generated which cannot be predicted, to ensure the challenge is always unique and not subjected to replay attacks. This is to be generated using methods compliant with NIST SP 800-90A Rev 1, specifically with SHA-256
@@ -550,7 +550,6 @@ components:
           type: string
           description: urn:openid:params:grant-type:ciba
      required:
-      - client_id
       - nonce
       - client_notification_token
       - id_token_hint
