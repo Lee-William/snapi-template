@@ -129,7 +129,8 @@ info:
         </thread>
         </table>
         </div>
-    <h2> Internal Tokens Between HSS and NDI Mobile </h2>
+    
+    ## Internal Tokens Between HSS and NDI Mobile
         
     <b>Signed Challenge</b>
         
@@ -203,9 +204,8 @@ info:
     <tr>
     <td>header</td>
     <td>
-        <div>algo : "ES256"</div>
-      <div>kid :  "The key ID that can be used to reference the corresponding public key from the asp's jwks endpoint"</div>
-      <div>x5c :  "The end-user's public certificate"</div>
+    <div>algo : "ES256"</div>
+    <div>x5c :  "The mobile app's public certificate"</div>
     </td>
     </tr>
     <tr>
