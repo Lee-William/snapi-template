@@ -13,7 +13,7 @@ info:
   contact:
     email: ndi_support@ndi.gov.sg
   x-logo:
-    url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
+    url: '/assets/lib/trusted-access/img/logo_ndi.png'
   description: |
     This is the API store where you can discover everything about integrating
     with the National Digital Identity (NDI) platform's hash signing service.
@@ -741,6 +741,9 @@ components:
         nonce:
           type: string
           description: A client-side nonce generated which cannot be predicted, to ensure the challenge is always unique and not subjected to replay attacks. This is to be generated using methods compliant with NIST SP 800-90A Rev 1, specifically with SHA-256. This value shall be echo-ed back to the DSP/RP via the client notification endpoint.
+        client_notification_token:
+          type: string
+          description: It is a bearer token provided by the Client that will be used by the OpenID Provider to authenticate the notificqtion request to the Client. The length of the token MUST NOT exceed 1024 characters and it MUST conform to the syntax for Bearer credentials as defined in Section 2.1 of [RFC6750]. Clients MUST ensure that it contains sufficient entropy (a minimum of 128 bits while 160 bits is recommended) to make brute force guessing or forgery of a valid token computationally infeasible - the means of achieving this are implementation specific, with possible approaches including secure pseudorandom number generation or cryptographically secured self-contained tokens
           
       required:
       - doc_name
