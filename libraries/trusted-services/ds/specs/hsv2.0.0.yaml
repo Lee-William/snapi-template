@@ -12,8 +12,8 @@ info:
   termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
     email: ndi_support@ndi.gov.sg
-  x-logo:
-    url: './logo_ndi.png'
+  x-logo: 
+    url: '/assets/lib/trusted-services/img/logo_ndi.png'
   description: |-
     This is the API store where you can discover everything about integrating
     with the National Digital Identity (NDI) platform's hash signing service.
@@ -37,7 +37,7 @@ info:
           
     ### First Leg
 
-      <img src="/assets/lib/trusted-access/img/first-leg.png"></img>
+      <img src="/assets/lib/trusted-services/img/first-leg.png"></img>
       
       1. The first leg begins with the RP/DSP initiating a GET call to the QR authentication endpoint. This results in a signature reference object that is meant to be encoded as a QR image and displayed on the front-end of the DSP/RP's application.
       
@@ -49,7 +49,7 @@ info:
       
     ### Second Leg
 
-      <img src="/assets/lib/trusted-access/img/second-leg.png"></img>
+      <img src="/assets/lib/trusted-services/img/second-leg.png"></img>
       
       1. The second leg begins with the RP/DSP initiating a POST call to HSS's sign-hash endpoint. The RP/DSP shall make use of this endpoint to pass the PadEs document hash, challenge code and signature reference ID to HSS. A valid request shall return a HTTP Status code of 201.
       
@@ -63,7 +63,7 @@ info:
         
     ### First Leg
         
-      <img src="/assets/lib/trusted-access/img/first-leg-pn.png"></img>
+      <img src="/assets/lib/trusted-services/img/first-leg-pn.png"></img>
 
       1. The RP/DSP performs a one-time OIDC Handshake with NDI's ASP. After the user performs a successful authentication, his/her OIDC id_token will be issued to the RP/DSP.
 
@@ -79,7 +79,7 @@ info:
 
     ### Second Leg
 
-      <img src="/assets/lib/trusted-access/img/second-leg-pn.png"></img>
+      <img src="/assets/lib/trusted-services/img/second-leg-pn.png"></img>
 
       1. The second leg begins with the RP/DSP initiating a POST call to HSS's sign-hash endpoint. The RP/DSP shall make use of this endpoint to pass the PadEs document hash, challenge code and signature reference ID to HSS. A valid request shall simply return a HTTP Status code of 201.
       
