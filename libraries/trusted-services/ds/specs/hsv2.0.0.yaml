@@ -12,7 +12,7 @@ info:
   termsOfService: 'https://www.ndi-api.gov.sg/termsofuse/'
   contact:
     email: ndi_support@ndi.gov.sg
-  x-logo: 
+  x-logo:
     url: '/assets/lib/trusted-services/ds/img/logo_ndi.png'
   description: |-
     This is the API store where you can discover everything about integrating
@@ -25,10 +25,8 @@ info:
         * Initial release of API
       * 2.0.0 (22-May-2019)
         * CIBA revamp of HSS APIs
-        * Author: Eric Soh Hao Feng (GovTech)
       * 2.0.1 (3-Jul-2019)
         * Revised CIBA flow of HSS APIs after Security Review
-        * Author: Eric Soh Hao Feng (GovTech)
     # Overview
       The Hash Signing(HSS) APIs are meant for developers of web-based signature applications (Web App accessed by users through the desktop or mobile browsers) to interface with the NDI Hash Signing Service(HSS), so that citizens can use their NDI Mobile App to sign documents that can be archived and verified for long-term non-repudiation purposes.
       
@@ -56,7 +54,7 @@ info:
       2. The HSS displays the 6-digit challenge code and document hash on the user's form factor. The end-user is then requested to consent on signing on the displayed document hash.
       
       3. The resultant signature shall be sent to the RP/DSP via the Client Notification Endpoint. Thus, concluding the second leg.
-    
+      
     # Functional Flow (PN)
       
       Similar to the QR flow, the HSS signing flow for Push Notification utilizes a 2-part approach. DSP/RPs subscribing to the PN flow should first perform a OIDC-handshake with NDI's ASP prior to the first-leg as a one-off authentication to solicit the end-user's id_token. The 2-part approach is as follow.
@@ -86,8 +84,9 @@ info:
       2. The HSS displays the 6-digit challenge code and document hash on the user's form factor. The end-user is then requested to consent on signing on the displayed document hash.
 
       3. The resultant signature shall be sent to the RP/DSP via the Client Notification Endpoint. Thus, concluding the second leg.
-  
-      # JWT Specifications
+
+      
+    # JWT Specifications
       
       ## DSP/RP Client Notification Token (Client Notification Endpoint)
 
@@ -292,10 +291,10 @@ info:
      * Rule of Thumb: A signature reference object (signing session) has a short time-to-live (TTL) of 2 + 2 minutes. 
         * A signature reference object (signing session) that has been encoded to a QR Code will expire after 2 minutes.
         * Once the user scans the QR Code with his/her NDI Mobile, the same signature reference object (signing session) will have an extended time-to-live of 2 minutes.
-     * All Server to Server communciation between the DSP and HSS must authenticated via Mutual Transport Layer Security (mTLS).
-     * Although it is technically possible for DSP/RPs to cache an end-user's signing certificate, NDI does not condone such a practice.
-     * Any attempts to cache the end-users signing certificate for the sake of generating a PAdES-LTA hash shall be viewed as an infringement of this service-level agreement
-     * The sign-hash endpoint (2nd Leg) for both PN and QR will reject any upfront request for a signature-reference object so as to deter such a scenario from occuring.
+     * All Server to Server communciation between the DSP and HSS must be authenticated via Mutual Transport Layer Security (mTLS).
+     * Although it is technically possible for DSP/RPs to cache an end-user's public certificate beyond the TTL of a signing-session, NDI does not condone such a practice.
+     * Any attempts to cache the end-users signing certificate beyond the TTL of a signing-session shall be deemed as an infringement of this service-level agreement
+     * The sign-hash endpoint (2nd Leg) for both PN and QR will reject any upfront request for a signature-reference object so as to deter the above scenario from occuring.
 
 #These are the tags for the side bar (the one on the left)
 tags:
@@ -468,7 +467,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/signatureReferenceUpdateRequest'
+             oneOf:
+                  - $ref: "#/components/schemas/signatureReferenceUpdateRequestWithError"
+                  - $ref: "#/components/schemas/signatureReferenceUpdateRequest"
       parameters:
         - name: sign-ref
           in: path
@@ -478,7 +479,7 @@ paths:
 
       responses:
         '200':
-          description: "Digital Signing Session updated with User's Signature"
+          description: "Digital Signing Session updated with User's Signature and/or Response"
           
         '400':
           description: "Forbidden"
@@ -665,6 +666,7 @@ components:
       properties:
         error:
           type: string
+          description: An Error Enumeration to notify clients the corresponding Error Flow/s
           minLength: 3
           maxLength: 255
       required:
@@ -681,6 +683,7 @@ components:
       type: object
       properties:
         error_description:
+          description:  A description that details the Error Enumeration.
           type: string
           minLength: 3
           maxLength: 255
@@ -718,7 +721,7 @@ components:
           maxLength: 255
         doc_hash:
           type: string
-          description: The PadEs document hash formed by the RP/DSP
+          description: The PadEs document hash formed by the RP/DSP. This value should be in its corresponding Hexadecimal representation, encoded as a UTF-8 string
           minLength: 32
           maxLength: 255
         challenge_code:
@@ -788,6 +791,30 @@ components:
       - doc_hash
       - challenge_code
       - nonce
+      
+    signatureReferenceUpdateRequestWithError :
+      type: object
+      properties:
+        error:
+          $ref : "#/components/schemas/oidcError"
+        error_description:
+          $ref : "#/components/schemas/oidcErrorDescription"
+        timestamp:
+          type: number
+          description: The exact unix timestamp when the user has consented to sign over the document hash.
+        ff_id:
+            type: string
+            description: The form-factor identifier that corresponds to the end-user's registered mobile device. This is a value that is allocated to each device upon form-factor provisioning.
+        hss_nonce:
+            type: string
+            description: A uniquely generated server-side nonce from the HSS's Signature Reference Challenge Endpoint. This value has to be passed back to the HSS as a claim within the signedResponse.
+            
+      required:
+      - error
+      - error_description
+      - timestamp
+      - ff_id
+      - hss_nonce
     
     signatureReferenceUpdateRequest :
       type: object

@@ -19,70 +19,6 @@
         "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
         "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
       ],
-      "path": "implementation",
-      "text": "Technical Reference",
-      "mdContent": "implementation-intro.md",
-      "children": [{
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-intro",
-          "text": "Introduction",
-          "mdContent": "implementation-intro.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-api",
-          "text": "Hash Signing API - QR Flow",
-          "mdContent": "implementation-api-qr.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-api",
-          "text": "Hash Signing API - Push Notification Flow",
-          "mdContent": "implementation-api-pn.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-discovery",
-          "text": "Discovery Document",
-          "mdContent": "implementation-discovery.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-security",
-          "text": "Security Tokens",
-          "mdContent": "implementation-security.md"
-        },
-        {
-          "//": ["This is a submenu item in your library",
-            "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-            "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-          ],
-          "path": "implementation-exception",
-          "text": "Exception Handling",
-          "mdContent": "implementation-exception.md"
-        }
-      ]
-    },
-    {
-      "//": ["This is a menu item in your library",
-        "Provide your content using md (MarkDown) files the `md folder`. `mdContent` specifies the name of the md file.",
-        "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
-      ],
       "path": "gettingstarted",
       "text": "Getting Started",
       "mdContent": "gettingstarted.md"
@@ -107,7 +43,7 @@
             "Refer to https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet for markdown syntax."
           ],
           "path": "apispecs-hsv001",
-          "text": "HSS v2.0.0",
+          "text": "HSS v2.1.1",
           "apiSpecs": "hsv2.0.0.yaml"
         }
       ]
