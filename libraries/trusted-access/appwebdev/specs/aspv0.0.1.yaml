@@ -10,7 +10,7 @@ info:
   contact:
     email: ndi_support@ndi.gov.sg
   x-logo:
-    url: '/assets/lib/trusted-access/img/ndi-logo-sm.png'
+    url: '/assets/lib/trusted-services/ds/img/logo_ndi.png'
   description: |
     This is the API store where you can discover everything about integrating
     with the National Digital Identity (NDI) platform. To try out the
@@ -30,15 +30,11 @@ info:
       The ASP may be operated in the 2 modes - as an OIDC Provider, or as a pure-play authenticator.  The operating modes will decide how relying parties (i.e. the client app) and the Authorization Server of the federated site interact with the ASP.  In both modes, the ASP is only responsible for authenticating the user and generates the ID token, it is the organization's Authorization Server which determines whether the relying party and the
       user are authorized to access its protected resources and issues the access token accordingly.
 
-      ## Mode 1: ASP as an OpenID Connect Provider
-
       <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="../img/openIDProvider.png"/>
 
       The ASP acts as an OIDC Provider, handling the OIDC flow with the relying party.  This operating mode is useful for organizations which are planning to expose their capabilities through API and may not have a OAuth 2.0/OIDC enabled Authorization Server.  During the OIDC flow, the ASP performs user authentication with the user's NDI form factor, on successful authentication, it calls the organization's Authorization Server to obtain an access token.  The Authorization Server determines whether the relying party and user has proper access (based on the organization's access policy) and generates the access token accordingly.  The ASP returns the access token to the relying party which may then use it to access protected resources.
       <br><br>
       In this operating mode, the ASP integrates with the Authorization Server of the organization through the Domain Authorization Interface.
-
-      ## Mode 2: ASP as an Authenticator
 
        <img style="width:50%; margin-left:auto; margin-right:auto; display:block" src="../img/authenticator.png"/>
 
@@ -46,201 +42,3194 @@ info:
       <br><br>
       In this operating mode, the Authorization Server of the organization will integrate with the ASP through the ASP Authentication API.
 
-#The above sections starting with # indicates a section by itself. To add more content simply Use # to represent a new section
-#These are all non APIs related documentations, API definitions should all be below
+    # Technical Reference - Mobile
+
+    ## Introduction
+
+    This technical guide is meant for developers of Mobile Apps integrating with the NDI Authentication Service Provider (ASP), to perform user authentication with NDI.  The Mobile App may also leverage the NDI ASP as an OpenID Connect Provider, to obtain access tokens to access API/resources of a protected domain, which may be a Government or commercial entity such as a bank. 
+    
+    ### ASP Overview
+
+    A protected domain refers to a network of computerized systems run by an organization (e.g. Government agency, bank) to manage its digital assets (e.g. customer data, accounts and transactions).  Digital assets or resources in the protected domain are protected from unauthorized access by cybersecurity measures and access control policies implemented by the organization.
+
+    While traditionally protected domains are accessible only by internal applications, organizations are providing partners and apps access to their protected domains through open API.  To gain access to the protected domain, partners and app developers will have to deal with the organization’s authentication and authorization mechanism, which varies from domain to domain.  NDI aims to give app developers a standardized authentication and authorization approach, regardless of the protected domain they are accessing.
+
+    The ASP is essentially an OpenID Connect Provider (OP), the ASP API is defined based on the OpenID Connect specifications, in the form of a NDI ASP Profile.
+
+    Typically, an OP requires users to authenticate themselves using a user id and password.  With NDI, this is replaced with the user’s digital identity in a secure form factor and access to the mobile device hosting the form factor.
+
+    #### A New Way of Authentication for Mobile App Developers
+
+    ![appdev authentication](/assets/lib/trusted-access/appwebdev/img/appdevauthentication.png)
+     
+    Your Mobile App interacts with the NDI App to create a seamless loginexperience for the user.  The integration with the NDI App is done by launching it with parameters through deep linking, similar to the OAuth flow on the Web but instead of going to different URLs it will between app to app.  Integrating with the NDI App simplifies the authentication task for your Mobile App as the NDI App handles most of the interactions with the ASP.
+
+    The interface diagram above depicts the interactions that take place during user authentication.  You need only focus on the interactions between your Mobile App and the NDI App (steps 2, 11) and ASP (step 12).
+    
+    The following steps describe the interactions in detail - 
+
+    - The Mobile App initiates a NDI login by instantiating an authentication instance with the NDI App.  This is done by making use of deep linking to the NDI App, passing on a callback URI which will be used by the NDI App to return the authorization code.
+
+    - The NDI App interacts with the ASP and requests the user to authenticate.
+
+    - Upon the user accepting the authentication request, the NDI App generates and sends the signed response to the ASP.  The ASP verifies the signed response – check the user certificate status and the chain of trust, then verify the signature of the signed response with the user certificate.  If all is well, the ASP returns a randomly generated authorization code to the NDI App.
+
+    - The NDI App invokes the callback URI of the Mobile App (using deep linking) to pass the authorization code back to the Mobile App.
+
+    - The Mobile App invokes the ASP token endpoint directly to obtain for the security tokens (ID token and access token) using the authorization code.
+
+    - The Mobile App uses the access token to access the API/resources of the target protected domain.
+
+    #### Proof Key for Code Exchange (PKCE)
+    <br/>
+
+    For some older mobile OS versions, it is possible for a malicious app to register itself as a handler for the custom scheme (used in the deep linking interactions depicted in the previous section) in addition to your Mobile App.  The malicious app will be able to intercept the authorization code returned by the NDI App, and use it to request for an access token from the ASP.
+
+    To mitigate this threat, it is mandatory to use Proof Key for Code Exchange (PKCE) during the authorization flow.  The PKCE specification requires additional parameters to the authorization and token exchange requests, in the form of a code challenge and code verifier respectively.   Refer to the RFC 7636 – Proof Key for Code Exchange by OAuth Public Clients for more details.
+
+    ## Integration
+
+    ### Integration with the NDI App
+    <br/>
+
+      You can initiate authentication by launching the NDI App with the required parameters. This will either be done with Universal Links (iOS)/ App Links (Android) or custom URI schemes.
+
+      #### iOS (9 and above only)
+
+      1.  You need to setup universal links.  Custom URI schemes will not be supported for iOS to provide better security.  You can refer to https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html.  Alternatively, if you wish to use a third party solution for deep linking such as Branch and Firebase Dynamic Links, skip to step 4.
+
+      2.  First, you need to create an association from a website you own and your app. For example, you can host and serve it as application/json at 
+      https://example.com/apple-app-site-association. You would need the app ID prefix/team ID and your bundle ID for appID. It should look something like this:
+
+      ````
+      [{
+        "applinks": {
+          apps": [],
+      details": [{
+        "appID": "92W9FM4VJN.com.example.app",
+            "paths": [ "*" ]
+          }]
+        }
+      }]
+      ````
+
+      3. You also need to enable the associated domains capability in XCode.  You can do this by going to the Capabilities tab in XCode, turn it on and add an entry with your website with the prefix of <b>applinks</b>: For example, applinks:example.com.
+
+      4. If you are not using a third party solution go to the next step. Otherwise please ensure that you enable universal links.
+
+      5. Then you need a universal link that the NDI app can return the authorization code to. For example, if your link is https://example.com/auth then the NDI app will return the authorization code by launching your app with https://example.com/auth?state={state}&code={code}.
+
+      6. When the NDI app launches your app, you would need to retrieve and handle the corresponding data. In particular, you should add <b>application:continueUserActivity:restorationHandler</b>: in your Application Delegate.
+
+      7. You can then initiate authentication by opening the NDI App’s universal link with openURL: 
+         
+         ````   
+         https://sandbox.ndi.io/auth?client_id={client_id}&scope={scope}&redirect_uri={redirect_uri}&nonce={nonce}&state={state}&code_challenge={challenge}&code_challenge_method={challenge_method}
+         
+         ````
+
+      | <b>Paremeters</b> | <b>Remarks</b> |
+      | ------ | ----------- |
+      | client_id <b>(required)</b> | The client ID for your app 
+      | redirect_uri | The universal link that the NDI App would return the authorization code to 
+      | nonce <b>(required)</b> | A one-time randomly generated unique string which will be included in the ID token as a means to prevent replay attacks 
+      | state | A one-time randomly generated unique string which will be returned along with the authorization code as a means to prevent CSRF and can also be used to maintain state
+      | code_challenge_method <b>(required)</b> | The method used for transforming the code verifier. The only supported values are "plain" or "S256" 
+      | code_challenge <b>(required)</b> | The code challenge derived from the code verifier using the transformation specified by the code challenge method to enforce PKCE. 
+
+      8.  The NDI App will then make the relevant requests to the ASP to initiate the user authentication. On completion of user authentication, the NDI App will call your redirect URI accordingly.  For example, suppose your redirect URI is https://example.com/redirect
+
+        - User authentication succeeded, your Mobile App will be called with the authorization code as follows: https://example.com/redirect?state={state}&code={code}
+
+        - User authentication failed, your Mobile App will be called with an error as follows: https://example.com/redirect?error=access_denied&error_reason=user_denied&error_description=Permissions+error
 
 
-#These are the tags for the side bar (the one on the left)
+      9.  With the received authorization code, your Mobile App can now call the ASP token endpoint to obtain the ID token and access token accordingly.
+
+      #### Android
+
+      1.  You need to setup a custom URI scheme and app links for your app. You can refer to https://developer.android.com/training/app-links/.  Alternatively, if you wish to use a third party solution for deep linking such as Branch and Firebase Dynamic Links, skip to step 5.
+
+      2.  First, setup a custom URI scheme for Android by modifying your <b>AndroidManifest.xml</b>. 
+      Set the <b>scheme</b> to your application ID and make sure you set the <b>host</b>.  You should end up with something like this:
+
+      ````
+        <intent-filter android:label="@string/filter_view_auth ">
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <!-- Accepts URIs that begin with "com.example.app://ndi” ->
+          <data android:scheme="com.example.app"
+                android:host="ndi" />
+      </intent-filter>
+      ````
+
+      3.  Setup app links in your <b>AndroidManifest.xml</b>. 
+      Set the <b>scheme</b> to <b>"https"</b> and the host with a domain you own.  Make sure you can serve content on it.  You should end up with something like this:
+
+      ```` 
+      <intent-filter android:label="@string/filter_view_auth" android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <!-- Accepts URIs that begin with "https://example.com” ->
+        <data android:scheme="https"
+              android:host="example.com" />
+      </intent-filter>
+      ````
+
+      4. You need to [declare the host’s association with the app](https://developer.android.com/training/app-links/verify-site-associations#web-assoc) by creating a Digital Asset Links JSON file. For example, you may host it at  https://example.com/.well-known/assetlinks.json.  You would need the application ID for package_name and the SHA256 fingerprints of your signing certificate for <b>sha256_cert_fingerprints</b>.  It should look something like this:
+
+      ````
+      [{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+          "namespace": "android_app",
+          "package_name": "com.example.app",
+          "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"]
+        }
+      }]
+      ````
+
+      5.  If you are not using a third party solution go to the next step.  Otherwise please ensure that you create a custom URI scheme with your application ID and enable app links in your third party solution.
+
+      6.  You need a redirect URI for both your custom URI scheme and app links that the NDI App can return the authorization code to.  For example, if your redirect URI is {scheme}://{host}<b>/auth</b> then the NDI App will return the authorization code by launching your app using an Intent with the action <b>ACTION_VIEW</b> and data with {scheme}://{host}/<b>auth?state={state}&code={code}</b>.
+
+      7.  You can then initiate authentication by launching the NDI app ([like how you load a web URL](https://developer.android.com/guide/components/intents-common#ViewUrl)) using an Intent with action <b>ACTION_VIEW</b> with the following data:
+
+        - Custom URI scheme:
+
+        ````
+        ndi://ndi/auth?client_id={client_id}&scope={scope}
+        &redirect_uri={redirect_uri}&nonce={nonce}&state={state}&code_challenge={challenge}&code_challenge_method={challenge_method}
+        ````
+
+        - App Links:
+
+        ````
+        https://sandbox.ndi.io/auth?client_id={client_id}&scope={scope}&redirect_uri={redirect_uri}&nonce={nonce}&state={state}&code_challenge={challenge}&code_challenge_method={challenge_method}
+        ````
+
+      8. You should launch using an app link if the user has an Android version of 6.0 and above otherwise you should fall back to the custom URI scheme.
+
+      | Parameters | Description |
+      | ------ | ----------- |
+      | client_id <b>(required)</b> | The client ID for your application.
+      | redirect_uri | The URI that the NDI app would return the authorization code depending if you are using a custom URI scheme or app link.
+      | nonce <b>(required)</b> | A randomly generated unique string which will be included in the ID token as a means to prevent replay attacks.
+      | state | A randomly generated unique string which will be returned along with the authorization code as a means to prevent CSRF and can also be used to maintain state.
+      | code_challenge_method <b>(required)</b> | The method used for transforming the code verifier. The only supported values are "plain" or "S256".
+      | code_challenge <b>(required)</b> | The code challenge derived from the code verifier using the transformation specified by the code challenge method to enforce PKCE.
+
+      9.  The NDI App will then make the relevant requests to the ASP to initiate the user authentication. On completion of user authentication, the NDI App will call your redirect URI accordingly.  For example, suppose your redirect URI is https://example.com/redirect
+
+        - User authentication succeeded, your Mobile App will be called with the authorization code as follows: https://example.com/redirect?state={state}&code={code}
+
+        - User authentication failed, your Mobile App will be called with an error as follows: https://example.com/redirect?error=access_denied&error_reason=user_denied&error_description=Permissions+error
+        
+      10. With the received authorization code, your Mobile App can now call the ASP token endpoint to obtain the ID token and access token accordingly.
+
+      ## ASP API Reference
+
+      ### Authorization Endpoint
+
+      Your Web App uses this endpoint to initiate the user authentication flow.  There are 3 options the Web App may use to initiate the authentication flow:
+
+      - Redirection – the Web App is to redirect the user agent to the authorization endpoint of the ASP, which typically returns the NDI Login page for the user to enter his NDI Id for authentication. The ASP then routes an authentication challenge to the user's form factor (e.g. the NDI soft token on his mobile device) via the appropriate protocols.  In the case of NDI soft token, the authentication challenge is sent to the user via push notification to the NDI App on his mobile device, where the user enters his PIN to unlock the soft token to sign on the authentication challenge.  The NDI App returns the signed response to the ASP which verifies the signature with the user's certificate.  If all is well, the ASP returns a randomly generated authorization code to the Web App via HTTP redirect.  The destination of the HTTP redirect is the redirect_uri parameter that you have configured for your Web App during Client App Registration.
+          
+      - Direct Invocation – This is similar to the OpenID Connect Client-Initiated Backchannel Authentication (CIBA) flow.  Instead of redirecting the user agent to the NDI Login Page, the Web App captures the end-user’s NDI id using its own login screen and directly invokes the authorization endpoint of the ASP, passing the NDI id as a parameter of the request.  The ASP returns the token response consisting the ID token and access token to the Web App by directly invoking the Web App’s client notification endpoint.  Alternatively, the Web App may poll the token endpoint to obtain the token response when it is available.  To use this invocation option, your Web App must be able to perform mTLS with the ASP.
+         
+      - QR Code Invocation– This is similar to the OpenID Connect Client-Initiated Backchannel Authentication (CIBA) flow.  The Web App directly invokes the authorization endpoint of the ASP to request for a QR code which encodes the authentication challenge from the ASP.  It then displays the QR code on its login screen to let the end-user capture using the NDI App.  On capturing the QR code, the NDI App decodes the authentication challenge encoded in the QR code, displays the description (e.g. name of the client app and scope of access requested) and let the user enters his PIN to unlock the soft token to sign on the authentication challenge.   The NDI App sends the signed response to the ASP which verifies the signature with the user's certificate.  If all is well, the ASP returns the token response consisting the ID token and access token to the Web App by directly invoking the Web App’s client notification endpoint.  Alternatively, the Web App may poll the ASP token endpoint to obtain the token response when it is available.  To use this invocation option, your Web App must be able to perform mTLS with the ASP.
+
+      ##### Redirect URI
+      <br/>
+      As part of the security model, if your Web App passed to the authorization endpoint a redirect_uri that has not been configured during Client App Registration, the ASP will respond with an error. This is to protect against phishing of the ASP authorization endpoint which let a malicious party replaces the redirect_uri with its own address to obtain the authorization code.
+      To ensure the authorization code (and subsequently the ID token and access token) is returned to a server in a controlled environment instead of frontend code residing in the user’s desktop/mobile browser, the redirect_uri must be a legit domain name under your control which can be whitelisted by the ASP.
+
+      ##### Redirection Invocation
+
+        This is a typical redirection URL to redirect the user agent to the authorization endpoint:
+        ````
+        https://sandbox.api.ndi.gov.sg/asp/api/v1/asp/auth?client_id={your_client_id}&response_type=code&scope={req_scope}&redirect_uri={your_redirect_uri}&state={random_state}&nonce={random_nonce}
+          
+        Replace {your_client_id} with the assigned client id of your Web App {req_scope} with the scope of access requested (e.g. “openid cpf”)
+        {your_redirect_uri} with the URI for the ASP to return the authorization code to your Web App, e.g. “https://www.ganymede.com/code”
+        {random_state} with a random alphanumeric string, e.g. 10af9431enf5
+        {random_nonce} with a random alphanumeric string, e.g. da5492bc0h
+
+        On successful invocation, the NDI Login screen appears.
+        ````
+
+      ##### Direct Invocation
+
+        Direct Invocation (DI) is supported by another authorization endpoint of the ASP.  This is a typical direct invocation call to the DI authorization endpoint:
+
+        ````
+        POST /asp/api/v1/asp/di-auth  HTTP/1.1       
+        Host: sandbox.api.ndi.gov.sg
+        Content-Type: application/json   
+        {
+          "client_id" : {your_client_id},
+          "client_secret" : {your_client_secret},
+              "scope" : {req_scope},
+              "client_notification_token" : {your_notif_token},
+              "acr_values" : "mod-mf",
+              "login_hint" : {ndi_id_hash},
+              "binding_message" : {your_msg},
+              "nonce" : {random_nonce}
+        }
+        ````
+
+      > Replace {your_client_id} with the assigned client  > id of your Web App {your_client_secret} with the 
+      > client secret generated for your Web App. 
+         
+         Alternatively, this may be a token containing a digital signature token for certificate-based client authentication 
+        {req_scope} with the scope of access requested, e.g. "openid cpf"
+        {your_notif_token} with a unique id generated by your Web App which will be used by the ASP as a Bearer token to authenticate the request to send the token response to your Web App’s client notification endpoint
+        {ndi_id_hash} with the hash value (SHA-256 hex) of the end-user’s NDI id
+        {your_msg} with the message to show the end-user on his form factor hosting device, e.g. to request for consent to access certain resources
+        {random_nonce} with a random alphanumeric string generated by your Web App
+
+        ##### QR Code Invocation
+        QR Code Invocation is supported by the Direct Invocation (DI) authorization endpoint of the ASP.  This is a typical invocation call to the DI authorization endpoint to request for a QR code encoded authentication challenge:
+        ````
+        POST /asp/api/v1/asp/di-auth  HTTP/1.1
+        Host: sandbox.api.ndi.gov.sg
+        Content-Type: application/json   
+        {
+          "client_id" : {your_client_id},
+          "client_secret" : {your_client_secret},
+              "scope" : {req_scope},
+              "client_notification_token" : {your_notif_token},
+              "acr_values" : "mod-mf",
+              "display" : "qr-code",
+              "binding_message" : {your_msg},
+              "nonce" : {random_nonce}
+        }
+        ````
+
+      > Replace {your_client_id} with the assigned client 
+      > id of your Web App {your_client_secret} with the 
+      > client secret generated for your Web App.  This may 
+      > be a token containing a digital signature token for 
+      > certificate-based client authentication {req_scope} 
+      > with the scope of access requested, e.g. "openid cpf"
+      > {your_notif_token} with a unique id generated by your 
+      > Web App which will be used by the ASP as a Bearer
+      > token to authenticate the request to send the token
+      > response to your Web App’s client notification
+      > endpoint {your_msg} with the message to show the
+      > end-user on his form factor hosting device, e.g. to
+      > request for consent to access certain resources
+      > {random_nonce} with a random alphanumeric string
+      > generated by your Web App
+
+        On successful invocation, the QR code bitmap encoded in jpeg base64 format is returned as the response.
+
+        #### Authorization API
+        ##### Authorization Endpoint (Redirection)
+        <br/>
+
+        This endpoint supports the Redirection option.  The API definition is as follows:
+
+      > This endpoint supports the Redirection option. The API definition is
+      > as follows:
+      >
+      > **Request**
+      >
+      > **GET {basePath}/asp/auth**
+
+        <table>
+        <thead>
+        <tr class="header">
+        <th colspan="4"><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>client_id</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>The client id assigned to your Web App during Client App Registration</td>
+        </tr>
+        <tr class="odd">
+        <td>scope</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>Space delimited and case-sensitive list of strings of OAuth 2.0 scope values, indicating the scope of access requested. Each scope value references a scope profile defined for your Web App during Client App Registration.</td>
+        </tr>
+        <tr class="even">
+        <td>nonce</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>A random unique reference generated by the Web App, which will be included in the ID token returned by the ASP on successful user authentication. The Web App may use this to tie the ID token to a particular authenticated session, to mitigate replay attacks.</td>
+        </tr>
+        <tr class="odd">
+        <td><strong>Optional</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>response_type</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>Indicates the grant type flow to be used. This is defaulted to &quot;code&quot; for the Authorization Code flow, where an authorization code is used to exchange for the id token and access token.</td>
+        </tr>
+        <tr class="even">
+        <td>state</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>The random string generated by the client to counter the Cross-Site Request Forgery (CSRF) threat. If specified, the ASP will include it as part of the redirect URL when returning the authorization code to the Web App's redirect URI. Your Web App is to match the value of the state returned with its copy to ensure the redirect is from the ASP.</td>
+        </tr>
+        </tbody>
+        </table>
+
+        > **Response**
+        >
+        > The ASP provides a 2-part response when its authorization endpoint is
+        > called by the Web App. The first response returns the NDI Login Page,
+        > the second response delivers the authorization code (or error code) to
+        > the Web App via its redirect URI.
+
+        <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Success, the NDI Login page is returned for user authentication</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: text/html</p>
+        <p>Content: {HTML of the NDI Login page}</p></td>
+        </tr>
+        </tbody>
+        </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>On successful user authentication, the ASP returns the authorization code via HTTPS redirect to the Web App's redirect URI</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 302 Found
+          <p>Location: {redirect_uri}?code={auth_code}&amp;state={state_value}</p>
+          <p>Content-Length: 0</p>
+          <p>Access-Control-Allow-Origin: *</p>
+          <p>Access-Control-Allow-Headers:</p>
+        </td>
+        </tbody>
+      </table>
+
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>On error, the ASP returns the error code via HTTPS redirect to the Web App's redirect URI</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 302 Found</p>
+        <p>Location: {redirect_uri}?error={error_code}&amp;state={state_value}</p>
+        <p>Content-Length: 0</p>
+        <p>Access-Control-Allow-Origin: *</p>
+        <p>Access-Control-Allow-Headers:</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      ### Authorization Endpoint (Direct Invocation)
+
+      > The authorization endpoint supports the Direct Invocation and QR Code
+      > Invocation option. The API definition is as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/di-auth**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>client_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client id assigned to your Web App during Client App Registration</td>
+        </tr>
+        <tr class="odd">
+        <td>client_secret</td>
+        <td>Body</td>
+        <td>String</td>
+        <td><p>For the ASP to perform client authentication. This may be done by:</p>
+        <ul>
+        <li><p>Basic Authentication – this will be the client secret assigned to your Web App during Client App Registration, e.g. ab359ef2cd8b</p></li>
+        <li><p>Certificate-based Authentication – this will contain the digital signature generated by your Web App’s certificate registered during Client App Registration, e.g. aq03ca13mdaqAFzaQ…RmN234faG1Q=</p></li>
+        </ul></td>
+        </tr>
+        <tr class="even">
+        <td>scope</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>Space delimited and case-sensitive list of strings of OAuth 2.0 scope values, indicating the scope of access requested. Each scope value references a scope profile defined for your Web App during Client App Registration</td>
+        </tr>
+        <tr class="odd">
+        <td>client_notification_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td><p>This parameter is required for non-block direct invocation (i.e. the authorization endpoint responds immediately, performs the user authentication subsequently and return the token response the Web App’s client notification endpoint). Set this to a unique id provided by your Web App which the ASP used as a Bearer token to authenticate the request sending the token response to the Web App’s client notification endpoint.</p>
+        <p>Omit this parameter for blocking direct invocation – the authorization endpoint will block until user authentication is completed and returns the ID token and access token as the response.</p></td>
+        </tr>
+        <tr class="even">
+        <td>acr_values</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The Authentication Method Reference value, set to “mod-mf”</td>
+        </tr>
+        <tr class="odd">
+        <td>login_hint</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>Your Web App may capture the user's NDI Id using its UI instead of the NDI Login page. It passes the hash value (SHA-256 hex) of the NDI Id to the ASP through this parameter</td>
+        </tr>
+        <tr class="even">
+        <td>nonce</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>A random unique reference generated by your Web App, which will be included in the ID token returned by the ASP on successful user authentication. The Web App may use this to tie the ID token to a particular authenticated session, to mitigate replay attacks.</td>
+        </tr>
+        <tr class="odd">
+        <td>display</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>This parameter is required if you intend to initiate the QR Code based authentication. Set this to &quot;qr-code&quot; to request for QR code based authentication. A QR code which encodes the authentication challenge will be returned in the response, which the client app may display on its login screen for the user to capture using the NDI App.</td>
+        </tr>
+        <tr class="even">
+        <td><strong>Optional</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>binding_message</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>This is a text provided by your Web App to be shown to the end-user on his form factor hosting device, e.g. a short description to request for user consent to access certain resources, or a random code displayed by the Web App which the end-user may match with that shown on his device to ensure that the request is from the Web App.</td>
+        </tr>
+        </tbody>
+        </table>
+
+      > **Response**
+      >
+      > The ASP provides a 2-part response when its DI authorization endpoint
+      > is called by the Web App. The first response returns an
+      > acknowledgement of the authentication initiation (for Direct
+      > Invocation) or the QR code (for QR Code Invocation). The second
+      > response delivers the token response to the Web App by invoking its
+      > client notification endpoint.
+      >
+      > *Direct Invocation (Non-Blocking)*
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Response 1, on success – acknowledgement that user authentication is initiated</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;</p>
+        <p>&quot;expires_in&quot; : 600</p>
+        <p>}</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>auth_req_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>A unique id generated by the ASP to identify the instance of authentication initiated by the Web App. This value will be included in the token response to allow the Web App correlate its authentication request with the received tokens</td>
+        </tr>
+        <tr class="even">
+        <td>expires_in</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The lifespan of the auth_req_id in seconds since the authentication is initiated.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Response 2, on successful user authentication – the ASP sends the token success response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>POST /yournotifycallback HTTP/1.1</p>
+        <p>Host: yourwebapp.example.com</p>
+        <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;,</p>
+        <p>&quot;acces_token&quot; : &quot;bc902d145fe6&quot;,</p>
+        <p>&quot;token_type&quot; : &quot;Bearer&quot;,</p>
+        <p>&quot;expires_in&quot; : 600,</p>
+        <p>&quot;id_token&quot; : &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg&quot;</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>client_notification_token</td>
+        <td>Header (Authorization)</td>
+        <td>String</td>
+        <td>This is the client notification token provided by your Web App in the request to the DI authorization endpoint, it is used here as a Bearer token to allow your Web App carry out client authentication</td>
+        </tr>
+        <tr class="even">
+        <td>auth_req_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>This is the same auth_req_id returned by the ASP in the acknowledgement to your Web App’s request to the DI authorization endpoint.</td>
+        </tr>
+        </tbody>
+      </table>
+
+    > Refer the Token Exchange API session for description of the other
+    > parameters returned in the token response.
+
+    <table>
+      <thead>
+        <tr class="header">
+        <th><strong>Response 2, on user authentication error – the ASP sends the token error response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>POST /yournotifycallback HTTP/1.1</p>
+        <p>Host: yourwebapp.example.com</p>
+        <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;,</p>
+        <p>&quot;error&quot; : &quot;unauthorized_client&quot;,</p>
+        <p>&quot;error_description&quot; : &quot;Client is not allowed to use direct invocation&quot;</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+    </table>
+
+    > *Direct Invocation (Blocking)*
+
+    <table>
+        <thead>
+        <tr class="header">
+        <th><strong>On successful user authentication – the ASP returns the access token as success response to Web App as in the following example</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>“acces_token” : “bc902d145fe6”,</p>
+        <p>“token_type” : “Bearer”,</p>
+        <p>“expires_in” : 600,</p>
+        <p>“id_token” : “eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg”</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      > Refer the Token Exchange API session for description of the other
+      > parameters returned in the token response.
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>On error – the ASP returns the error response to Web App as in the following example</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>POST /yournotifycallback HTTP/1.1</p>
+        <p>Host: yourwebapp.example.com</p>
+        <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>“error” : “unauthorized_client”,</p>
+        <p>“error_description” : “Client is not allowed to use direct invocation”</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      > *QR Code Invocation*
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Response 1, on success – the QR Code image (PNG format base64 encoded) embedding the authentication challenge is returned</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;</p>
+        <p>&quot;expires_in&quot; : 600</p>
+        <p>&quot;qr_code&quot; :</p>
+        <p>&quot;iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAAAAABcFtGpAAAD/0lEQVR4nO3dQW7bMBRAwbrw/a+cbmUgH+GYotEWb3ZxIsl54IagRD1+nfA1fP74+U/u8vj5T9jvA+f8bxULFAsUCxQLFAsUCxQLFAsUCxQLPK8/bM3XpsnY9fOv7z+eXL/PcJrx8+k87HKBRhYoFigWKBYoFigWKBYoFigWKBYoFigWeI6/0ZkumibDein+ChsXa2SBYoFigWKBYoFigWKBYoFigWKBebpzwnBPqU59hlMev0+1kQWKBYoFigWKBYoFigWKBYoFigWKBT47NxyszO8+OQecNLJAsUCxQLFAsUCxQLFAsUCxQLFAsUCxwDyRPjxbXXnYcuVYtvF/NbJAsUCxQLFAsUCxQLFAsUCxQLFAscDL3PDERqgvDm/cM7nr/2pkgWKBYoFigWKBYoFigWKBYoFigWKBx0dvZh0eztQbcK8++f0bWaBYoFigWKBYoFigWKBYoFigWKBYYGmf0nH+pQtyf/F9qqPLiRpZoFigWKBYoFigWKBYoFigWKBYoFjgZdq0MnUb51m6ELhwzp01xNs2+ullkO8pFigWKBYoFigWKBYoFigWKBaYb5PcecYND125rP79eOzGulgjCxQLFAsUCxQLFAsUCxQLFAsUCxQLzDOlYTK2tHaGE7yd+SAv3+meLd0m+Z5igWKBYoFigWKBYoFigWKBYoFigcfK0h8vD37w1sjp2KXbOfELNbJAsUCxQLFAsUCxQLFAsUCxQLFAscDS1pvjOt3GAt6Jd9wvba+y8ZxgIwsUCxQLFAsUCxQLFAsUCxQLFAsUC+zdU4rHrhy8s8XLifXNtld5U7FAsUCxQLFAsUCxQLFAsUCxQLHA0l40vAaH70fQ+1pXLjX9zajnDe9VLFAsUCxQLFAsUCxQLFAsUCxQLPDk5/KuDr9jXdcBt17NN134opEFigWKBYoFigWKBYoFigWKBYoFigWWnjfcu8L3H9/1Or6Vc44XwH++kQWKBYoFigWKBYoFigWKBYoFigWKBeZ1wx2H9yldmSfyFHDhAo0sUCxQLFAsUCxQLFAsUCxQLFAsUCzwvP6wtYbIL6H//tC77h09sYbYyALFAsUCxQLFAsUCxQLFAsUCxQLFAsUCz/E3d81WceOe6Svowupt2rjnPcUCxQLFAsUCxQLFAsUCxQLFAsUC89zwBHyJyMI+q+N5Vjar1YMbWaBYoFigWKBYoFigWKBYoFigWKBY4PzccJhz7WzQs7H3ztrFhgs3skCxQLFAsUCxQLFAsUCxQLFAsUCxwNK7HflMeCK9fbWHM/8BxQLFAsUCxQLFAsUCxQLFAsUCxQJHHtHb2dRVT6nPJC6ddLhAIwsUCxQLFAsUCxQLFAsUCxQLFAv8AQBXemZIycxEAAAAAElFTkSuQmCC&quot;</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Response 2, on successful user authentication – the ASP sends the token success response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>POST /yournotifycallback HTTP/1.1</p>
+        <p>Host: yourwebapp.example.com</p>
+        <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>“auth_req_id” : “21da8b9c-19d3-afec-038153ac5301”,</p>
+        <p>“acces_token” : “bc902d145fe6”,</p>
+        <p>“token_type” : “Bearer”,</p>
+        <p>“expires_in” : 600,</p>
+        <p>“id_token” : “eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg”</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>client_notification_token</td>
+        <td>Header (Authorization)</td>
+        <td>String</td>
+        <td>This is the client notification token provided by your Web App in the request to the DI authorization endpoint, it is used here as a Bearer token to allow your Web App carry out client authentication</td>
+        </tr>
+        <tr class="even">
+        <td>auth_req_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>This is the same auth_req_id returned by the ASP in the acknowledgement to your Web App’s request to the DI authorization endpoint.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      > Refer the Token Exchange API session for description of the other
+      > parameters returned in the token response.
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Response 2, on user authentication error – the ASP sends the token error response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>POST /yournotifycallback HTTP/1.1</p>
+        <p>Host: yourwebapp.example.com</p>
+        <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>“error” : “unauthorized_client”,</p>
+        <p>“error_description” : “Client is not allowed to use direct invocation”</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      > *General Error Responses*
+
+      <table>
+      <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid client id</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 400 Bad Request</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : &quot;invalid_client&quot;</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid endpoint URL</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td>HTTP/1.1 404 Not Found</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Server Error, server-side errors encountered</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 500 Internal Server Error</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : {error_message}</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+
+      Token Endpoint
+
+      > The token endpoint consists of the following API:
+
+      -   Token Exchange API – this is an API where your Web App can use the
+            authorization code obtained from the authorization endpoint to
+            exchange for the security tokens, namely the ID token and access
+            token. The ID token is a JSON Web Token (JWT) containing information
+            about the identity of the user authenticated. The access token is a
+            security token which your Web App use to access API/resources of a
+            protected domain (e.g. Government or commercial entity such as the
+            Public Housing Agency or a bank). The access token is issued by the
+            Authorization server of the protected domain and may be in the form
+            of a JWT or a randomly generated reference. Each access token comes
+            with an expiry date, once expired, your Web App will have to
+            re-authenticate the user to obtain a new access token, or
+            alternatively, if the refresh token is provided, your Web App may
+            use the refresh token to obtain a new access token without the need
+            to re-authenticate the user.
+
+      -   Refresh Token API – this is an API which supports the Refresh Token
+            flow. If your Web App is granted the refresh token privilege during
+            Client App Registration, your Web App will be issued with a refresh
+            token by the Token Exchange API, in addition to the ID token and
+            access token. Your Web App can use the refresh token subsequently to
+            obtain a new access token for the user without the need for the user
+            to perform user authentication again. Refresh tokens have expiry
+            too, but usually much long-lived than access tokens.
+
+      -   Token Response Polling API – this is an API which the Web App may
+            call to poll for the token response (consisting the ID token and
+            access token) at certain intervals, after initiating a user
+            authentication by Direct Invocation or QR Code Invocation to the ASP
+            authorization endpoint.
+
+      ### Token Exchange API
+
+      > The Token Exchange API is as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/token**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>code</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The authorization code obtained from the authorization endpoint.</td>
+        </tr>
+        <tr class="odd">
+        <td>client_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client id assigned to your Web App during Client App Registration</td>
+        </tr>
+        <tr class="even">
+        <td>client_secret</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client secret that you obtained for your Web App during Client App Registration. This parameter may be used to hold a digital signature for certificate-based client authentication</td>
+        </tr>
+        <tr class="odd">
+        <td>redirect_uri</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The redirect URI of your Web App</td>
+        </tr>
+        <tr class="even">
+        <td>grant_type</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>Set to authorization_code, as defined in OAuth 2.0 specifications.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      > **Response**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Success, the ID token and access token are returned</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
+        <p>&quot;id_token&quot; : &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg&quot;</p>
+        <p>&quot;expires_in&quot; : 600</p>
+        <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
+        <p>“refresh_token” : “24cd99ba-35da-28e4-b76e-4ef5e80f700f”</p>
+        <p>}</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>access_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The access token which can be used to access API and resources of your target protected domain. The access token may be in the form of a JWT or reference string, depending on the Authorization Server of the protected domain.</td>
+        </tr>
+        <tr class="even">
+        <td>id_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The ID token issued by ASP, in the form of a JWT containing identity info about the user authenticated with NDI-approved form factor. Your Web App will have to decode the JWT to inspect the claims in the ID token.</td>
+        </tr>
+        <tr class="odd">
+        <td>expires_in</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The lifetime (in seconds) of the access token. For example, the value &quot;600&quot; denotes the access token will expire in 10 mins from the time the response was generated.</td>
+        </tr>
+        <tr class="even">
+        <td>token_type</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The type of access token returned, which is always &quot;Bearer&quot;.</td>
+        </tr>
+        <tr class="odd">
+        <td>refresh_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The refresh token (if any, depending on the profile defined for the client app during Client App Registration) which the client app can use to refresh the access token.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid request (e.g. missing parameters)</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 400 Bad Request</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : {error_message}</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid endpoint URL</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td>HTTP/1.1 404 Not Found</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Server Error, server-side errors encountered</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 500 Internal Server Error</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : {error_message}</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      ##### Refresh Token API
+
+      > The Refresh Token API let a client app obtain a new access token
+      > without going through user authentication. The client app must supply
+      > the refresh token it obtained from the Token Exchange API to the
+      > Refresh Token request as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/token**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>client_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client id assigned to your client app during Client App Registration</td>
+        </tr>
+        <tr class="odd">
+        <td>client_secret</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client secret that you obtained for your client app during Client App Registration</td>
+        </tr>
+        <tr class="even">
+        <td>grant_type</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>Set to “refresh_token”, as defined in OAuth 2.0 specifications</td>
+        </tr>
+        <tr class="odd">
+        <td>refresh_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The refresh token obtained from the token endpoint (Token Exchange API)</td>
+        </tr>
+        <tr class="even">
+        <td><strong>Optional</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>scope</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>Space delimited and case-sensitive list of strings of OAuth 2.0 scope values, indicating the scope of access requested. Each scope value references a scope profile defined for your client app during Client App Registration. If not provided, default to &quot;openid&quot;</td>
+        </tr>
+        </tbody>
+      </table>
+
+      > **Response**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Success, the ID token and access token are returned</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
+        <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
+        <p>&quot;expires_in&quot; : 600</p>
+        <p>“refresh_token” : “77a906e51-94d4-26e8-cd6f-aed2fb9fa38e”</p>
+        <p>}</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>access_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The access token which can be used to access API and resources of your target protected domain. The access token may be in the form of a JWT or reference string, depending on the Authorization Server of the protected domain.</td>
+        </tr>
+        <tr class="even">
+        <td>expires_in</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The lifetime (in seconds) of the access token. For example, the value &quot;600&quot; denotes the access token will expire in 10 mins from the time the response was generated.</td>
+        </tr>
+        <tr class="odd">
+        <td>token_type</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The type of access token returned, which is always &quot;Bearer&quot;.</td>
+        </tr>
+        <tr class="even">
+        <td>refresh_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The new refresh token (if any) which the client app can use to refresh the access token.</td>
+        </tr>
+        </tbody>
+        </table>
+
+        <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid request (e.g. missing parameters)</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 400 Bad Request</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : {error_message}</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid endpoint URL</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td>HTTP/1.1 404 Not Found</td>
+        </tr>
+        </tbody>
+        </table>
+
+        <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Server Error, server-side errors encountered</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 500 Internal Server Error</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : {error_message}</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      ##### Token Response Polling API
+
+      > The Token Response Polling API is as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/token**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>client_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client id assigned to your client app during Client App Registration</td>
+        </tr>
+        <tr class="odd">
+        <td>client_secret</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The client secret that you obtained for your client app during Client App Registration</td>
+        </tr>
+        <tr class="even">
+        <td>grant_type</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>Set to “direct_invocation_request”</td>
+        </tr>
+        <tr class="odd">
+        <td>auth_req_id</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The unique id to identify the authentication request made by the Web App</td>
+        </tr>
+        </tbody>
+      </table>
+
+      > **Response**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Success – the token response is available, the ID token and access token are returned</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
+        <p>&quot;id_token&quot; : &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg&quot;</p>
+        <p>&quot;expires_in&quot; : 600</p>
+        <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
+        <p>“refresh_token” : “24cd99ba-35da-28e4-b76e-4ef5e80f700f”</p>
+        <p>}</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>access_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The access token which can be used to access API and resources of your target protected domain. The access token may be in the form of a JWT or reference string, depending on the Authorization Server of the protected domain.</td>
+        </tr>
+        <tr class="even">
+        <td>id_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The ID token issued by ASP, in the form of a JWT containing identity info about the user authenticated with NDI-approved form factor. Your Web App will have to decode the JWT to inspect the claims in the ID token.</td>
+        </tr>
+        <tr class="odd">
+        <td>expires_in</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The lifetime (in seconds) of the access token. For example, the value &quot;600&quot; denotes the access token will expire in 10 mins from the time the response was generated.</td>
+        </tr>
+        <tr class="even">
+        <td>token_type</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The type of access token returned, which is always &quot;Bearer&quot;.</td>
+        </tr>
+        <tr class="odd">
+        <td>refresh_token</td>
+        <td>Body</td>
+        <td>String</td>
+        <td>The refresh token (if any, depending on the profile defined for the client app during Client App Registration) which the client app can use to refresh the access token.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Error – Token Error Response, e.g. invalid authentication request id</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 400 Bad Request</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : {error_code}</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Error – Pending Token Response, token response is not available yet (e.g. user has not completed authentication), the Web App should continue to poll the token endpoint</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 400 Bad Request</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : “unknown_auth_req_id”</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      ## Discovery Document
+
+        The OpenID Connect specifications involve the use of multiple endpoints for user authentication, and the requests for resources such as the security tokens and the public keys to verify these tokens. To simplify the implementation and discovery of these endpoints and resources, OpenID Connect provides for the use of a Discovery document
+
+      > – in JSON format, and downloadable from a well-known location – which
+      > describes the OpenID Connect Provider’s configuration and supported
+      > features.
+      >
+      > You will be able to download the ASP Discovery document from the following location:
+      >
+      > GET {basePath}/.well-known/openid-configuration**
+
+      Your Web App should download the ASP Discovery document periodically (it is safe to download the document on a daily basis) to keep up to date of the ASP’s configuration, as the ASP endpoints may change from time to time (e.g. from /v1 to /v2), and the signing keys are also refreshed regularly.
+
+      The following shows a sample of the ASP discovery document:
+
+      <table>
+        <tbody>
+        <tr class="odd">
+        <td><p>{</p>
+        <p>“issuer” : “https://zeta1.asp.ndi.gov.sg”,</p>
+        <p>“authorization_endpoint” : “https://wog.ndi.gov.sg/v1/asp/auth”,</p>
+        <p>“token_endpoint” : “https://wog.ndi.gov.sg/v1/asp/token”,</p>
+        <p>“jwks_uri” : “https://wog.ndi.gov.sg/v1/certs”,</p>
+        <p>“response_types_supported” : [</p>
+        <p>“code”</p>
+        <p>],</p>
+        <p>“subject_types_supported” : [</p>
+        <p>“public”</p>
+        <p>],</p>
+        <p>“id_token_signing_algo_values_supported” : [</p>
+        <p>“ES256”,</p>
+        <p>“RS256”</p>
+        <p>],</p>
+        <p>“scope_supported” : [</p>
+        <p>“opened”</p>
+        <p>],</p>
+        <p>“token_endpoint_auth_methods_supported” : [</p>
+        <p>“client_secret_post”</p>
+        <p>],</p>
+        <p>“claim_supported” : [</p>
+        <p>“aud”,</p>
+        <p>“exp”,</p>
+        <p>“iat”,</p>
+        <blockquote>
+        <p>“iss”,</p>
+        </blockquote>
+        <p>“sub”</p>
+        <p>],</p>
+        <p>“code_challenge_methods_supported” : [</p>
+        <p>“plain”</p>
+        <p>“S256”</p>
+        <p>]</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      ## Security Tokens
+
+        ### ID Token
+
+      > The ID token is issued in the form of a JWT, the following table shows
+      > the format of the ID token and the checks to perform by your Mobile
+      > App to ensure it is a valid ID token issued by the ASP.
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Checks to Perform at the Mobile App</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><b>JOSE Header</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><b>typ</td>
+        <td>“JWT”</td>
+        <td></td>
+        </tr>
+        <tr class="odd">
+        <td><b>alg</td>
+        <td>Indicates the signature algorithm used to sign this ID token.</td>
+        <td><p>The signature algorithm must be one of the supported asymmetric cryptography – e.g. “ES256”, “RS256”.</p>
+        <p>Must not be “NONE”.</p></td>
+        </tr>
+        <tr class="even">
+        <td><b>kid</td>
+        <td>The key id indicating which ASP key was used to sign this ID token. The ASP uses a set of signing keys whose corresponding public keys are made available in the form of the JWK (JSON Web Key) set. The kid parameter is used to identify the right public key in the JWK set to verify the signature.</td>
+        <td><p>The Mobile App must use the public key indicated by the kid parameter to verify the signature of this ID token to ensure it is a valid ID token issued by the ASP.</p>
+        <p>The Mobile App is to regularly download the ASP JWK set from the ASP endpoint indicated in the discovery document, as the ASP will periodically refresh its signing keys. It would be considered safe to download the JWK set on a daily basis.</p></td>
+        </tr>
+        <tr class="odd">
+        <td><b>JWT Payload</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><b>iss</td>
+        <td>The ASP id of the ASP that issued this ID token</td>
+        <td>Ensure the ASP id points to an ASP that is recognised by your Mobile App.</td>
+        </tr>
+        <tr class="odd">
+        <td><b>aud</td>
+        <td>The client id of your Mobile App</td>
+        <td>Ensure this matches the client id of your Mobile App.</td>
+        </tr>
+        <tr class="even">
+        <td><b>sub</td>
+        <td>The uuid of the user who was authenticated</td>
+        <td>Ensure this matches the value in your user record of the user.</td>
+        </tr>
+        <tr class="odd">
+        <td><b>iat</td>
+        <td>The time this ID token was issued, in Unix time (seconds)</td>
+        <td>Ensure the ID token issue timestamp is within the tolerance of your Mobile App, i.e. it should not be issued too long ago.</td>
+        </tr>
+        <tr class="even">
+        <td><b>exp</td>
+        <td>The time this ID token expires, in Unix time (seconds)</td>
+        <td>Ensure the ID token has not expired.</td>
+        </tr>
+        <tr class="odd">
+        <td><b>nonce</td>
+        <td>The value of the nonce provided by your Mobile App in the request to the ASP authorization endpoint</td>
+        <td>Your Mobile App is to check that this value matches the copy in its cache, to protect against replay attacks.</td>
+        </tr>
+        <tr class="even">
+        <td><b>JWT Signature</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="odd">
+        <td><b>signature</td>
+        <td>This is the digital signature over the JOSE Header and JWS Payload, using the algorithm specified in the <em>alg</em> Header parameter</td>
+        <td>Signature created with the ASP’s signing key. Must be valid. Verify the signature using the public key indicated by the JOSE Header kid parameter. See Checks to Perform remarks of the Header kid parameter for more details.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      ### Access Token
+
+      The ASP does not generate access tokens, it obtains them from the Authorization Service of the protected domain.  Format of the access token varies from protected domain to protected domain.  There are 2 main approaches of implementing access tokens: 
+      Self-contained access token – A self-contained access token encapsulates all the authorization assertions and other assertions (e.g. issuer id, token validity period, scope) into the token payload, with the payload signed by the Authorization Service to prevent it from tampering. The payload can also be encrypted to ensure confidentiality.  The JSON Web Token (JWT) structure is widely used to implement the self-contained access token.  The advantage of the self-contained access token is that the API Gateway or the target API can verify the integrity and the authorization assertions by simply examining the access token, without the need to check back with the Authorization Server.  
+      Reference-based access token -  A reference-based access token is essentially a randomly generated unique reference to an internal table containing the authorization and other assertions maintained by the Authorization Server.  The advantage of reference-based access token is that there is no need for secret keys or key-pairs to sign/encrypt access tokens, however the API Gateway or the target API will have to check back with the Authorization Server to verify the access tokens.
+
+      ### Refresh Token
+
+      The ASP does not generate refresh tokens, it receives them from the Authorization Service of the protected domain together with the access tokens.  Format of the refresh token varies from protected domain to protected domain, usually in the form of a randomly generated string which is a reference to some internal record of systems maintained by the Authorization Server. 
+
+      ### Safe Keeping of Security Tokens
+
+      The ID token, access token and refresh token are highly confidential data, which if stolen by malicious parties will allow them to gain unauthorized access to API and resources in protected domains.  It is the responsibility of your Mobile App to store these tokens securely and safely dispose them after use.  As a security requirement, you will have to provide a detail description of how to securely store the tokens in your Mobile App.  Some protected domains may only allow their access tokens to be stored on a server in a controlled environment and only allow calls to their API from a whitelisted location.
+
+
+      ## Exception Handling
+
+      ### General Error Handling
+
+      Your Web App is to handle error responses from the ASP properly to
+      provide a smooth and pleasant user experience. For example, error
+      messages returned by the ASP usually contains technical details which
+      may confuse and alarm the user unnecessarily. Your Web App should not
+      simply display these error messages verbatim as and when these errors
+      occur, instead your Web App should interpret these errors and take
+      appropriate remedial action where possible, and display user-friendly
+      messages when user attention is required.
+      
+      The following are a non-exhaustive list of errors and the proper way
+      of exception handling to implement.
+
+      #### Authentication Error
+
+      > If you are using your own login UI to capture the NDI Id of the user,
+      > ensure your login UI allows the user to re-attempt the login up to 3 –
+      > 5 trials. Your login UI is to be protected by anti-bot mechanism such
+      > as captcha.
+
+      #### Client Error (HTTP 4xx)
+      <br/>
+
+      > Client errors are mostly caused by problems at the client side (i.e.
+      > your Web App), such as badly formed requests, missing mandatory
+      > fields, invalid URL, etc. There is no point retrying when your Web App
+      > encountered Client Errors, ensure your Web App handles user entry
+      > properly to eliminate bad request and missing fields issues.
+
+      #### Server Error (HTTP 500)
+      <br/>
+
+      > Server errors are mostly caused by problems at the server side (i.e.
+      > the ASP), which might be temporal in nature. Your Web App should retry
+      > the request a couple of times and should display a “Service
+      > Unavailable” message if the same error persisted.
+
+      #### Timeout Error
+      <br/>
+
+      > Timeout errors may be caused by network congestion or system
+      > encountering high load, which may be intermittent in nature. Your Web
+      > App should retry the request a couple of times but use the exponential
+      > backoff approach to avoid further contributing to the congestion.
+      > Display the “Service Unavailable” message if the timeout error
+      > persisted.
+
+      #### No Response
+      <br/>
+
+      > Your Web App may receive no response when there is a network or system
+      > outage. Your Web App should implement timeout to prevent your users
+      > from waiting indefinitely. Display the “Service Unavailable” message
+      > if the no response situation persisted
+
+      #### Error Codes
+
+      # Technical Reference - Web
+
+      ## Introduction 
+
+      This technical guide is meant for developers of Web Applications (Web App accessed by users through desktop or mobile browsers) to integrate with the NDI Authentication Service Provider (ASP), to perform user authentication with NDI.  The Web App may also leverage the NDI ASP as an OpenID Connect Provider, to obtain access tokens to access API/resources of a protected domain, which may be a Government or commercial entity such as a bank. 
+
+      ### ASP Overview
+
+      A protected domain refers to a computerized system (or a network of computerized systems) run by an organization (e.g. Government agency, bank) to manage its digital assets (e.g. customer data, accounts) and transactions.  Digital assets or resources in the protected domain are protected from unauthorized access with cybersecurity measures and access control policies implemented by the organization.
+
+      While traditionally protected domains are accessible only by internal applications, organizations are providing partners and apps access to their protected domains through open API.  In order to access the protected domain, partners and app developers will have to deal with the organization’s authentication and authorization mechanism, which varies from domain to domain.  NDI aims to give app developers a standardized authentication and authorization approach, regardless of the protected domain they are accessing.
+
+      The ASP is essentially an OpenID Connect Provider (OP), the ASP API is defined based on the OpenID Connect specifications, in the form of a NDI ASP Profile.
+
+      Typically, an OP requires users to authenticate themselves using a user id and password.  With NDI, this is replaced with the user’s digital identity in a secure form factor and access to the mobile device hosting the form factor. 
+
+      #### A New Way of Authentication
+
+      ![webdev authentication](/assets/lib/trusted-access/appwebdev/img/webdev_authn.png)
+
+      The authentication mechanism used by ASP differs from the traditional approach where the client app captures the end-user’s user credentials/secrets through a login screen and forwards the credentials/secrets to a backend user management system which verifies against a centralized password database.
+
+      The ASP authentication mechanism utilizes a distributed approach as follows:
+
+      ##### Invocation Options
+
+      These are the options the Web App may use to initiate the authentication and authorization flow orchestrated by the ASP:
+
+      <ol type="a">
+        <li>Redirection – instead of having its own login screen, the Web App (client app) invokes the authorization endpoint of the ASP through redirection, redirecting the end-user to the NDI Login Page.  The end-user enters his/her NDI id and click submit on the Login Page, which sends an authentication request consisting the NDI id to the ASP.</li>
+        <li>Direct Invocation – the Web App captures the end-user’s NDI id using its own login screen and invokes the authorization endpoint of the ASP directly, passing the NDI id as a parameter of the request.  This is similar to the OpenID Connect Client Initiated Backchannel Authentication (CIBA) flow.</li>
+        <li>QR Code – the Web App invokes the authorization 
+      endpoint of the ASP to request for a QR code which encodes the authentication challenge from the ASP.  It then displays the QR code on its login screen to let the user capture using the NDI App.  This is similar to the OpenID connect Client Initiated Backchannel Authentication (CIBA) flow.</li>
+      </ol>
+
+      ##### Initiate the Authentication Challenge
+
+      For Invocation Option (a) and (b)
+
+      - On receiving the authentication request consisting the NDI id, the ASP obtains the end-user’s form factor attributes from the NDI User Directory, based on his NDI id.  The form factor attributes consist of the end-user’s preferred form factor type, the form factor address (e.g. push notification registration token), etc.  In this case, the end-user’s preferred form factor is the NDI soft token.  The ASP then routes an authentication request (in the form of a signed challenge) via push notification to the NDI App on the end-user’s mobile device where the soft token form factor resides.
+
+      - The end-user receives the push notification on his mobile device, inspects the description (e.g. name of the client app and scope of access requested) and accepts the authentication request.  In accepting the authentication request, the end-user may have to enter a PIN (or use fingerprint biometric) to unlock the soft token (which safekeep the end-user’s private key).
+
+      - The soft token verifies the signature of the signed challenge to ensure it is from an authorised ASP, and generates a response based on the challenge material, signed with the end-user’s private key.  It then returns the signed response to the ASP via the callback URI specified in the challenge. 
+
+      For Invocation Option (c)
+
+      - On capturing the QR code, the NDI App decodes the signed challenge encoded in the QR code and displays the description (e.g. name of the client app and scope of access requested) for the user to accept the authentication request.  In accepting the authentication request, the end-user may have to enter a PIN (or use fingerprint biometric) to unlock the soft token (which safekeep the end-user’s private key).
+
+
+      For Invocation Option (a) and (b)
+
+      - On receiving the authentication request consisting the NDI id, the ASP obtains the end-user’s form factor attributes from the NDI User Directory, based on his NDI id.  The form factor attributes consist of the end-user’s preferred form factor type, the form factor address (e.g. push notification registration token), etc.  In this case, the end-user’s preferred form factor is the NDI soft token.  The ASP then routes an authentication request (in the form of a signed challenge) via push notification to the NDI App on the end-user’s mobile device where the soft token form factor resides.
+
+      - The end-user receives the push notification on his mobile device, inspects the description (e.g. name of the client app and scope of access requested) and accepts the authentication request.  In accepting the authentication request, the end-user may have to enter a PIN (or use fingerprint biometric) to unlock the soft token (which safekeep the end-user’s private key).
+
+      - The soft token verifies the signature of the signed challenge to ensure it is from an authorised ASP, and generates a response based on the challenge material, signed with the end-user’s private key.  It then returns the signed response to the ASP via the callback URI specified in the challenge. 
+
+      For Invocation Option (c)
+
+      - On capturing the QR code, the NDI App decodes the signed challenge encoded in the QR code and displays the description (e.g. name of the client app and scope of access requested) for the user to accept the authentication request.  In accepting the authentication request, the end-user may have to enter a PIN (or use fingerprint biometric) to unlock the soft token (which safekeep the end-user’s private key).
+
+      - The soft token verifies the signature of the signed challenge to ensure it is from an authorised ASP, and generates a response based on the challenge material, signed with the end-user’s private key.  It then returns the signed response, together with the end-user’s NDI id to the ASP via the callback URI specified in the challenge.
+
+      ##### Verify the Signed Response
+
+      - The ASP verifies the signature of the signed response with the end-user’s digital certificate, after checking the integrity of digital certificate by verifying its certificate chain of trust, and the status of the digital certificate with the CA’s Online Certificate Status Protocol (OCSP) service.
+
+      - On successful user authentication, the ASP invokes the Authorization Service of the protected domain to obtain the access token for accessing resources of the protected domain.  The access token is a security token encapsulating assertions of the access granted, generated by the Authorization Service based on its access control policies and end-user consent.
+
+      For Invocation Option (a)
+
+      - The ASP sends an authorization code to the Web App by redirection to the Web App’s pre-registered redirect URI.  The Web App may then use the authorization code to exchange for the ID token and access token by invoking the ASP token endpoint.
+
+      - The Web App uses the access token to access the API/resources of the target protected domain.
+
+      For Invocation Option (b) and (c)
+
+      - The ASP returns the ID token and access token to the Web App by directly invoking the Web App’s pre-registered client notification endpoint.  
+
+      - The Web App uses the access token to access the API/resources of the target protected domain.
+
+      ## ASP API Reference
+
+      ### Authorization Endpoint
+
+      Your Web App uses this endpoint to initiate the user authentication flow.  There are 3 options the Web App may use to initiate the authentication flow:
+
+      - Redirection – the Web App is to redirect the user agent to the authorization endpoint of the ASP, which typically returns the NDI Login page for the user to enter his NDI Id for authentication. The ASP then routes an authentication challenge to the user's form factor (e.g. the NDI soft token on his mobile device) via the appropriate protocols.  In the case of NDI soft token, the authentication challenge is sent to the user via push notification to the NDI App on his mobile device, where the user enters his PIN to unlock the soft token to sign on the authentication challenge.  The NDI App returns the signed response to the ASP which verifies the signature with the user's certificate.  If all is well, the ASP returns a randomly generated authorization code to the Web App via HTTP redirect.  The destination of the HTTP redirect is the redirect_uri parameter that you have configured for your Web App during Client App Registration.
+        
+      - Direct Invocation – This is similar to the OpenID Connect Client-Initiated Backchannel Authentication (CIBA) flow.  Instead of redirecting the user agent to the NDI Login Page, the Web App captures the end-user’s NDI id using its own login screen and directly invokes the authorization endpoint of the ASP, passing the NDI id as a parameter of the request.  The ASP returns the token response consisting the ID token and access token to the Web App by directly invoking the Web App’s client notification endpoint.  Alternatively, the Web App may poll the token endpoint to obtain the token response when it is available.  To use this invocation option, your Web App must be able to perform mTLS with the ASP.
+       
+      - QR Code Invocation– This is similar to the OpenID Connect Client-Initiated Backchannel Authentication (CIBA) flow.  The Web App directly invokes the authorization endpoint of the ASP to request for a QR code which encodes the authentication challenge from the ASP.  It then displays the QR code on its login screen to let the end-user capture using the NDI App.  On capturing the QR code, the NDI App decodes the authentication challenge encoded in the QR code, displays the description (e.g. name of the client app and scope of access requested) and let the user enters his PIN to unlock the soft token to sign on the authentication challenge.   The NDI App sends the signed response to the ASP which verifies the signature with the user's certificate.  If all is well, the ASP returns the token response consisting the ID token and access token to the Web App by directly invoking the Web App’s client notification endpoint.  Alternatively, the Web App may poll the ASP token endpoint to obtain the token response when it is available.  To use this invocation option, your Web App must be able to perform mTLS with the ASP.
+
+      ### Redirect URI
+
+      As part of the security model, if your Web App passed to the authorization endpoint a redirect_uri that has not been configured during Client App Registration, the ASP will respond with an error. This is to protect against phishing of the ASP authorization endpoint which let a malicious party replaces the redirect_uri with its own address to obtain the authorization code.
+      To ensure the authorization code (and subsequently the ID token and access token) is returned to a server in a controlled environment instead of frontend code residing in the user’s desktop/mobile browser, the redirect_uri must be a legit domain name under your control which can be whitelisted by the ASP.
+
+      ### Redirection Invocation
+      <br/>
+
+      This is a typical redirection URL to redirect the user agent to the authorization endpoint:
+      ````
+      https://sandbox.api.ndi.gov.sg/asp/api/v1/asp/auth?client_id={your_client_id}&response_type=code&scope={req_scope}&redirect_uri={your_redirect_uri}&state={random_state}&nonce={random_nonce}
+        
+      Replace {your_client_id} with the assigned client id of your Web App {req_scope} with the scope of access requested (e.g. “openid cpf”)
+      {your_redirect_uri} with the URI for the ASP to return the authorization code to your Web App, e.g. “https://www.ganymede.com/code”
+      {random_state} with a random alphanumeric string, e.g. 10af9431enf5
+      {random_nonce} with a random alphanumeric string, e.g. da5492bc0h
+
+      On successful invocation, the NDI Login screen appears.
+      ````
+
+      ### Direct Invocation
+      <br/>
+
+      Direct Invocation (DI) is supported by another authorization endpoint of the ASP.  This is a typical direct invocation call to the DI authorization endpoint:
+
+      ````
+      POST /asp/api/v1/asp/di-auth  HTTP/1.1       
+      Host: sandbox.api.ndi.gov.sg
+      Content-Type: application/json   
+      {
+        "client_id" : {your_client_id},
+        "client_secret" : {your_client_secret},
+            "scope" : {req_scope},
+            "client_notification_token" : {your_notif_token},
+            "acr_values" : "mod-mf",
+            "login_hint" : {ndi_id_hash},
+            "binding_message" : {your_msg},
+            "nonce" : {random_nonce}
+      }
+      ````
+
+      > Replace {your_client_id} with the assigned client  > id of your Web App {your_client_secret} with the 
+      > client secret generated for your Web App. 
+       
+       Alternatively, this may be a token containing a digital signature token for certificate-based client authentication 
+      {req_scope} with the scope of access requested, e.g. "openid cpf"
+      {your_notif_token} with a unique id generated by your Web App which will be used by the ASP as a Bearer token to authenticate the request to send the token response to your Web App’s client notification endpoint
+      {ndi_id_hash} with the hash value (SHA-256 hex) of the end-user’s NDI id
+      {your_msg} with the message to show the end-user on his form factor hosting device, e.g. to request for consent to access certain resources
+      {random_nonce} with a random alphanumeric string generated by your Web App
+
+      #### QR Code Invocation
+      QR Code Invocation is supported by the Direct Invocation (DI) authorization endpoint of the ASP.  This is a typical invocation call to the DI authorization endpoint to request for a QR code encoded authentication challenge:
+      ````
+      POST /asp/api/v1/asp/di-auth  HTTP/1.1
+      Host: sandbox.api.ndi.gov.sg
+      Content-Type: application/json   
+      {
+        "client_id" : {your_client_id},
+        "client_secret" : {your_client_secret},
+            "scope" : {req_scope},
+            "client_notification_token" : {your_notif_token},
+            "acr_values" : "mod-mf",
+            "display" : "qr-code",
+            "binding_message" : {your_msg},
+            "nonce" : {random_nonce}
+      }
+      ````
+
+      > Replace {your_client_id} with the assigned client 
+      > id of your Web App {your_client_secret} with the 
+      > client secret generated for your Web App.  This may 
+      > be a token containing a digital signature token for 
+      > certificate-based client authentication {req_scope} 
+      > with the scope of access requested, e.g. "openid cpf"
+      > {your_notif_token} with a unique id generated by your 
+      > Web App which will be used by the ASP as a Bearer
+      > token to authenticate the request to send the token
+      > response to your Web App’s client notification
+      > endpoint {your_msg} with the message to show the
+      > end-user on his form factor hosting device, e.g. to
+      > request for consent to access certain resources
+      > {random_nonce} with a random alphanumeric string
+      > generated by your Web App
+
+      On successful invocation, the QR code bitmap encoded in jpeg base64 format is returned as the response.
+
+      #### Authorization API
+      ##### Authorization Endpoint (Redirection)
+      <br/>
+
+      This endpoint supports the Redirection option.  The API definition is as follows:
+
+      > This endpoint supports the Redirection option. The API definition is
+      > as follows:
+      >
+      > **Request**
+      >
+      > **GET {basePath}/asp/auth**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th colspan="4"><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="even">
+        <td>client_id</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>The client id assigned to your Web App during Client App Registration</td>
+        </tr>
+        <tr class="odd">
+        <td>scope</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>Space delimited and case-sensitive list of strings of OAuth 2.0 scope values, indicating the scope of access requested. Each scope value references a scope profile defined for your Web App during Client App Registration.</td>
+        </tr>
+        <tr class="even">
+        <td>nonce</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>A random unique reference generated by the Web App, which will be included in the ID token returned by the ASP on successful user authentication. The Web App may use this to tie the ID token to a particular authenticated session, to mitigate replay attacks.</td>
+        </tr>
+        <tr class="odd">
+        <td><strong>Optional</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td><strong>Parameter</strong></td>
+        <td><strong>In</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
+        </tr>
+        <tr class="odd">
+        <td>response_type</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>Indicates the grant type flow to be used. This is defaulted to &quot;code&quot; for the Authorization Code flow, where an authorization code is used to exchange for the id token and access token.</td>
+        </tr>
+        <tr class="even">
+        <td>state</td>
+        <td>Query</td>
+        <td>String</td>
+        <td>The random string generated by the client to counter the Cross-Site Request Forgery (CSRF) threat. If specified, the ASP will include it as part of the redirect URL when returning the authorization code to the Web App's redirect URI. Your Web App is to match the value of the state returned with its copy to ensure the redirect is from the ASP.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      > **Response**
+      >
+      > The ASP provides a 2-part response when its authorization endpoint is
+      > called by the Web App. The first response returns the NDI Login Page,
+      > the second response delivers the authorization code (or error code) to
+      > the Web App via its redirect URI.
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Success, the NDI Login page is returned for user authentication</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 200 OK</p>
+        <p>Content-Type: text/html</p>
+        <p>Content: {HTML of the NDI Login page}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>On successful user authentication, the ASP returns the authorization code via HTTPS redirect to the Web App's redirect URI</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 302 Found</p>
+        <p>Location: {redirect_uri}?code={auth_code}&amp;state={state_value}</p>
+        <p>Content-Length: 0</p>
+        <p>Access-Control-Allow-Origin: *</p>
+        <p>Access-Control-Allow-Headers:</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>On error, the ASP returns the error code via HTTPS redirect to the Web App's redirect URI</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 302 Found</p>
+        <p>Location: {redirect_uri}?error={error_code}&amp;state={state_value}</p>
+        <p>Content-Length: 0</p>
+        <p>Access-Control-Allow-Origin: *</p>
+        <p>Access-Control-Allow-Headers:</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      ### Authorization Endpoint (Direct Invocation)
+
+      > The authorization endpoint supports the Direct Invocation and QR Code
+      > Invocation option. The API definition is as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/di-auth**
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Required</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="even">
+      <td>client_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The client id assigned to your Web App during Client App Registration</td>
+      </tr>
+      <tr class="odd">
+      <td>client_secret</td>
+      <td>Body</td>
+      <td>String</td>
+      <td><p>For the ASP to perform client authentication. This may be done by:</p>
+      <ul>
+      <li><p>Basic Authentication – this will be the client secret assigned to your Web App during Client App Registration, e.g. ab359ef2cd8b</p></li>
+      <li><p>Certificate-based Authentication – this will contain the digital signature generated by your Web App’s certificate registered during Client App Registration, e.g. aq03ca13mdaqAFzaQ…RmN234faG1Q=</p></li>
+      </ul></td>
+      </tr>
+      <tr class="even">
+      <td>scope</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>Space delimited and case-sensitive list of strings of OAuth 2.0 scope values, indicating the scope of access requested. Each scope value references a scope profile defined for your Web App during Client App Registration</td>
+      </tr>
+      <tr class="odd">
+      <td>client_notification_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td><p>This parameter is required for non-block direct invocation (i.e. the authorization endpoint responds immediately, performs the user authentication subsequently and return the token response the Web App’s client notification endpoint). Set this to a unique id provided by your Web App which the ASP used as a Bearer token to authenticate the request sending the token response to the Web App’s client notification endpoint.</p>
+      <p>Omit this parameter for blocking direct invocation – the authorization endpoint will block until user authentication is completed and returns the ID token and access token as the response.</p></td>
+      </tr>
+      <tr class="even">
+      <td>acr_values</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The Authentication Method Reference value, set to “mod-mf”</td>
+      </tr>
+      <tr class="odd">
+      <td>login_hint</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>Your Web App may capture the user's NDI Id using its UI instead of the NDI Login page. It passes the hash value (SHA-256 hex) of the NDI Id to the ASP through this parameter</td>
+      </tr>
+      <tr class="even">
+      <td>nonce</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>A random unique reference generated by your Web App, which will be included in the ID token returned by the ASP on successful user authentication. The Web App may use this to tie the ID token to a particular authenticated session, to mitigate replay attacks.</td>
+      </tr>
+      <tr class="odd">
+      <td>display</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>This parameter is required if you intend to initiate the QR Code based authentication. Set this to &quot;qr-code&quot; to request for QR code based authentication. A QR code which encodes the authentication challenge will be returned in the response, which the client app may display on its login screen for the user to capture using the NDI App.</td>
+      </tr>
+      <tr class="even">
+      <td><strong>Optional</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="odd">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="even">
+      <td>binding_message</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>This is a text provided by your Web App to be shown to the end-user on his form factor hosting device, e.g. a short description to request for user consent to access certain resources, or a random code displayed by the Web App which the end-user may match with that shown on his device to ensure that the request is from the Web App.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      > **Response**
+      >
+      > The ASP provides a 2-part response when its DI authorization endpoint
+      > is called by the Web App. The first response returns an
+      > acknowledgement of the authentication initiation (for Direct
+      > Invocation) or the QR code (for QR Code Invocation). The second
+      > response delivers the token response to the Web App by invoking its
+      > client notification endpoint.
+      >
+      > *Direct Invocation (Non-Blocking)*
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Response 1, on success – acknowledgement that user authentication is initiated</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 200 OK</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;</p>
+      <p>&quot;expires_in&quot; : 600</p>
+      <p>}</p></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="even">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="odd">
+      <td>auth_req_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>A unique id generated by the ASP to identify the instance of authentication initiated by the Web App. This value will be included in the token response to allow the Web App correlate its authentication request with the received tokens</td>
+      </tr>
+      <tr class="even">
+      <td>expires_in</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The lifespan of the auth_req_id in seconds since the authentication is initiated.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Response 2, on successful user authentication – the ASP sends the token success response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>POST /yournotifycallback HTTP/1.1</p>
+      <p>Host: yourwebapp.example.com</p>
+      <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;,</p>
+      <p>&quot;acces_token&quot; : &quot;bc902d145fe6&quot;,</p>
+      <p>&quot;token_type&quot; : &quot;Bearer&quot;,</p>
+      <p>&quot;expires_in&quot; : 600,</p>
+      <p>&quot;id_token&quot; : &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg&quot;</p></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="even">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="odd">
+      <td>client_notification_token</td>
+      <td>Header (Authorization)</td>
+      <td>String</td>
+      <td>This is the client notification token provided by your Web App in the request to the DI authorization endpoint, it is used here as a Bearer token to allow your Web App carry out client authentication</td>
+      </tr>
+      <tr class="even">
+      <td>auth_req_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>This is the same auth_req_id returned by the ASP in the acknowledgement to your Web App’s request to the DI authorization endpoint.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      > Refer the Token Exchange API session for description of the other
+      > parameters returned in the token response.
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Response 2, on user authentication error – the ASP sends the token error response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>POST /yournotifycallback HTTP/1.1</p>
+      <p>Host: yourwebapp.example.com</p>
+      <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;,</p>
+      <p>&quot;error&quot; : &quot;unauthorized_client&quot;,</p>
+      <p>&quot;error_description&quot; : &quot;Client is not allowed to use direct invocation&quot;</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      > *Direct Invocation (Blocking)*
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>On successful user authentication – the ASP returns the access token as success response to Web App as in the following example</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 200 OK</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>“acces_token” : “bc902d145fe6”,</p>
+      <p>“token_type” : “Bearer”,</p>
+      <p>“expires_in” : 600,</p>
+      <p>“id_token” : “eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg”</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      > Refer the Token Exchange API session for description of the other
+      > parameters returned in the token response.
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>On error – the ASP returns the error response to Web App as in the following example</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>POST /yournotifycallback HTTP/1.1</p>
+      <p>Host: yourwebapp.example.com</p>
+      <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>“error” : “unauthorized_client”,</p>
+      <p>“error_description” : “Client is not allowed to use direct invocation”</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      > *QR Code Invocation*
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Response 1, on success – the QR Code image (PNG format base64 encoded) embedding the authentication challenge is returned</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 200 OK</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;auth_req_id&quot; : &quot;21da8b9c-19d3-afec-038153ac5301&quot;</p>
+      <p>&quot;expires_in&quot; : 600</p>
+      <p>&quot;qr_code&quot; :</p>
+      <p>&quot;iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAAAAABcFtGpAAAD/0lEQVR4nO3dQW7bMBRAwbrw/a+cbmUgH+GYotEWb3ZxIsl54IagRD1+nfA1fP74+U/u8vj5T9jvA+f8bxULFAsUCxQLFAsUCxQLFAsUCxQLPK8/bM3XpsnY9fOv7z+eXL/PcJrx8+k87HKBRhYoFigWKBYoFigWKBYoFigWKBYoFigWeI6/0ZkumibDein+ChsXa2SBYoFigWKBYoFigWKBYoFigWKBebpzwnBPqU59hlMev0+1kQWKBYoFigWKBYoFigWKBYoFigWKBT47NxyszO8+OQecNLJAsUCxQLFAsUCxQLFAsUCxQLFAsUCxwDyRPjxbXXnYcuVYtvF/NbJAsUCxQLFAsUCxQLFAsUCxQLFAscDL3PDERqgvDm/cM7nr/2pkgWKBYoFigWKBYoFigWKBYoFigWKBx0dvZh0eztQbcK8++f0bWaBYoFigWKBYoFigWKBYoFigWKBYYGmf0nH+pQtyf/F9qqPLiRpZoFigWKBYoFigWKBYoFigWKBYoFjgZdq0MnUb51m6ELhwzp01xNs2+ullkO8pFigWKBYoFigWKBYoFigWKBaYb5PcecYND125rP79eOzGulgjCxQLFAsUCxQLFAsUCxQLFAsUCxQLzDOlYTK2tHaGE7yd+SAv3+meLd0m+Z5igWKBYoFigWKBYoFigWKBYoFigcfK0h8vD37w1sjp2KXbOfELNbJAsUCxQLFAsUCxQLFAsUCxQLFAscDS1pvjOt3GAt6Jd9wvba+y8ZxgIwsUCxQLFAsUCxQLFAsUCxQLFAsUC+zdU4rHrhy8s8XLifXNtld5U7FAsUCxQLFAsUCxQLFAsUCxQLHA0l40vAaH70fQ+1pXLjX9zajnDe9VLFAsUCxQLFAsUCxQLFAsUCxQLPDk5/KuDr9jXdcBt17NN134opEFigWKBYoFigWKBYoFigWKBYoFigWWnjfcu8L3H9/1Or6Vc44XwH++kQWKBYoFigWKBYoFigWKBYoFigWKBeZ1wx2H9yldmSfyFHDhAo0sUCxQLFAsUCxQLFAsUCxQLFAsUCzwvP6wtYbIL6H//tC77h09sYbYyALFAsUCxQLFAsUCxQLFAsUCxQLFAsUCz/E3d81WceOe6Svowupt2rjnPcUCxQLFAsUCxQLFAsUCxQLFAsUC89zwBHyJyMI+q+N5Vjar1YMbWaBYoFigWKBYoFigWKBYoFigWKBY4PzccJhz7WzQs7H3ztrFhgs3skCxQLFAsUCxQLFAsUCxQLFAsUCxwNK7HflMeCK9fbWHM/8BxQLFAsUCxQLFAsUCxQLFAsUCxQJHHtHb2dRVT6nPJC6ddLhAIwsUCxQLFAsUCxQLFAsUCxQLFAv8AQBXemZIycxEAAAAAElFTkSuQmCC&quot;</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Response 2, on successful user authentication – the ASP sends the token success response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>POST /yournotifycallback HTTP/1.1</p>
+      <p>Host: yourwebapp.example.com</p>
+      <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>“auth_req_id” : “21da8b9c-19d3-afec-038153ac5301”,</p>
+      <p>“acces_token” : “bc902d145fe6”,</p>
+      <p>“token_type” : “Bearer”,</p>
+      <p>“expires_in” : 600,</p>
+      <p>“id_token” : “eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg”</p></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="even">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="odd">
+      <td>client_notification_token</td>
+      <td>Header (Authorization)</td>
+      <td>String</td>
+      <td>This is the client notification token provided by your Web App in the request to the DI authorization endpoint, it is used here as a Bearer token to allow your Web App carry out client authentication</td>
+      </tr>
+      <tr class="even">
+      <td>auth_req_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>This is the same auth_req_id returned by the ASP in the acknowledgement to your Web App’s request to the DI authorization endpoint.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      > Refer the Token Exchange API session for description of the other
+      > parameters returned in the token response.
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Response 2, on user authentication error – the ASP sends the token error response to Web App by directly invoking the Web App’s client notification endpoint through HTTPS POST</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>POST /yournotifycallback HTTP/1.1</p>
+      <p>Host: yourwebapp.example.com</p>
+      <p>Authorization: Bearer 8dd47b9e-2c43-67de-139953fc4b0c</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>“error” : “unauthorized_client”,</p>
+      <p>“error_description” : “Client is not allowed to use direct invocation”</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      > *General Error Responses*
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Client Error, invalid client id</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td><p>HTTP/1.1 400 Bad Request</p>
+        <p>Content-Type: application/json</p>
+        <p>{</p>
+        <p>&quot;error&quot; : &quot;invalid_client&quot;</p>
+        <p>}</p></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Client Error, invalid endpoint URL</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td>HTTP/1.1 404 Not Found</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Server Error, server-side errors encountered</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 500 Internal Server Error</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : {error_message}</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+
+      Token Endpoint
+
+      > The token endpoint consists of the following API:
+
+      -   Token Exchange API – this is an API where your Web App can use the
+          authorization code obtained from the authorization endpoint to
+          exchange for the security tokens, namely the ID token and access
+          token. The ID token is a JSON Web Token (JWT) containing information
+          about the identity of the user authenticated. The access token is a
+          security token which your Web App use to access API/resources of a
+          protected domain (e.g. Government or commercial entity such as the
+          Public Housing Agency or a bank). The access token is issued by the
+          Authorization server of the protected domain and may be in the form
+          of a JWT or a randomly generated reference. Each access token comes
+          with an expiry date, once expired, your Web App will have to
+          re-authenticate the user to obtain a new access token, or
+          alternatively, if the refresh token is provided, your Web App may
+          use the refresh token to obtain a new access token without the need
+          to re-authenticate the user.
+
+      -   Refresh Token API – this is an API which supports the Refresh Token
+          flow. If your Web App is granted the refresh token privilege during
+          Client App Registration, your Web App will be issued with a refresh
+          token by the Token Exchange API, in addition to the ID token and
+          access token. Your Web App can use the refresh token subsequently to
+          obtain a new access token for the user without the need for the user
+          to perform user authentication again. Refresh tokens have expiry
+          too, but usually much long-lived than access tokens.
+
+      -   Token Response Polling API – this is an API which the Web App may
+          call to poll for the token response (consisting the ID token and
+          access token) at certain intervals, after initiating a user
+          authentication by Direct Invocation or QR Code Invocation to the ASP
+          authorization endpoint.
+
+      ### Token Exchange API
+
+      > The Token Exchange API is as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/token**
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th><strong>Required</strong></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr class="odd">
+          <td><strong>Parameter</strong></td>
+          <td><strong>In</strong></td>
+          <td><strong>Type</strong></td>
+          <td><strong>Description</strong></td>
+          </tr>
+          <tr class="even">
+          <td>code</td>
+          <td>Body</td>
+          <td>String</td>
+          <td>The authorization code obtained from the authorization endpoint.</td>
+          </tr>
+          <tr class="odd">
+          <td>client_id</td>
+          <td>Body</td>
+          <td>String</td>
+          <td>The client id assigned to your Web App during Client App Registration</td>
+          </tr>
+          <tr class="even">
+          <td>client_secret</td>
+          <td>Body</td>
+          <td>String</td>
+          <td>The client secret that you obtained for your Web App during Client App Registration. This parameter may be used to hold a digital signature for certificate-based client authentication</td>
+          </tr>
+          <tr class="odd">
+          <td>redirect_uri</td>
+          <td>Body</td>
+          <td>String</td>
+          <td>The redirect URI of your Web App</td>
+          </tr>
+          <tr class="even">
+          <td>grant_type</td>
+          <td>Body</td>
+          <td>String</td>
+          <td>Set to authorization_code, as defined in OAuth 2.0 specifications.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      > **Response**
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Success, the ID token and access token are returned</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 200 OK</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
+      <p>&quot;id_token&quot; : &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg&quot;</p>
+      <p>&quot;expires_in&quot; : 600</p>
+      <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
+      <p>“refresh_token” : “24cd99ba-35da-28e4-b76e-4ef5e80f700f”</p>
+      <p>}</p></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="even">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="odd">
+      <td>access_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The access token which can be used to access API and resources of your target protected domain. The access token may be in the form of a JWT or reference string, depending on the Authorization Server of the protected domain.</td>
+      </tr>
+      <tr class="even">
+      <td>id_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The ID token issued by ASP, in the form of a JWT containing identity info about the user authenticated with NDI-approved form factor. Your Web App will have to decode the JWT to inspect the claims in the ID token.</td>
+      </tr>
+      <tr class="odd">
+      <td>expires_in</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The lifetime (in seconds) of the access token. For example, the value &quot;600&quot; denotes the access token will expire in 10 mins from the time the response was generated.</td>
+      </tr>
+      <tr class="even">
+      <td>token_type</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The type of access token returned, which is always &quot;Bearer&quot;.</td>
+      </tr>
+      <tr class="odd">
+      <td>refresh_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The refresh token (if any, depending on the profile defined for the client app during Client App Registration) which the client app can use to refresh the access token.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Client Error, invalid request (e.g. missing parameters)</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 400 Bad Request</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : {error_message}</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Client Error, invalid endpoint URL</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td>HTTP/1.1 404 Not Found</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Server Error, server-side errors encountered</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 500 Internal Server Error</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : {error_message}</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      ##### Refresh Token API
+
+      > The Refresh Token API let a client app obtain a new access token
+      > without going through user authentication. The client app must supply
+      > the refresh token it obtained from the Token Exchange API to the
+      > Refresh Token request as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/token**
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Required</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="even">
+      <td>client_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The client id assigned to your client app during Client App Registration</td>
+      </tr>
+      <tr class="odd">
+      <td>client_secret</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The client secret that you obtained for your client app during Client App Registration</td>
+      </tr>
+      <tr class="even">
+      <td>grant_type</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>Set to “refresh_token”, as defined in OAuth 2.0 specifications</td>
+      </tr>
+      <tr class="odd">
+      <td>refresh_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The refresh token obtained from the token endpoint (Token Exchange API)</td>
+      </tr>
+      <tr class="even">
+      <td><strong>Optional</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="odd">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="even">
+      <td>scope</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>Space delimited and case-sensitive list of strings of OAuth 2.0 scope values, indicating the scope of access requested. Each scope value references a scope profile defined for your client app during Client App Registration. If not provided, default to &quot;openid&quot;</td>
+      </tr>
+      </tbody>
+      </table>
+
+      > **Response**
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Success, the ID token and access token are returned</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 200 OK</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
+      <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
+      <p>&quot;expires_in&quot; : 600</p>
+      <p>“refresh_token” : “77a906e51-94d4-26e8-cd6f-aed2fb9fa38e”</p>
+      <p>}</p></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="even">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="odd">
+      <td>access_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The access token which can be used to access API and resources of your target protected domain. The access token may be in the form of a JWT or reference string, depending on the Authorization Server of the protected domain.</td>
+      </tr>
+      <tr class="even">
+      <td>expires_in</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The lifetime (in seconds) of the access token. For example, the value &quot;600&quot; denotes the access token will expire in 10 mins from the time the response was generated.</td>
+      </tr>
+      <tr class="odd">
+      <td>token_type</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The type of access token returned, which is always &quot;Bearer&quot;.</td>
+      </tr>
+      <tr class="even">
+      <td>refresh_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The new refresh token (if any) which the client app can use to refresh the access token.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Client Error, invalid request (e.g. missing parameters)</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 400 Bad Request</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : {error_message}</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Client Error, invalid endpoint URL</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td>HTTP/1.1 404 Not Found</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Server Error, server-side errors encountered</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 500 Internal Server Error</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : {error_message}</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      ##### Token Response Polling API
+
+      > The Token Response Polling API is as follows:
+      >
+      > **Request**
+      >
+      > **POST {basePath}/asp/token**
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Required</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="even">
+      <td>client_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The client id assigned to your client app during Client App Registration</td>
+      </tr>
+      <tr class="odd">
+      <td>client_secret</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The client secret that you obtained for your client app during Client App Registration</td>
+      </tr>
+      <tr class="even">
+      <td>grant_type</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>Set to “direct_invocation_request”</td>
+      </tr>
+      <tr class="odd">
+      <td>auth_req_id</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The unique id to identify the authentication request made by the Web App</td>
+      </tr>
+      </tbody>
+      </table>
+
+      > **Response**
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Success – the token response is available, the ID token and access token are returned</strong></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 200 OK</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;access_token&quot; : &quot;95c06f5a-26d4-11e8-b467-0ed5f89f718b&quot;</p>
+      <p>&quot;id_token&quot; : &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImdhbnltZWRlIn0.eyJjbGllbnRfaWQiOiJjb2 1lb25zcHVycyIsImV4cCI6MTIzMjEzNDEyNCwiaWF0IjoyNDEyNDEyMTM3NX0.W_4ViMyL4VhbQRvfLYb2uXSaTmrDWmtd8SGH971ORR6shpWZRoMprzGPcR8VVkwKVYvl0H_8NWSaMudnsGxwFg&quot;</p>
+      <p>&quot;expires_in&quot; : 600</p>
+      <p>&quot;token_type&quot; : &quot;Bearer&quot;</p>
+      <p>“refresh_token” : “24cd99ba-35da-28e4-b76e-4ef5e80f700f”</p>
+      <p>}</p></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      </tr>
+      <tr class="even">
+      <td><strong>Parameter</strong></td>
+      <td><strong>In</strong></td>
+      <td><strong>Type</strong></td>
+      <td><strong>Description</strong></td>
+      </tr>
+      <tr class="odd">
+      <td>access_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The access token which can be used to access API and resources of your target protected domain. The access token may be in the form of a JWT or reference string, depending on the Authorization Server of the protected domain.</td>
+      </tr>
+      <tr class="even">
+      <td>id_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The ID token issued by ASP, in the form of a JWT containing identity info about the user authenticated with NDI-approved form factor. Your Web App will have to decode the JWT to inspect the claims in the ID token.</td>
+      </tr>
+      <tr class="odd">
+      <td>expires_in</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The lifetime (in seconds) of the access token. For example, the value &quot;600&quot; denotes the access token will expire in 10 mins from the time the response was generated.</td>
+      </tr>
+      <tr class="even">
+      <td>token_type</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The type of access token returned, which is always &quot;Bearer&quot;.</td>
+      </tr>
+      <tr class="odd">
+      <td>refresh_token</td>
+      <td>Body</td>
+      <td>String</td>
+      <td>The refresh token (if any, depending on the profile defined for the client app during Client App Registration) which the client app can use to refresh the access token.</td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Error – Token Error Response, e.g. invalid authentication request id</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 400 Bad Request</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : {error_code}</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      <table>
+      <thead>
+      <tr class="header">
+      <th><strong>Error – Pending Token Response, token response is not available yet (e.g. user has not completed authentication), the Web App should continue to poll the token endpoint</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="odd">
+      <td><p>HTTP/1.1 400 Bad Request</p>
+      <p>Content-Type: application/json</p>
+      <p>{</p>
+      <p>&quot;error&quot; : “unknown_auth_req_id”</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+
+
+
+
+
+      ## Discovery Document
+
+      The OpenID Connect specifications involve the use of multiple endpoints for user authentication, and the requests for resources such as the security tokens and the public keys to verify these tokens. To simplify the implementation and discovery of these endpoints and resources, OpenID Connect provides for the use of a Discovery document
+
+      > – in JSON format, and downloadable from a well-known location – which
+      > describes the OpenID Connect Provider’s configuration and supported
+      > features.
+      >
+      > You will be able to download the ASP Discovery document from the following location:
+      >
+      > GET {basePath}/.well-known/openid-configuration**
+
+      Your Web App should download the ASP Discovery document periodically (it is safe to download the document on a daily basis) to keep up to date of the ASP’s configuration, as the ASP endpoints may change from time to time (e.g. from /v1 to /v2), and the signing keys are also refreshed regularly.
+
+      The following shows a sample of the ASP discovery document:
+
+      <table>
+      <tbody>
+      <tr class="odd">
+      <td><p>{</p>
+      <p>“issuer” : “https://zeta1.asp.ndi.gov.sg”,</p>
+      <p>“authorization_endpoint” : “https://wog.ndi.gov.sg/v1/asp/auth”,</p>
+      <p>“token_endpoint” : “https://wog.ndi.gov.sg/v1/asp/token”,</p>
+      <p>“jwks_uri” : “https://wog.ndi.gov.sg/v1/certs”,</p>
+      <p>“response_types_supported” : [</p>
+      <p>“code”</p>
+      <p>],</p>
+      <p>“subject_types_supported” : [</p>
+      <p>“public”</p>
+      <p>],</p>
+      <p>“id_token_signing_algo_values_supported” : [</p>
+      <p>“ES256”,</p>
+      <p>“RS256”</p>
+      <p>],</p>
+      <p>“scope_supported” : [</p>
+      <p>“opened”</p>
+      <p>],</p>
+      <p>“token_endpoint_auth_methods_supported” : [</p>
+      <p>“client_secret_post”</p>
+      <p>],</p>
+      <p>“claim_supported” : [</p>
+      <p>“aud”,</p>
+      <p>“exp”,</p>
+      <p>“iat”,</p>
+      <blockquote>
+      <p>“iss”,</p>
+      </blockquote>
+      <p>“sub”</p>
+      <p>],</p>
+      <p>“code_challenge_methods_supported” : [</p>
+      <p>“plain”</p>
+      <p>“S256”</p>
+      <p>]</p>
+      <p>}</p></td>
+      </tr>
+      </tbody>
+      </table>
+
+      ## Security Tokens
+
+      ### ID Token
+
+      The ID token is issued in the form of a JWT, the following table shows the format of the ID token and the checks to perform by your Web App to ensure it is a valid ID token issued by the ASP.
+
+      <table>
+        <thead>
+        <tr class="header">
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Checks to Perform at the Web App</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="odd">
+        <td>JOSE Header</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td>typ</td>
+        <td>“JWT”</td>
+        <td></td>
+        </tr>
+        <tr class="odd">
+        <td>alg</td>
+        <td>Indicates the signature algorithm used to sign this ID token.</td>
+        <td><p>The signature algorithm must be one of the supported asymmetric cryptography – e.g. “ES256”, “RS256”.</p>
+        <p>Must not be “NONE”.</p></td>
+        </tr>
+        <tr class="even">
+        <td>kid</td>
+        <td>The key id indicating which ASP key was used to sign this ID token. The ASP uses a set of signing keys whose corresponding public keys are made available in the form of the JWK (JSON Web Key) set. The kid parameter is used to identify the right public key in the JWK set to verify the signature.</td>
+        <td><p>The Web App must use the public key indicated by the kid parameter to verify the signature of this ID token to ensure it is a valid ID token issued by the ASP.</p>
+        <p>The Web App is to download the ASP JWK set from the ASP discovery endpoint on a regular basis, as the ASP will periodically refresh its signing keys. It would be considered safe to download the JWK set on a daily basis.</p></td>
+        </tr>
+        <tr class="odd">
+        <td>JWT Payload</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="even">
+        <td>iss</td>
+        <td>The ASP id of the ASP that issued this ID token</td>
+        <td>Ensure the ASP id points to an ASP that is recognised by your Web App.</td>
+        </tr>
+        <tr class="odd">
+        <td>aud</td>
+        <td>The client id of your Web App</td>
+        <td>Ensure this matches the client id of your Web App.</td>
+        </tr>
+        <tr class="even">
+        <td>sub</td>
+        <td>The uuid of the user who was authenticated</td>
+        <td>Ensure this matches the value in your user record of the user.</td>
+        </tr>
+        <tr class="odd">
+        <td>iat</td>
+        <td>The time this ID token was issued, in Unix time (seconds)</td>
+        <td>Ensure the ID token issue timestamp is within the tolerance of your Web App, i.e. it should not be issued too long ago.</td>
+        </tr>
+        <tr class="even">
+        <td>exp</td>
+        <td>The time this ID token expires, in Unix time (seconds)</td>
+        <td>Ensure the ID token has not expired.</td>
+        </tr>
+        <tr class="odd">
+        <td>nonce</td>
+        <td>The value of the nonce provided by your Web App in the request to the ASP authorization endpoint</td>
+        <td>Your Web App is to check that this value matches the copy in its cache, to protect against replay attacks.</td>
+        </tr>
+        <tr class="even">
+        <td>JWT Signature</td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr class="odd">
+        <td>signature</td>
+        <td>This is the digital signature over the JOSE Header and JWS Payload, using the algorithm specified in the <em>alg</em> Header parameter</td>
+        <td>Signature created with the ASP’s signing key. Must be valid. Verify the signature using the public key indicated by the JOSE Header kid parameter. See Checks to Perform remarks of the Header kid parameter for more details.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      ### Access Token
+
+      The ASP does not generate access tokens, it obtains them from the Authorization Service of the protected domain.  Format of the access token varies from protected domain to protected domain.  There are 2 main approaches of implementing access tokens: 
+
+      - Self-contained access token – A self-contained access token encapsulates all the authorization assertions and other assertions (e.g. issuer id, token validity period) into the token payload, with the payload signed by the Authorization Service to prevent it from tampering. The payload can also be encrypted to ensure confidentiality.  The JSON Web Token (JWT) structure is widely used to implement the self-contained access token.  The advantage of the self-contained access token is that the API Gateway can verify the integrity and the authorization assertions by simply examining the access token, without the need to check back with the Authorization Service.  
+
+      - Reference-based access token -  A reference-based access token is essentially a unique randomly generated reference to an internal table containing the authorization and other assertions maintained by the Authorization Service.  The advantage of reference-based access token is that there is no need for secret keys or key-pairs to sign/encrypt access tokens, however the API Gateway will have to check back with the Authorization Service to verify the access tokens.
+
+      
+      ### Refresh Token
+
+      - The ASP does not generate refresh tokens, it receives them from the Authorization Service of the protected domain together with the access tokens.  Format of the refresh token varies from protected domain to protected domain, usually in the form of a randomly generated string which is a reference to some internal record of systems maintained by the Authorization Server.
+
+      
+      ### Safe Keeping of Security Tokens
+
+      - The ID token, access token and refresh token are highly confidential data, which if stolen by malicious parties will allow them to gain unauthorized access to API and resources in protected domains.  It is the responsibility of your Web App to store these tokens securely and safely dispose them after use.  These tokens must be stored in a controlled server environment and must not be sent to your frontend code residing in the user’s desktop or mobile device.
+
+
+
+
+      
+      ## Exception Handling
+
+      ### General Error Handling
+
+      Your Web App is to handle error responses from the ASP properly to
+      provide a smooth and pleasant user experience. For example, error
+      messages returned by the ASP usually contains technical details which
+      may confuse and alarm the user unnecessarily. Your Web App should not
+      simply display these error messages verbatim as and when these errors
+      occur, instead your Web App should interpret these errors and take
+      appropriate remedial action where possible, and display user-friendly
+      messages when user attention is required.
+     
+      The following are a non-exhaustive list of errors and the proper way
+      of exception handling to implement.
+
+      #### Authentication Error
+
+      > If you are using your own login UI to capture the NDI Id of the user,
+      > ensure your login UI allows the user to re-attempt the login up to 3 –
+      > 5 trials. Your login UI is to be protected by anti-bot mechanism such
+      > as captcha.
+
+      #### Client Error (HTTP 4xx)
+
+      > Client errors are mostly caused by problems at the client side (i.e.
+      > your Web App), such as badly formed requests, missing mandatory
+      > fields, invalid URL, etc. There is no point retrying when your Web App
+      > encountered Client Errors, ensure your Web App handles user entry
+      > properly to eliminate bad request and missing fields issues.
+
+      #### Server Error (HTTP 500)
+
+      > Server errors are mostly caused by problems at the server side (i.e.
+      > the ASP), which might be temporal in nature. Your Web App should retry
+      > the request a couple of times and should display a “Service
+      > Unavailable” message if the same error persisted.
+
+      #### Timeout Error
+
+      > Timeout errors may be caused by network congestion or system
+      > encountering high load, which may be intermittent in nature. Your Web
+      > App should retry the request a couple of times but use the exponential
+      > backoff approach to avoid further contributing to the congestion.
+      > Display the “Service Unavailable” message if the timeout error
+      > persisted.
+
+      #### No Response
+
+      > Your Web App may receive no response when there is a network or system
+      > outage. Your Web App should implement timeout to prevent your users
+      > from waiting indefinitely. Display the “Service Unavailable” message
+      > if the no response situation persisted
+
+      #### Error Codes
+
+
 tags:
+      - name: Authentication
+        description: >-
+          These end points are called to perform User Authentication. After the endpoints are called, a form factor will be sent
+          to the user's preferred form factor.
 
-  - name: Authentication
-    description: >-
-      These end points are called to perform User Authentication. After the endpoints are called, a form factor will be sent
-      to the user's preferred form factor.
+      - name: Certificates, Token & Configurations
+        description: >-
+          Operations for Digital Certificates. The services for this category includes: </br> </br>
+          <b>1. Exchange for the security tokens (ID token and access token) with the authorization code</b> </br>
+          <b>2. Get the JWK Set containing the ASP signing keys<b>
 
-  - name: Certificates, Token & Configurations
-    description: >-
-      Operations for Digital Certificates. The services for this category includes: </br> </br>
-      <b>1. Exchange for the security tokens (ID token and access token) with the authorization code</b> </br>
-      <b>2. Get the JWK Set containing the ASP signing keys<b>
-
-#x-Tag groups are used to further group the tags
+    #x-Tag groups are used to further group the tags
 x-tagGroups:
-  - name: API Definitions
-    tags:
-      - Authentication
-      - Authorization 
-      - Certificates, Token & Configurations
+      - name: API Definitions
+        tags:
+          - Authentication
+          - Authorization 
+          - Certificates, Token & Configurations
 
-#=============================== ASP Oauth2 start ===========================
+
 paths:
-
   '/v1/asp/auth':
-    get:
-      tags:
-        - Authentication
-      summary: Initiate user authentication or authorization (GET)
-      description: >-
-        OIDC authorization endpoint. The client call this endpoint to start the
-        OIDC flow.  The ODIC flow consists of both user authentication and
-        authorization.  The authorization endpoint performs the user authentication
-        part of the OIDC flow, resulting in an authorization code given to the
-        calling client which it use to call the token endpoint to continue with
-        the authorization part of the OIDC flow.<br><br>
+        get:
+          tags:
+            - Authentication
+          summary: Initiate user authentication or authorization (GET)
 
-        These are the different ways the client may interact with the ASP to
-        carry out user authentication: <br>
-
-
-        1. Use the standard NDI Login page for user authentication.  The client
-        redirects the user agent to this endpoint, which returns the NDI Login page
-        for the user to enter his credentials for authentication.  In the case of
-        NDI ASP, the login consists only the user id input (i.e. no password input)
-        for the user enter his NDI id. The NDI Login page then interacts with the
-        ASP to initiate user authentication. The ASP routes sends an
-        authentication challenge to the user's form factor (e.g. the soft token on
-        his mobile device) via the appropriate form factor authentication servce.
-        For mobile soft token, the user is notified to enter his PIN in the NDI App
-        to unlock the soft token to sign on the authentication challenge.  <br><br>
-
-        2. The client uses its own login page to capture the user NDI id, and calls
-        this endpoint passing-on the NDI id. Similar to point 1, The ASP routes also sends an
-        authentication challenge to the user's form factor (e.g. the soft token on
-        his mobile device) via the appropriate form factor authentication servce.
-        For mobile soft token, the user is notified to enter his PIN in the NDI App
-        to unlock the soft token to sign on the authentication challenge. <br><br>
-
-        3. Use QR code.  The client calls this endpoint to request for a QR code
-        which encodes the authentication challenge, it then displays on its login
-        page to let the user scan with his NDI App. The NDI App will then let the user
-        enter his PIN to unlock the soft token to sign on the authentication
-        challenge. <br><br>
-
-        4. If the client is a trusted mobile app, it may interact with the NDI App
-        through the NDI mobile SDK, which calls this endpoint to obtain an
-        authentication challenge.  The NDI App let the user
-        enter his PIN to unlock the soft token to sign on the authentication
-        challenge. <br><br>
-
-
-        The NDI App returns the signed response generated by the mobile soft token
-        to the ASP (through the ASP callback uri) which verifies the signature on
-        the signed response with the user's certificate.  If all is well, the ASP
-        generates an authorization code and sends it to the client via the client's
-        redirect uri.  The client may then proceed with the authorization part of
-        the OIDC flow by calling the ASP token endpoint to exchange for the
-        security tokens (i.e. id token and access token) using the authorization
-        code in accordance to the authorization code grant flow.
-      operationId: initiateAuth
-      parameters:
-        - name: client_id
-          in: query
-          description: >-
-            The client id of the calling client app.
-          required: true
-          schema:
-            type: string
-
-        - name: nonce
-          in: query
-          description: >-
-            A random unqiue reference generated by the client, which will be
-            included in the ID token returned by the ASP on successful user
-            authentication. The client may use this to tie the ID token to a
-            particular authenticated session.
-          required: true
-          schema:
-            type: string
-
-        - name: scope
-          in: query
-          description: >-
-             The scope of access requested for, this is a string of space-
-             delimited references representing protected resources;
-          schema:
-            type: string
-
-        - name: response_type
-          in: query
-          description: >-
-            The response type, may be code or idtoken. Default to code if not
-            specified.
-          required: false
-          schema:
-            type: string
-
-        - name: state
-          in: query
-          description: >-
-            The random string generated by the client to counter CSRF, if
-            specified, the ASP will include it as part of the redirect url
-            when returning the authorization code to the client's redirect
-            uri.  The client is to match the value of the state returned with
-            its copy to ensure the redirect is from the ASP.
-          required: false
-          schema:
-            type: string
-
-        - name: acr_values
-          in: query
-          description: >-
-            {Description to be added}
-          required: false
-          schema:
-            type: string
-
-        - name: ndi_id
-          in: query
-          description: >-
-            {Description to be added}
-          required: false
-          schema:
-            type: string
-
-        - name: prompt
-          in: query
-          description: >-
-            {Description to be added}
-          required: false
-          schema:
-            type: string
-
-        - name: display
-          in: query
-          description: >-
-            {Description to be added}
-          required: false
-          schema:
-            type: string
-
-      responses:
-        '200':
-          description: Success, the NDI Login page
-          content:
-            text/html:
+          operationId: initiateAuth
+          parameters:
+            - name: client_id
+              in: query
+              description: >-
+                The client id of the calling client app.
+              required: true
               schema:
-                  type: string
-                  format: html
-        '302':
-          description: >
-            If the NDI Id is provided, the ASP returns the authorization code
-            via redirect to the client's redirect uri.
-          content:
-            text/html:
+                type: string
+    
+            - name: nonce
+              in: query
+              description: >-
+                A random unqiue reference generated by the client, which will be
+                included in the ID token returned by the ASP on successful user
+                authentication. The client may use this to tie the ID token to a
+                particular authenticated session.
+              required: true
               schema:
-                  type: string
-                  format: html
-        '500':
-          description: Error
-          content:
-            application/json:
+                type: string
+    
+            - name: scope
+              in: query
+              description: >-
+                 The scope of access requested for, this is a string of space-
+                 delimited references representing protected resources;
               schema:
-                  type: object
-                  properties:
-                      err_msg :
-                          description: error message
-                          type: string
-
+                type: string
+    
+            - name: response_type
+              in: query
+              description: >-
+                The response type, may be code or idtoken. Default to code if not
+                specified.
+              required: false
+              schema:
+                type: string
+    
+            - name: state
+              in: query
+              description: >-
+                The random string generated by the client to counter CSRF, if
+                specified, the ASP will include it as part of the redirect url
+                when returning the authorization code to the client's redirect
+                uri.  The client is to match the value of the state returned with
+                its copy to ensure the redirect is from the ASP.
+              required: false
+              schema:
+                type: string
+    
+            - name: acr_values
+              in: query
+              description: >-
+                {Description to be added}
+              required: false
+              schema:
+                type: string
+    
+            - name: ndi_id
+              in: query
+              description: >-
+                {Description to be added}
+              required: false
+              schema:
+                type: string
+    
+            - name: prompt
+              in: query
+              description: >-
+                {Description to be added}
+              required: false
+              schema:
+                type: string
+    
+            - name: display
+              in: query
+              description: >-
+                {Description to be added}
+              required: false
+              schema:
+                type: string
+    
+          responses:
+            '200':
+              description: Success, the NDI Login page
+              content:
+                text/html:
+                  schema:
+                      type: string
+                      format: html
+            '302':
+              description: >
+                If the NDI Id is provided, the ASP returns the authorization code
+                via redirect to the client's redirect uri.
+              content:
+                text/html:
+                  schema:
+                      type: string
+                      format: html
+            '500':
+              description: Error
+              content:
+                application/json:
+                  schema:
+                      type: object
+                      properties:
+                          err_msg :
+                              description: error message
+                              type: string
+                              
   '/v1/asp/responses':
     post:
       tags:
